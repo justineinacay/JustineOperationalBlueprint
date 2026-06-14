@@ -372,10 +372,10 @@ select option{background:var(--navy3)}
       <div class="fg"><label class="fl">Client Name</label><input id="cf-name" placeholder="e.g. Millscope Markets"></div>
       <div class="fr">
         <div class="fg"><label class="fl">Status</label><select id="cf-status"><option>Active</option><option>Pending</option><option>Urgent</option><option>Paused</option><option>Done</option></select></div>
-        <div class="fg"><label class="fl">Revenue Tier</label><select id="cf-rev"><option>$</option><option>$$</option><option>$$$</option></select></div>
       </div>
       <div class="fg"><label class="fl">Next Action</label><input id="cf-next" placeholder="What needs to happen next?"></div>
       <div class="fg"><label class="fl">Contact</label><input id="cf-contact" placeholder="Email or name"></div>
+      <div class="fg"><label class="fl">Google Drive Link</label><input id="cf-drive" placeholder="https://drive.google.com/..."></div>
     </div>
     <div class="mf"><button class="btn btn-g" onclick="closeModal('clientModal')">Cancel</button><button class="btn btn-t" onclick="saveClient()">Save</button></div>
   </div>
@@ -497,50 +497,103 @@ select option{background:var(--navy3)}
 <style>
 @keyframes bootspin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes bootspinrev{from{transform:rotate(0deg)}to{transform:rotate(-360deg)}}
-@keyframes bootfadeout{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.02)}}
+@keyframes bootfadeout{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(1.05)}}
+@keyframes mbara{0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.2)}}
+@keyframes jelixglow{0%,100%{text-shadow:0 0 20px rgba(0,212,200,.4),0 0 60px rgba(0,212,200,.15)}50%{text-shadow:0 0 40px rgba(0,212,200,.8),0 0 100px rgba(0,212,200,.3),0 0 140px rgba(0,212,200,.1)}}
+@keyframes letterflicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.7}97%{opacity:1}}
+@keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
+@keyframes bootpulse{0%,100%{opacity:.3}50%{opacity:1}}
 </style>
-<div id="bootScreen" style="position:fixed;inset:0;background:#040d1a;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px">
-  <div style="position:relative;width:140px;height:140px;flex-shrink:0">
-    <svg style="position:absolute;inset:0;width:140px;height:140px;animation:bootspin 3s linear infinite" viewBox="0 0 140 140">
-      <circle cx="70" cy="70" r="65" stroke="rgba(0,212,200,.12)" stroke-width="1.5" fill="none"/>
-      <circle cx="70" cy="70" r="65" stroke="#00d4c8" stroke-width="1.5" fill="none" stroke-dasharray="50 360" stroke-linecap="round"/>
-      <circle cx="70" cy="70" r="65" stroke="#ff6b1a" stroke-width="1" fill="none" stroke-dasharray="12 360" stroke-dashoffset="-180" stroke-linecap="round"/>
-    </svg>
-    <svg style="position:absolute;top:10px;left:10px;width:120px;height:120px;animation:bootspinrev 2s linear infinite" viewBox="0 0 120 120">
-      <circle cx="60" cy="60" r="55" stroke="rgba(0,212,200,.08)" stroke-width="1" fill="none"/>
-      <circle cx="60" cy="60" r="55" stroke="#00a89e" stroke-width="1" fill="none" stroke-dasharray="30 345" stroke-linecap="round"/>
-    </svg>
-    <svg style="position:absolute;top:22px;left:22px;width:96px;height:96px" viewBox="0 0 96 96">
-      <circle cx="48" cy="48" r="44" stroke="rgba(0,212,200,.06)" stroke-width="1" fill="none"/>
-      <circle cx="48" cy="48" r="44" stroke="#ff6b1a" stroke-width="1" fill="none" stroke-dasharray="8 270" stroke-linecap="round"/>
-    </svg>
-    <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
-      <div style="font-size:14px;font-weight:700;color:#00d4c8;letter-spacing:.18em">J.E.L.I.X</div>
-      <div style="width:22px;height:1px;background:#00a89e"></div>
-      <div style="font-size:8px;color:#3a6878;letter-spacing:.12em">OS</div>
-    </div>
-    <div style="position:absolute;top:6px;left:6px;width:10px;height:10px;border-top:1px solid #00d4c8;border-left:1px solid #00d4c8"></div>
-    <div style="position:absolute;top:6px;right:6px;width:10px;height:10px;border-top:1px solid #00d4c8;border-right:1px solid #00d4c8"></div>
-    <div style="position:absolute;bottom:6px;left:6px;width:10px;height:10px;border-bottom:1px solid #00d4c8;border-left:1px solid #00d4c8"></div>
-    <div style="position:absolute;bottom:6px;right:6px;width:10px;height:10px;border-bottom:1px solid #00d4c8;border-right:1px solid #00d4c8"></div>
+<div id="bootScreen" style="position:fixed;inset:0;background:#020912;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="loadYTApi()">
+
+  <!-- SCANLINE EFFECT -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden">
+    <div style="position:absolute;left:0;right:0;height:2px;background:linear-gradient(180deg,transparent,rgba(0,212,200,.06),transparent);animation:scanline 4s linear infinite"></div>
   </div>
 
-  <div style="text-align:center">
-    <div style="font-size:10px;color:#00a89e;letter-spacing:.18em;text-transform:uppercase;margin-bottom:6px">Justine Executive Life Intelligence eXperience</div>
-    <div id="bootStatus" style="font-size:11px;color:#3a6878;letter-spacing:.08em;min-height:16px">Initializing systems...</div>
-  </div>
+  <!-- GRID BACKGROUND -->
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,200,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,200,.03) 1px,transparent 1px);background-size:40px 40px"></div>
 
-  <div style="width:260px">
-    <div style="height:2px;background:rgba(0,212,200,.1);border-radius:1px;overflow:hidden">
-      <div id="bootBar" style="height:100%;background:linear-gradient(90deg,#00d4c8,#ff6b1a);border-radius:1px;width:0%;transition:width .4s ease"></div>
-    </div>
-    <div style="display:flex;justify-content:space-between;margin-top:5px">
-      <div id="bootPct" style="font-size:9px;color:#3a6878;letter-spacing:.08em">0%</div>
-      <div style="font-size:9px;color:#3a6878;letter-spacing:.08em">SUPABASE · MANILA</div>
-    </div>
-  </div>
+  <!-- CORNER BRACKETS -->
+  <div style="position:absolute;top:24px;left:24px;width:40px;height:40px;border-top:2px solid rgba(0,212,200,.5);border-left:2px solid rgba(0,212,200,.5)"></div>
+  <div style="position:absolute;top:24px;right:24px;width:40px;height:40px;border-top:2px solid rgba(0,212,200,.5);border-right:2px solid rgba(0,212,200,.5)"></div>
+  <div style="position:absolute;bottom:24px;left:24px;width:40px;height:40px;border-bottom:2px solid rgba(0,212,200,.5);border-left:2px solid rgba(0,212,200,.5)"></div>
+  <div style="position:absolute;bottom:24px;right:24px;width:40px;height:40px;border-bottom:2px solid rgba(0,212,200,.5);border-right:2px solid rgba(0,212,200,.5)"></div>
 
-  <div id="bootLog" style="width:320px;font-size:10px;color:#3a6878;line-height:1.9;font-family:monospace;text-align:left;max-height:120px;overflow:hidden"></div>
+  <!-- TOP TAG -->
+  <div style="position:absolute;top:28px;left:50%;transform:translateX(-50%);font-size:9px;color:rgba(0,212,200,.4);letter-spacing:.3em;font-family:monospace;white-space:nowrap">SYS :: JELIX-OS-v2.6 :: MANILA-PHT</div>
+
+  <!-- CONTENT -->
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:32px;width:100%;max-width:680px;padding:0 24px">
+
+    <!-- ORBIT RINGS + LOGO -->
+    <div style="position:relative;width:240px;height:240px;flex-shrink:0">
+      <!-- outer ring -->
+      <svg style="position:absolute;inset:0;width:240px;height:240px;animation:bootspin 6s linear infinite" viewBox="0 0 240 240">
+        <circle cx="120" cy="120" r="114" stroke="rgba(0,212,200,.08)" stroke-width="1" fill="none"/>
+        <circle cx="120" cy="120" r="114" stroke="#00d4c8" stroke-width="1.5" fill="none" stroke-dasharray="80 636" stroke-linecap="round"/>
+        <circle cx="120" cy="120" r="114" stroke="#ff6b1a" stroke-width="1" fill="none" stroke-dasharray="20 636" stroke-dashoffset="-300" stroke-linecap="round"/>
+      </svg>
+      <!-- mid ring -->
+      <svg style="position:absolute;top:20px;left:20px;width:200px;height:200px;animation:bootspinrev 4s linear infinite" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="94" stroke="rgba(0,212,200,.06)" stroke-width="1" fill="none"/>
+        <circle cx="100" cy="100" r="94" stroke="#00a89e" stroke-width="1" fill="none" stroke-dasharray="50 591" stroke-linecap="round"/>
+        <circle cx="100" cy="100" r="94" stroke="#ff6b1a" stroke-width=".8" fill="none" stroke-dasharray="14 591" stroke-dashoffset="-200" stroke-linecap="round"/>
+      </svg>
+      <!-- inner ring -->
+      <svg style="position:absolute;top:44px;left:44px;width:152px;height:152px;animation:bootspin 2.5s linear infinite" viewBox="0 0 152 152">
+        <circle cx="76" cy="76" r="70" stroke="rgba(0,212,200,.05)" stroke-width="1" fill="none"/>
+        <circle cx="76" cy="76" r="70" stroke="rgba(255,107,26,.4)" stroke-width="1" fill="none" stroke-dasharray="25 440" stroke-linecap="round"/>
+      </svg>
+      <!-- CENTER LOGO -->
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
+        <div style="font-size:42px;font-weight:900;color:#00d4c8;letter-spacing:.22em;line-height:1;animation:jelixglow 3s ease-in-out infinite,letterflicker 7s infinite;font-family:Arial Black,Arial,sans-serif">J.E.L.I.X</div>
+        <div style="width:80px;height:1px;background:linear-gradient(90deg,transparent,#00d4c8,transparent)"></div>
+        <div style="font-size:11px;color:rgba(0,168,158,.7);letter-spacing:.35em;font-family:monospace">OS</div>
+      </div>
+      <!-- corner ticks on orbit -->
+      <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#00d4c8;border-radius:50%;box-shadow:0 0 8px #00d4c8;animation:bootpulse 2s infinite"></div>
+      <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:4px;height:4px;background:#ff6b1a;border-radius:50%;box-shadow:0 0 6px #ff6b1a"></div>
+    </div>
+
+    <!-- TITLE BLOCK -->
+    <div style="text-align:center">
+      <div style="font-size:11px;color:rgba(0,168,158,.6);letter-spacing:.28em;text-transform:uppercase;margin-bottom:8px;font-family:monospace">Justine Executive Life Intelligence eXperience</div>
+      <div id="bootStatus" style="font-size:13px;color:rgba(0,212,200,.5);letter-spacing:.1em;min-height:18px;font-family:monospace;transition:all .3s">Initializing systems...</div>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div style="width:460px;max-width:90vw">
+      <div style="height:3px;background:rgba(0,212,200,.08);border-radius:2px;overflow:hidden;margin-bottom:8px">
+        <div id="bootBar" style="height:100%;background:linear-gradient(90deg,#00d4c8,#00a89e,#ff6b1a);border-radius:2px;width:0%;transition:width .5s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px rgba(0,212,200,.6)"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div id="bootPct" style="font-size:10px;color:rgba(0,212,200,.5);letter-spacing:.1em;font-family:monospace">0%</div>
+        <div style="font-size:9px;color:rgba(58,104,120,.6);letter-spacing:.12em;font-family:monospace">SUPABASE · MANILA · PHT</div>
+      </div>
+    </div>
+
+    <!-- BOOT LOG -->
+    <div id="bootLog" style="width:460px;max-width:90vw;font-size:10px;color:rgba(0,168,158,.5);line-height:2;font-family:monospace;text-align:left;max-height:110px;overflow:hidden"></div>
+
+    <!-- MUSIC ROW -->
+    <div style="display:flex;align-items:center;gap:14px">
+      <div id="bootMusicBars" style="display:flex;gap:3px;align-items:flex-end;height:18px;opacity:.4">
+        <div style="width:3px;background:#00d4c8;border-radius:1px;animation:mbara .5s ease-in-out infinite;height:5px"></div>
+        <div style="width:3px;background:#00d4c8;border-radius:1px;animation:mbara .5s ease-in-out .08s infinite;height:11px"></div>
+        <div style="width:3px;background:#00d4c8;border-radius:1px;animation:mbara .5s ease-in-out .16s infinite;height:7px"></div>
+        <div style="width:3px;background:#00d4c8;border-radius:1px;animation:mbara .5s ease-in-out .24s infinite;height:14px"></div>
+        <div style="width:3px;background:#00d4c8;border-radius:1px;animation:mbara .5s ease-in-out .32s infinite;height:5px"></div>
+        <div style="width:3px;background:#00d4c8;border-radius:1px;animation:mbara .5s ease-in-out .4s infinite;height:9px"></div>
+      </div>
+      <div id="bootMusicLabel" style="font-size:9px;color:rgba(0,168,158,.4);letter-spacing:.12em;font-family:monospace">CLICK ANYWHERE TO PLAY MUSIC</div>
+      <button id="bootMuteBtn" onclick="event.stopPropagation();toggleBootMusic()" style="background:rgba(0,212,200,.06);border:1px solid rgba(0,212,200,.2);border-radius:3px;color:rgba(0,212,200,.5);font-size:9px;padding:3px 10px;cursor:pointer;letter-spacing:.08em;font-family:monospace;transition:all .2s" onmouseover="this.style.background='rgba(0,212,200,.12)'" onmouseout="this.style.background='rgba(0,212,200,.06)'">MUTE</button>
+    </div>
+
+  </div><!-- end content -->
+
+
+
 </div>
 
 <!-- APP -->
@@ -564,6 +617,7 @@ select option{background:var(--navy3)}
       <button class="tb-btn" onclick="toggleVoice()" id="voiceFab" title="Voice (Space)"><i class="ti ti-microphone" id="voiceFabIcon"></i></button>
       <button class="tb-btn" onclick="toggleMute()" id="muteBtn" title="Toggle voice output"><i class="ti ti-volume" id="muteIcon"></i></button>
       <button class="tb-btn" id="onyxBtn" onclick="setOpenAIKey()" title="Set OpenAI key for premium JARVIS voice" style="font-size:9px;letter-spacing:.06em;color:var(--teal2);border-color:var(--teal2)">ONYX</button>
+      <button class="tb-btn" id="apiKeyBtn" onclick="setJelixAPIKey()" title="Set Anthropic API key for AI agents" style="font-size:9px;letter-spacing:.06em;color:var(--amber);border-color:var(--amber)" id="apiKeyBtn">JARVIS KEY</button>
       <button class="tb-btn" onclick="setView('history')" title="History"><i class="ti ti-history"></i></button>
     </div>
   </header>
@@ -575,7 +629,6 @@ select option{background:var(--navy3)}
       <div class="ni active" onclick="setView('brief')" data-view="brief"><i class="ti ti-layout-dashboard"></i>Daily Brief</div>
       <div class="ni" onclick="setView('tasks')" data-view="tasks"><i class="ti ti-checklist"></i>All Tasks<span class="nbadge" id="taskBadge">0</span></div>
       <div class="ni" onclick="setView('notes')" data-view="notes"><i class="ti ti-notes"></i>Notes</div>
-      <div class="ni" onclick="setView('journal')" data-view="journal"><i class="ti ti-book"></i>Journal</div>
       <div class="ni" onclick="setView('calendar')" data-view="calendar"><i class="ti ti-calendar"></i>Calendar</div>
       <div class="ni" onclick="setView('ai')" data-view="ai"><i class="ti ti-sparkles"></i>AI Workspace</div>
       <div class="ni" onclick="setView('memory')" data-view="memory"><i class="ti ti-brain"></i>Memory</div>
@@ -658,8 +711,8 @@ select option{background:var(--navy3)}
             <div class="bd-h" style="color:var(--text3)"><i class="ti ti-coin"></i> Cash Flow</div>
             <div id="briefFinances"></div>
             <div style="display:flex;gap:6px;margin-top:10px">
-              <button class="btn btn-d" style="flex:1;font-size:10px" onclick="openCashModal('Debit')"><i class="ti ti-minus"></i> Debit</button>
-              <button class="btn" style="flex:1;font-size:10px;background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.3)" onclick="openCashModal('Credit')"><i class="ti ti-plus"></i> Credit</button>
+              <button class="btn btn-t" style="flex:1;font-size:10px" onclick="openCashModal('Debit')"><i class="ti ti-plus"></i> Add Debit</button>
+              <button class="btn btn-d" style="flex:1;font-size:10px" onclick="openCashModal('Credit')"><i class="ti ti-minus"></i> Add Credit</button>
             </div>
           </div>
 
@@ -686,7 +739,7 @@ select option{background:var(--navy3)}
         </div>
       </div>
       <div class="vb" style="padding:14px 18px">
-        <div id="ih-table"><table class="ht"><thead><tr><th>Client</th><th>Status</th><th>Rev</th><th>Next Action</th><th>Contact</th><th>Actions</th></tr></thead><tbody id="ihClientsTbody"></tbody></table></div>
+        <div id="ih-table"><div id="ihClientCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px"></div></div>
         <div id="ih-kanban" style="display:none;height:calc(100vh - 130px)"><div class="kanban-wrap"><div class="kb-cols" id="ihKanbanCols"></div><div style="margin-top:10px;display:flex;justify-content:flex-end"><button class="btn btn-t" onclick="openTaskFor('WORK-IH')"><i class="ti ti-plus"></i> Add Task</button></div></div></div>
         <div id="ih-ctasks" style="display:none">
           <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><label style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase">Filter by Client</label><select id="ihCF" onchange="renderIHClientTasks()" style="width:200px"></select></div>
@@ -698,22 +751,33 @@ select option{background:var(--navy3)}
     <!-- ===== WORK CS ===== -->
     <div class="view" id="view-work-cs">
       <div class="vh">
-        <div><div class="vt" style="color:var(--orange)"><i class="ti ti-flame"></i>WORK — Chainsmoker & Sweetheart Coffee World</div><div class="vs">Direct client shift · 10PM–2AM Mon–Fri</div></div>
+        <div><div class="vt" style="color:var(--orange)"><i class="ti ti-flame"></i>WORK — Chainsmoker & Sweetheart Cafe</div><div class="vs">Direct client shift · 10PM–2AM Mon–Fri</div></div>
         <div class="va">
-          <button class="btn btn-o" id="csv-k" onclick="setCSView('kanban',this)" style="background:var(--orange3);border-color:var(--orange2);color:var(--orange)">Task Kanban</button>
+          <button class="btn" id="csv-cs" onclick="setCSClient('chainsmoker',this)" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#ef4444;font-size:11px">🔥 Chainsmoker</button>
+          <button class="btn" id="csv-sw" onclick="setCSClient('sweetheart',this)" style="background:transparent;border:1px solid var(--border2);color:var(--text2);font-size:11px">☕ Sweetheart Cafe</button>
+          <div style="width:1px;height:20px;background:var(--border2)"></div>
+          <button class="btn" id="csv-k" onclick="setCSView('kanban',this)" style="background:transparent;border:1px solid var(--border2);color:var(--text2);font-size:11px">Kanban</button>
           <button class="btn btn-g" id="csv-l" onclick="setCSView('list',this)">List</button>
           <button class="btn btn-o" onclick="openTaskFor('WORK-CS')"><i class="ti ti-plus"></i> Task</button>
         </div>
       </div>
       <div class="vb" style="padding:14px 18px">
-        <div class="mr" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
-          <div class="hc oc"><div class="cl">CS Tasks</div><div class="cv oc" id="csTotal">0</div></div>
-          <div class="hc oc"><div class="cl">Todo</div><div class="cv oc" id="csTodo">0</div></div>
-          <div class="hc oc"><div class="cl">In Progress</div><div class="cv oc" id="csProg">0</div></div>
-          <div class="hc"><div class="cl">Done</div><div class="cv" id="csDone">0</div></div>
+        <!-- CLIENT HEADER BANNER -->
+        <div id="cs-client-banner" style="border-radius:5px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:12px">
+          <div style="font-size:20px" id="cs-banner-icon">🔥</div>
+          <div>
+            <div id="cs-banner-name" style="font-size:14px;font-weight:800;letter-spacing:.06em"></div>
+            <div id="cs-banner-sub" style="font-size:10px;margin-top:1px"></div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:12px">
+            <div style="text-align:center"><div class="cl">Total</div><div style="font-size:18px;font-weight:700" id="csTotal">0</div></div>
+            <div style="text-align:center"><div class="cl">Todo</div><div style="font-size:18px;font-weight:700" id="csTodo">0</div></div>
+            <div style="text-align:center"><div class="cl">In Progress</div><div style="font-size:18px;font-weight:700" id="csProg">0</div></div>
+            <div style="text-align:center"><div class="cl">Done</div><div style="font-size:18px;font-weight:700" id="csDone">0</div></div>
+          </div>
         </div>
-        <div id="cs-kanban" style="height:calc(100vh - 250px)"><div class="kanban-wrap"><div class="kb-cols" id="csKanbanCols"></div></div></div>
-        <div id="cs-list" style="display:none"><table class="ht"><thead><tr><th>Task</th><th>Platform</th><th>Priority</th><th>Status</th><th>Deadline</th><th>Note</th><th></th></tr></thead><tbody id="csTbody"></tbody></table></div>
+        <div id="cs-kanban" style="height:calc(100vh - 290px)"><div class="kanban-wrap"><div class="kb-cols" id="csKanbanCols"></div></div></div>
+        <div id="cs-list" style="display:none"><table class="ht"><thead><tr><th>Task</th><th>Client</th><th>Platform</th><th>Priority</th><th>Status</th><th>Deadline</th><th></th></tr></thead><tbody id="csTbody"></tbody></table></div>
       </div>
     </div>
 
@@ -732,7 +796,11 @@ select option{background:var(--navy3)}
           <div class="hc oc"><div class="cl">Stage</div><div class="cv oc" style="font-size:12px;margin-top:2px">DISCOVERY</div></div>
           <div class="hc"><div class="cl">Clients</div><div class="cv" id="vtClientCount">0</div></div>
           <div class="hc"><div class="cl">Partners/VAs</div><div class="cv" id="vtPartnerCount">0</div></div>
-          <div class="hc oc"><div class="cl">Revenue</div><div class="cv oc" style="font-size:13px;margin-top:2px">$0</div><div class="csub">Pre-revenue</div></div>
+          <div class="hc oc" style="cursor:pointer" onclick="window.open('https://jobcollectives.github.io/jobcollectives/','_blank')">
+            <div class="cl">TJC Revenue <span style="font-size:8px;color:var(--teal2)">· live</span></div>
+            <div class="cv oc" style="font-size:13px;margin-top:2px" id="vtRevenue">$0</div>
+            <div class="csub">Pre-revenue · <span style="color:var(--teal);text-decoration:underline">Open Portal ↗</span></div>
+          </div>
         </div>
         <div id="vt-clients-view">
           <div style="font-size:9px;font-weight:700;color:var(--teal);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase">Client Acquisition Pipeline</div>
@@ -755,8 +823,8 @@ select option{background:var(--navy3)}
     <div class="view" id="view-sides">
       <div class="vh"><div><div class="vt" style="color:var(--amber)"><i class="ti ti-coins"></i>SIDES — Income Hub</div><div class="vs">RaketPH · Etsy · Digital Products</div></div><div class="va"><button class="btn btn-o" onclick="addSidesProduct()"><i class="ti ti-plus"></i> Product</button></div></div>
       <div class="vb">
-        <div class="mr"><div class="hc"><div class="cl">Revenue MTD</div><div class="cv" style="font-size:16px;margin-top:2px">₱0</div></div><div class="hc"><div class="cl">Products</div><div class="cv" id="sidesCount">0</div></div></div>
-        <table class="ht"><thead><tr><th>Product</th><th>Platform</th><th>Status</th><th>Sales</th><th>Revenue</th><th></th></tr></thead><tbody id="sidesTbody"></tbody></table>
+        <div class="mr"><div class="hc"><div class="cl">Products</div><div class="cv" id="sidesCount">0</div></div></div>
+        <div id="sidesProductGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
       </div>
     </div>
 
@@ -777,7 +845,7 @@ select option{background:var(--navy3)}
 
     <!-- ===== LIFE ===== -->
     <div class="view" id="view-life">
-      <div class="vh"><div><div class="vt" style="color:var(--teal2)"><i class="ti ti-leaf"></i>LIFE — Personal Cash Flow</div><div class="vs">INACAY Cash Flow · Debit & Credit · Personal Accounts</div></div><div class="va"><button class="btn btn-d" onclick="openCashModal('Debit')"><i class="ti ti-minus"></i> Debit</button><button class="btn" style="background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.3)" onclick="openCashModal('Credit')"><i class="ti ti-plus"></i> Credit</button></div></div>
+      <div class="vh"><div><div class="vt" style="color:var(--teal2)"><i class="ti ti-leaf"></i>LIFE — Personal Cash Flow</div><div class="vs">INACAY Cash Flow · Debit & Credit · Personal Accounts</div></div><div class="va"><button class="btn btn-t" onclick="openCashModal('Debit')"><i class="ti ti-plus"></i> Debit</button><button class="btn btn-d" onclick="openCashModal('Credit')"><i class="ti ti-minus"></i> Credit</button></div></div>
       <div class="vb">
         <div class="cftab"><div class="cfbt active" onclick="setCFTab('overview',this)">Overview</div><div class="cfbt" onclick="setCFTab('transactions',this)">Transactions</div><div class="cfbt" onclick="setCFTab('chart',this)">Chart</div><div class="cfbt" onclick="setCFTab('property',this)">Property</div></div>
         <div id="cf-overview">
@@ -816,25 +884,28 @@ select option{background:var(--navy3)}
 
     <!-- ===== NOTES ===== -->
     <div class="view" id="view-notes">
-      <div class="vh"><div><div class="vt"><i class="ti ti-notes"></i>Notes</div><div class="vs">Block editor · auto-saved</div></div><div class="va"><select id="noteSelect" onchange="switchNote()" style="width:180px;font-size:11px;padding:5px 8px"></select><button class="btn btn-g" onclick="newNote()"><i class="ti ti-plus"></i> New</button></div></div>
+      <div class="vh"><div><div class="vt"><i class="ti ti-notes"></i>Notes</div><div class="vs">Callout cards · auto-saved</div></div><div class="va"><button class="btn btn-t" onclick="newNote()"><i class="ti ti-plus"></i> New Note</button></div></div>
       <div class="vb">
-        <div id="noteTitle" contenteditable="true" style="font-size:18px;font-weight:700;outline:none;color:var(--teal);margin-bottom:14px;padding:4px 0;border-bottom:1px solid var(--border)" onblur="saveNoteTitle()">Untitled Note</div>
-        <div id="blocksContainer"></div>
-        <div class="addbl" onclick="showBlockMenu(event)"><span style="font-size:15px">+</span><span>Add block</span></div>
-        <div class="bmenu" id="blockMenu"><div class="bmi" onclick="addBlock('h1')">H1 Heading</div><div class="bmi" onclick="addBlock('h2')">H2 Heading</div><div class="bmi" onclick="addBlock('p')">¶ Paragraph</div><div class="bmi" onclick="addBlock('todo')">☐ To-do</div><div class="bmi" onclick="addBlock('bullet')">• Bullet</div><div class="bmi" onclick="addBlock('quote')">" Quote</div><div class="bmi" onclick="addBlock('code')">{} Code</div></div>
+        <div id="notesCalloutGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px"></div>
+      </div>
+    </div>
+    <!-- NOTE EDITOR OVERLAY -->
+    <div class="mov" id="noteEditorModal">
+      <div class="modal" style="width:680px;max-height:85vh">
+        <div class="mh">
+          <div id="noteTitle" contenteditable="true" style="font-size:14px;font-weight:700;outline:none;color:var(--teal);flex:1;padding:0 4px;min-width:200px" onblur="saveNoteTitle()">Untitled Note</div>
+          <button class="mc" onclick="closeModal('noteEditorModal')">×</button>
+        </div>
+        <div class="mb" style="padding:14px">
+          <div id="blocksContainer"></div>
+          <div class="addbl" onclick="showBlockMenu(event)"><span style="font-size:15px">+</span><span>Add block</span></div>
+          <div class="bmenu" id="blockMenu"><div class="bmi" onclick="addBlock('h1')">H1 Heading</div><div class="bmi" onclick="addBlock('h2')">H2 Heading</div><div class="bmi" onclick="addBlock('p')">¶ Paragraph</div><div class="bmi" onclick="addBlock('todo')">☐ To-do</div><div class="bmi" onclick="addBlock('bullet')">• Bullet</div><div class="bmi" onclick="addBlock('quote')">" Quote</div><div class="bmi" onclick="addBlock('code')">{} Code</div></div>
+        </div>
+        <div class="mf"><button class="btn btn-d" style="margin-right:auto;font-size:10px" onclick="deleteCurrentNote()"><i class="ti ti-trash"></i> Delete Note</button><button class="btn btn-t" onclick="closeModal('noteEditorModal')">Done</button></div>
       </div>
     </div>
 
-    <!-- ===== JOURNAL ===== -->
-    <div class="view" id="view-journal">
-      <div class="vh"><div><div class="vt" style="color:var(--purple)"><i class="ti ti-book"></i>Journal</div><div class="vs">Personal entries · reflections</div></div><div class="va"><button class="btn btn-p" onclick="openModal('journalModal')"><i class="ti ti-plus"></i> New Entry</button></div></div>
-      <div class="vb">
-        <div style="display:grid;grid-template-columns:220px 1fr;gap:12px;height:calc(100vh - 130px)">
-          <div style="overflow-y:auto"><div id="journalList"></div></div>
-          <div class="hc" style="overflow-y:auto" id="journalPanel"><div style="font-size:10px;color:var(--text3);padding:20px;text-align:center">Select an entry to read</div></div>
-        </div>
-      </div>
-    </div>
+
 
     <!-- ===== AI ===== -->
     <div class="view" id="view-ai">
@@ -845,6 +916,9 @@ select option{background:var(--navy3)}
           <div class="ai-agent" onclick="setAgent('marketing',this)"><div class="ai-agent-icon" style="background:var(--orange3);color:var(--orange)"><i class="ti ti-speakerphone"></i></div><div><div class="ai-agent-name">Marketing</div><div class="ai-agent-desc">Campaigns, copy</div></div></div>
           <div class="ai-agent" onclick="setAgent('business',this)"><div class="ai-agent-icon" style="background:rgba(34,197,94,.1);color:var(--green)"><i class="ti ti-briefcase"></i></div><div><div class="ai-agent-name">Business</div><div class="ai-agent-desc">TJC, ops, strategy</div></div></div>
           <div class="ai-agent" onclick="setAgent('voice',this)"><div class="ai-agent-icon" style="background:rgba(239,68,68,.1);color:var(--red)"><i class="ti ti-microphone"></i></div><div><div class="ai-agent-name">Voice Agent</div><div class="ai-agent-desc">OS command parser</div></div></div>
+          <div class="ai-agent" onclick="setAgent('finance',this)"><div class="ai-agent-icon" style="background:rgba(34,197,94,.1);color:var(--green)"><i class="ti ti-calculator"></i></div><div><div class="ai-agent-name">Finance</div><div class="ai-agent-desc">Cash flow, budgets</div></div></div>
+          <div class="ai-agent" onclick="setAgent('hr',this)"><div class="ai-agent-icon" style="background:rgba(168,85,247,.1);color:var(--purple)"><i class="ti ti-users"></i></div><div><div class="ai-agent-name">HR & People</div><div class="ai-agent-desc">VA ops, TJC hiring</div></div></div>
+          <div class="ai-agent" onclick="setAgent('design',this)"><div class="ai-agent-icon" style="background:rgba(236,72,153,.1);color:var(--pink)"><i class="ti ti-palette"></i></div><div><div class="ai-agent-name">Graphic Design</div><div class="ai-agent-desc">Creatives, layouts</div></div></div>
           <div style="margin-top:auto;padding:7px 0"><button class="btn btn-g" style="width:100%;font-size:10px" onclick="clearChat()">Clear</button></div>
         </div>
         <div class="ai-chat">
@@ -929,6 +1003,26 @@ async function speak(text){
 }
 function toggleMute(){isMuted=!isMuted;const btn=document.getElementById('muteBtn'),icon=document.getElementById('muteIcon');if(isMuted){speechSynthesis.cancel();icon.className='ti ti-volume-off';btn.style.borderColor='var(--red)';btn.style.color='var(--red)';showToast('Voice muted');}else{icon.className='ti ti-volume';btn.style.borderColor='var(--border2)';btn.style.color='var(--text2)';speak('Voice activated. J.E.L.I.X online, sir.');}}
 function setOpenAIKey(){const e=localStorage.getItem('jelix-openai-key')||'';const k=prompt('Enter your OpenAI API key for ONYX voice:\n\nLeave blank to remove.',e);if(k===null)return;if(k.trim()){localStorage.setItem('jelix-openai-key',k.trim());showToast('ONYX key saved. Premium voice enabled.');speak('Premium voice activated. Good evening, sir.');}else{localStorage.removeItem('jelix-openai-key');showToast('Key removed. Using browser voice.');}}
+function setJelixAPIKey(){
+  const existing=localStorage.getItem('jelix-api-key')||'';
+  const masked=existing?'sk-ant-...'+existing.slice(-6):'(not set)';
+  const k=prompt('J.E.L.I.X — Anthropic API Key\n\nCurrent: '+masked+'\n\nPaste your API key below (starts with sk-ant-):\nLeave blank to remove.','');
+  if(k===null)return;
+  if(k.trim().startsWith('sk-ant-')){
+    localStorage.setItem('jelix-api-key',k.trim());
+    const btn=document.getElementById('apiKeyBtn');
+    if(btn){btn.style.color='var(--green)';btn.style.borderColor='var(--green)';btn.textContent='KEY ✓';}
+    showToast('✓ API key saved. AI agents ready, sir.');
+    speak('AI agents online, sir.');
+  }else if(k.trim()===''){
+    localStorage.removeItem('jelix-api-key');
+    const btn=document.getElementById('apiKeyBtn');
+    if(btn){btn.style.color='var(--amber)';btn.style.borderColor='var(--amber)';btn.textContent='JARVIS KEY';}
+    showToast('API key removed.');
+  }else{
+    showToast('⚠ Invalid key. Must start with sk-ant-');
+  }
+}
 
 // ===== DB =====
 const DB={
@@ -1032,18 +1126,37 @@ function setView(v){
 }
 
 // ===== DAILY BRIEF =====
-function renderBrief(){
-  // Tasks by world
-  const worlds=[{k:'WORK-IH',l:'Ideahub',c:'var(--teal)'},{k:'WORK-CS',l:'Chainsmoker',c:'var(--orange)'},{k:'VENTURE',l:'Venture',c:'var(--amber)'},{k:'BUILD',l:'Build',c:'var(--green)'},{k:'SIDES',l:'Sides',c:'var(--amber)'},{k:'FAITH',l:'Faith',c:'var(--purple)'},{k:'LIFE',l:'Life',c:'var(--teal2)'}];
-  const statuses=['Todo','In Progress','No Progress','Done'];
-  const sc={Todo:'var(--text3)','In Progress':'var(--teal)','No Progress':'var(--amber)',Done:'var(--green)'};
+let wtFilter='all';
+function setWTFilter(f,btn){wtFilter=f;document.querySelectorAll('#worldTasksFilter button').forEach(b=>{b.style.background='transparent';b.style.borderColor='var(--border2)';b.style.color='var(--text3)';});btn.style.background='var(--teal3)';btn.style.borderColor='var(--teal2)';btn.style.color='var(--teal)';renderBriefWorldTasks();}
+function renderBriefWorldTasks(){
+  const worlds=[{k:'WORK-IH',l:'Ideahub',c:'var(--teal)',icon:'ti-briefcase'},{k:'WORK-CS',l:'Chainsmoker',c:'var(--orange)',icon:'ti-flame'},{k:'VENTURE',l:'Venture',c:'var(--amber)',icon:'ti-rocket'},{k:'BUILD',l:'Build',c:'var(--green)',icon:'ti-code'},{k:'SIDES',l:'Sides',c:'var(--amber)',icon:'ti-coins'},{k:'FAITH',l:'Faith',c:'var(--purple)',icon:'ti-heart-handshake'},{k:'LIFE',l:'Life',c:'var(--teal2)',icon:'ti-leaf'}];
+  const sc={'Todo':'var(--text3)','In Progress':'var(--teal)','No Progress':'var(--amber)','Done':'var(--green)'};
   const el=document.getElementById('briefWorldTasks');
-  el.innerHTML=worlds.map(w=>{
-    const tasks=DB.tasks.filter(t=>t.world===w.k);
-    if(!tasks.length)return'';
-    const total=tasks.length;
-    return`<div class="wts-row"><div class="wts-label" style="color:${w.c}">${w.l}</div><div class="wts-bars">${statuses.map(s=>{const cnt=tasks.filter(t=>t.status===s).length;if(!cnt)return'';const pct=Math.round(cnt/total*100);return`<div class="wts-seg" style="width:${pct}%;background:${sc[s]};opacity:0.85" title="${s}: ${cnt}"></div>`}).join('')}</div><div class="wts-count">${total}</div></div>`;
-  }).join('')||'<div style="font-size:11px;color:var(--text3)">No tasks yet.</div>';
+  let html='';
+  worlds.forEach(w=>{
+    let tasks=DB.tasks.filter(t=>t.world===w.k);
+    if(wtFilter!=='all')tasks=tasks.filter(t=>t.status===wtFilter);
+    if(!tasks.length)return;
+    html+=`<div style="margin-bottom:10px;background:var(--navy3);border:1px solid var(--border);border-radius:5px;overflow:hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 11px;border-bottom:1px solid var(--border);cursor:pointer" onclick="toggleWorldSection(this)">
+        <div style="display:flex;align-items:center;gap:7px"><i class="ti ${w.icon}" style="color:${w.c};font-size:13px;line-height:1;display:block"></i><span style="font-size:11px;font-weight:700;color:${w.c}">${w.l}</span><span style="font-size:9px;color:var(--text3)">${tasks.length} task${tasks.length!==1?'s':''}</span></div>
+        <i class="ti ti-chevron-down" style="font-size:11px;color:var(--text3);line-height:1;display:block;transition:transform .2s" class="wchev"></i>
+      </div>
+      <div class="wtasks-body" style="padding:0">
+        ${tasks.map(t=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 11px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onclick="editTask(${t.id})" onmouseover="this.style.background='var(--teal4)'" onmouseout="this.style.background=''">
+          <div style="width:6px;height:6px;border-radius:50%;background:${t.priority==='High'?'var(--red)':t.priority==='Medium'?'var(--amber)':'var(--green)'};flex-shrink:0"></div>
+          <div style="flex:1;font-size:11px;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</div>
+          ${t.client?`<span style="font-size:9px;color:var(--text3);white-space:nowrap">${t.client}</span>`:''}
+          <span style="font-size:9px;font-weight:600;color:${sc[t.status]};white-space:nowrap;flex-shrink:0">${t.status}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  });
+  el.innerHTML=html||'<div style="font-size:11px;color:var(--text3);padding:10px">No tasks yet.</div>';
+}
+function toggleWorldSection(header){const body=header.nextElementSibling;const chev=header.querySelector('.ti-chevron-down,.ti-chevron-up');if(body.style.display==='none'){body.style.display='';if(chev){chev.className=chev.className.replace('ti-chevron-up','ti-chevron-down');}}else{body.style.display='none';if(chev){chev.className=chev.className.replace('ti-chevron-down','ti-chevron-up');}}}
+function renderBrief(){
+  renderBriefWorldTasks();
 
   // Finances mini
   const credits=DB.cashflow.filter(t=>t.type==='Credit'),debits=DB.cashflow.filter(t=>t.type==='Debit');
@@ -1058,18 +1171,11 @@ function renderBrief(){
       <span style="font-size:13px;font-weight:700;color:${net>=0?'var(--green)':'var(--red)'}">${net>=0?'+':'−'}${fmt(Math.abs(net))}</span>
     </div>`;
 
-  // Calendar this week
-  const today=new Date();const todayStr=today.toISOString().split('T')[0];
-  const weekDays=[];for(let i=0;i<7;i++){const d=new Date(today);d.setDate(today.getDate()+i-today.getDay());weekDays.push(d);}
-  const calEl=document.getElementById('briefCalendar');
-  calEl.innerHTML=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px">${weekDays.map(d=>{
-    const ds=d.toISOString().split('T')[0];const isToday=ds===todayStr;
-    const evs=DB.calEvents.filter(e=>e.date===ds);
-    return`<div style="background:var(--navy3);border:1px solid ${isToday?'var(--teal)':'var(--border)'};border-radius:4px;padding:6px;min-height:55px;cursor:pointer;transition:border-color .15s" onclick="openCalEventModalOnDate('${ds}')" onmouseover="this.style.borderColor='var(--teal2)'" onmouseout="this.style.borderColor='${isToday?'var(--teal)':'var(--border)'}'">
-      <div style="font-size:9px;font-weight:${isToday?'700':'400'};color:${isToday?'var(--teal)':'var(--text2)'};">${d.toLocaleDateString('en-PH',{weekday:'short',timeZone:'Asia/Manila'}).toUpperCase()}<br>${d.getDate()}</div>
-      ${evs.slice(0,2).map(e=>`<div style="font-size:8px;background:${e.type==='oc'?'var(--orange3)':e.type==='pu'?'rgba(168,85,247,.1)':'var(--teal3)'};color:${e.type==='oc'?'var(--orange)':e.type==='pu'?'var(--purple)':'var(--teal)'};border-radius:2px;padding:1px 3px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.title}</div>`).join('')}
-    </div>`;
-  }).join('')}</div>`;
+  // Calendar — full month view
+  let briefCalM=calMonth,briefCalY=calYear;
+  window.briefCalNav=function(dir){briefCalM+=dir;if(briefCalM>11){briefCalM=0;briefCalY++;}if(briefCalM<0){briefCalM=11;briefCalY--;}renderBriefCal(briefCalM,briefCalY);};
+  renderBriefCal(briefCalM,briefCalY);
+
 
   // To Do Now
   const urgent=DB.tasks.filter(t=>t.priority==='High'&&t.status!=='Done').slice(0,8);
@@ -1087,8 +1193,8 @@ function renderBrief(){
   document.getElementById('urgentActions').innerHTML=[
     {label:'New Task',icon:'ti-plus',action:"openModal('taskModal')",col:'var(--teal)'},
     {label:'New Client',icon:'ti-users',action:"openModal('clientModal')",col:'var(--teal)'},
-    {label:'Add Debit',icon:'ti-minus',action:"openCashModal('Debit')",col:'var(--red)'},
-    {label:'Add Credit',icon:'ti-plus',action:"openCashModal('Credit')",col:'var(--green)'},
+    {label:'Add Debit',icon:'ti-plus',action:"openCashModal('Debit')",col:'var(--teal)'},
+    {label:'Add Credit',icon:'ti-minus',action:"openCashModal('Credit')",col:'var(--red)'},
     {label:'AI Brief',icon:'ti-sparkles',action:"runAIBrief()",col:'var(--purple)'},
   ].map(a=>`<button onclick="${a.action}" style="display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--navy3);border:1px solid var(--border);border-radius:4px;color:${a.col};cursor:pointer;font-size:11px;font-weight:600;width:100%;transition:all .15s;text-align:left" onmouseover="this.style.borderColor='${a.col}';this.style.background='rgba(0,0,0,.2)'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--navy3)'"><i class="ti ${a.icon}" style="font-size:13px;line-height:1;display:block"></i>${a.label}</button>`).join('');
 
@@ -1131,41 +1237,138 @@ function setIHView(v,el){
   if(v==='kanban'){const tasks=DB.tasks.filter(t=>t.world==='WORK-IH');buildKanban('ihKanbanCols',tasks,'WORK-IH',['Todo','In Progress','No Progress','Done'],{},false);}
   if(v==='ctasks'){populateIHClientFilter();renderIHClientTasks();}
 }
+// Deterministic color palette for IH client cards
+const IH_CLIENT_COLORS=[
+  {accent:'#00d4c8',bg:'rgba(0,212,200,.08)',border:'rgba(0,212,200,.25)'},   // teal
+  {accent:'#a855f7',bg:'rgba(168,85,247,.08)',border:'rgba(168,85,247,.25)'}, // purple
+  {accent:'#f59e0b',bg:'rgba(245,158,11,.08)',border:'rgba(245,158,11,.25)'}, // amber
+  {accent:'#22c55e',bg:'rgba(34,197,94,.08)',border:'rgba(34,197,94,.25)'},   // green
+  {accent:'#ff6b1a',bg:'rgba(255,107,26,.08)',border:'rgba(255,107,26,.25)'}, // orange
+  {accent:'#ec4899',bg:'rgba(236,72,153,.08)',border:'rgba(236,72,153,.25)'}, // pink
+  {accent:'#06b6d4',bg:'rgba(6,182,212,.08)',border:'rgba(6,182,212,.25)'},   // cyan
+  {accent:'#84cc16',bg:'rgba(132,204,22,.08)',border:'rgba(132,204,22,.25)'}, // lime
+  {accent:'#f43f5e',bg:'rgba(244,63,94,.08)',border:'rgba(244,63,94,.25)'},   // rose
+];
+function getClientColor(idx){return IH_CLIENT_COLORS[idx%IH_CLIENT_COLORS.length];}
+
 function renderWorkIH(){
-  document.getElementById('ihClientsTbody').innerHTML=DB.clients.map(c=>`<tr oncontextmenu="showCtx(event,${c.id},'client')" onclick="editClient(${c.id})">
-    <td style="font-weight:600">${c.name}</td>
-    <td><span class="pill ${c.status==='Active'?'pt':c.status==='Urgent'?'pr':c.status==='Done'?'pg':'po'}">${c.status.toUpperCase()}</span></td>
-    <td style="color:var(--amber);font-weight:700">${c.revenue}</td>
-    <td style="font-size:11px;color:var(--text2);max-width:180px">${c.next||'—'}</td>
-    <td style="font-size:11px;color:var(--text3)">${c.contact||'—'}</td>
-    <td><div style="display:flex;gap:5px">
-      <button class="btn btn-t" style="padding:2px 9px;font-size:10px" onclick="askClientTasks(event,${c.id})"><i class="ti ti-checklist" style="font-size:11px;line-height:1;display:inline-block"></i> Ask Tasks</button>
-      <button class="btn btn-d" style="padding:2px 7px" onclick="deleteClientBtn(event,${c.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
-    </div></td>
-  </tr>`).join('');
+  const grid=document.getElementById('ihClientCards');if(!grid)return;
+  if(!DB.clients.length){grid.innerHTML='<div style="font-size:11px;color:var(--text3);padding:10px">No clients yet.</div>';return;}
+  grid.innerHTML=DB.clients.map((c,idx)=>{
+    const tasks=DB.tasks.filter(t=>t.world==='WORK-IH'&&t.client===c.name);
+    const col=getClientColor(idx);
+    const statusCl=c.status==='Active'?'pt':c.status==='Urgent'?'pr':c.status==='Done'?'pg':'po';
+    const urgentOverride=c.status==='Urgent';
+    const accentColor=urgentOverride?'var(--red)':col.accent;
+    const accentBg=urgentOverride?'rgba(239,68,68,.08)':col.bg;
+    const accentBorder=urgentOverride?'rgba(239,68,68,.25)':col.border;
+    return`<div class="hc" style="border-left:3px solid ${accentColor};padding:0;overflow:hidden">
+      <div style="padding:11px 13px;border-bottom:1px solid ${accentBorder};background:${accentBg}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+          <div style="font-size:13px;font-weight:700;color:${accentColor};line-height:1.3;flex:1">${c.name}</div>
+          <span class="pill ${statusCl}" style="font-size:9px;flex-shrink:0">${c.status}</span>
+        </div>
+        ${c.next?`<div style="font-size:10px;color:var(--text2);margin-bottom:5px"><i class="ti ti-arrow-right" style="font-size:10px;line-height:1;display:inline-block;color:${accentColor}"></i> ${c.next}</div>`:''}
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${c.contact?`<span style="font-size:9px;color:var(--text3)"><i class="ti ti-mail" style="font-size:10px;line-height:1;display:inline-block"></i> ${c.contact}</span>`:''}
+          ${c.drive?`<a href="${c.drive}" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:${accentColor};display:inline-flex;align-items:center;gap:3px"><i class="ti ti-brand-google-drive" style="font-size:11px;line-height:1;display:block"></i> Drive</a>`:''}
+        </div>
+      </div>
+      <div style="padding:8px 13px">
+        <div style="font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+          <span>Tasks (${tasks.length})</span>
+          <button style="background:${accentBg};border:1px solid ${accentBorder};border-radius:3px;color:${accentColor};font-size:9px;padding:1px 7px;cursor:pointer" onclick="openTaskForClient(event,${JSON.stringify(c.name).replace(/"/g,'&quot;')})"><i class="ti ti-plus" style="font-size:10px;line-height:1;display:inline-block"></i> Add</button>
+        </div>
+        ${tasks.slice(0,4).map(t=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:11px" onclick="editTask(${t.id})">
+          <div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>
+          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text1)">${t.title}</span>
+          <span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}" style="font-size:9px">${t.status}</span>
+        </div>`).join('')}
+        ${tasks.length>4?`<div style="font-size:10px;color:var(--text3);margin-top:4px">+${tasks.length-4} more</div>`:''}
+        ${!tasks.length?'<div style="font-size:10px;color:var(--text3)">No tasks yet.</div>':''}
+      </div>
+      <div style="padding:6px 13px;border-top:1px solid var(--border);display:flex;gap:5px">
+        <button class="btn btn-t" style="flex:1;font-size:10px" onclick="event.stopPropagation();editClient(${c.id})"><i class="ti ti-pencil" style="font-size:11px;line-height:1;display:inline-block"></i> Edit</button>
+        <button class="btn btn-g" style="flex:1;font-size:10px" onclick="askClientTasks(event,${c.id})"><i class="ti ti-sparkles" style="font-size:11px;line-height:1;display:inline-block"></i> AI Tasks</button>
+        <button class="btn btn-d" style="padding:2px 8px" onclick="deleteClientBtn(event,${c.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
+      </div>
+    </div>`;
+  }).join('');
 }
+function openTaskForClient(e,clientName){e.stopPropagation();document.getElementById('taskModalTitle').textContent='New Task';editingTaskId=null;['title','platform','notes'].forEach(id=>{const el=document.getElementById('tf-'+id);if(el)el.value='';});document.getElementById('tf-world').value='WORK-IH';document.getElementById('tf-prio').value='Medium';document.getElementById('tf-status').value='Todo';document.getElementById('tf-due').value='';document.getElementById('tf-client').value=clientName;openModal('taskModal');}
 function askClientTasks(e,id){e.stopPropagation();const c=DB.clients.find(x=>x.id===id);if(!c)return;setView('ai');setTimeout(()=>qp(`What tasks should be created or prioritized for client "${c.name}"? Next action: "${c.next}". Status: ${c.status}.`),300);}
 function populateIHClientFilter(){const sel=document.getElementById('ihCF');if(!sel)return;const clients=[...new Set(DB.tasks.filter(t=>t.world==='WORK-IH'&&t.client).map(t=>t.client))];sel.innerHTML='<option value="all">All Clients</option>'+clients.map(c=>`<option value="${c}">${c}</option>`).join('');}
 function renderIHClientTasks(){const cf=document.getElementById('ihCF')?.value||'all';const tasks=DB.tasks.filter(t=>t.world==='WORK-IH'&&(cf==='all'||t.client===cf));document.getElementById('ihCTbody').innerHTML=tasks.map(t=>`<tr onclick="editTask(${t.id})"><td style="font-weight:500">${t.title}</td><td>${t.client||'—'}</td><td style="font-size:11px;color:var(--text3)">${t.platform||'—'}</td><td><span style="display:flex;align-items:center;gap:4px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</span></td><td><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}">${t.status}</span></td><td style="font-size:11px;color:var(--text3)">${t.due||'—'}</td><td style="font-size:11px;color:var(--text3);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.notes||'—'}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');}
 
 // ===== WORK CS =====
+// CS client config
+const CS_CLIENTS={
+  chainsmoker:{
+    label:'Chainsmoker Urban Halal BBQ',icon:'🔥',
+    accent:'#ef4444',bg:'rgba(239,68,68,.1)',border:'rgba(239,68,68,.3)',
+    sub:'Halal BBQ · Urban Grill · No Pork',
+    filter:t=>!t.client||/chainsmoker/i.test(t.client||'')||(!t.client&&t.world==='WORK-CS')
+  },
+  sweetheart:{
+    label:'Sweetheart Cafe',icon:'☕',
+    accent:'#00d4c8',bg:'rgba(0,212,200,.1)',border:'rgba(0,212,200,.3)',
+    sub:'Coffee · Desserts · Café World',
+    filter:t=>/sweetheart/i.test(t.client||'')
+  }
+};
+let csActiveClient='chainsmoker',csActiveView='kanban';
+
+function setCSClient(client,el){
+  csActiveClient=client;
+  ['csv-cs','csv-sw'].forEach(id=>{
+    const b=document.getElementById(id);if(!b)return;
+    b.style.background='transparent';b.style.borderColor='var(--border2)';b.style.color='var(--text2)';
+  });
+  const cfg=CS_CLIENTS[client];
+  el.style.background=cfg.bg;el.style.borderColor=cfg.border;el.style.color=cfg.accent;
+  renderCSActive();
+}
 function setCSView(v,el){
+  csActiveView=v;
   document.getElementById('cs-kanban').style.display=v==='kanban'?'':'none';
   document.getElementById('cs-list').style.display=v==='list'?'':'none';
   ['csv-k','csv-l'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.background='transparent';b.style.borderColor='var(--border2)';b.style.color='var(--text2)';}});
-  el.style.background='var(--orange3)';el.style.borderColor='var(--orange2)';el.style.color='var(--orange)';
-  if(v==='kanban')renderCSKanban();if(v==='list')renderCSList();
+  el.style.background='var(--navy3)';el.style.borderColor='var(--border)';el.style.color='var(--text1)';
+  renderCSActive();
 }
-function renderWorkCS(){renderCSKanban();renderCSList();}
-function renderCSKanban(){
-  const tasks=DB.tasks.filter(t=>t.world==='WORK-CS');
-  buildKanban('csKanbanCols',tasks,'WORK-CS',['Todo','In Progress','No Progress','Done'],{},true);
-  document.getElementById('csTotal').textContent=tasks.length;
-  document.getElementById('csTodo').textContent=tasks.filter(t=>t.status==='Todo').length;
-  document.getElementById('csProg').textContent=tasks.filter(t=>t.status==='In Progress').length;
-  document.getElementById('csDone').textContent=tasks.filter(t=>t.status==='Done').length;
+function renderCSActive(){
+  const cfg=CS_CLIENTS[csActiveClient];
+  // Banner
+  const banner=document.getElementById('cs-client-banner');
+  if(banner){banner.style.background=cfg.bg;banner.style.border='1px solid '+cfg.border;}
+  const nm=document.getElementById('cs-banner-name');
+  if(nm){nm.textContent=cfg.label;nm.style.color=cfg.accent;}
+  const sub=document.getElementById('cs-banner-sub');
+  if(sub){sub.textContent=cfg.sub;sub.style.color=cfg.accent;sub.style.opacity='.7';}
+  const ico=document.getElementById('cs-banner-icon');if(ico)ico.textContent=cfg.icon;
+  // Filter tasks
+  const allCS=DB.tasks.filter(t=>t.world==='WORK-CS');
+  const tasks=csActiveClient==='chainsmoker'
+    ? allCS.filter(t=>!t.client||/chainsmoker/i.test(t.client))
+    : allCS.filter(t=>/sweetheart/i.test(t.client||''));
+  // Stats
+  const tot=document.getElementById('csTotal');if(tot){tot.textContent=tasks.length;tot.style.color=cfg.accent;}
+  const td=document.getElementById('csTodo');if(td){td.textContent=tasks.filter(t=>t.status==='Todo').length;td.style.color=cfg.accent;}
+  const pr=document.getElementById('csProg');if(pr){pr.textContent=tasks.filter(t=>t.status==='In Progress').length;pr.style.color=cfg.accent;}
+  const dn=document.getElementById('csDone');if(dn){dn.textContent=tasks.filter(t=>t.status==='Done').length;dn.style.color='var(--green)';}
+  if(csActiveView==='kanban')renderCSKanban(tasks,cfg);
+  else renderCSList(tasks,cfg);
 }
-function renderCSList(){document.getElementById('csTbody').innerHTML=DB.tasks.filter(t=>t.world==='WORK-CS').map(t=>`<tr onclick="editTask(${t.id})"><td style="font-weight:500">${t.title}</td><td style="font-size:11px;color:var(--text3)">${t.platform||'—'}</td><td><span style="display:flex;align-items:center;gap:4px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</span></td><td><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}">${t.status}</span></td><td style="font-size:11px;color:var(--text3)">${t.due||'—'}</td><td style="font-size:11px;color:var(--text3);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.notes||'—'}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');}
+function renderWorkCS(){renderCSActive();}
+function renderCSKanban(tasks,cfg){
+  if(!tasks){const allCS=DB.tasks.filter(t=>t.world==='WORK-CS');cfg=CS_CLIENTS[csActiveClient];tasks=csActiveClient==='chainsmoker'?allCS.filter(t=>!t.client||/chainsmoker/i.test(t.client)):allCS.filter(t=>/sweetheart/i.test(t.client||''));}
+  buildKanban('csKanbanCols',tasks,'WORK-CS',['Todo','In Progress','No Progress','Done'],{},csActiveClient==='chainsmoker');
+}
+function renderCSList(tasks,cfg){
+  if(!tasks){const allCS=DB.tasks.filter(t=>t.world==='WORK-CS');tasks=csActiveClient==='chainsmoker'?allCS.filter(t=>!t.client||/chainsmoker/i.test(t.client)):allCS.filter(t=>/sweetheart/i.test(t.client||''));}
+  const tb=document.getElementById('csTbody');if(!tb)return;
+  tb.innerHTML=tasks.map(t=>`<tr onclick="editTask(${t.id})"><td style="font-weight:500">${t.title}</td><td style="font-size:11px;color:var(--text3)">${t.client||'—'}</td><td style="font-size:11px;color:var(--text3)">${t.platform||'—'}</td><td><span style="display:flex;align-items:center;gap:4px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</span></td><td><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}">${t.status}</span></td><td style="font-size:11px;color:var(--text3)">${t.due||'—'}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');
+}
 
 // ===== TASKS =====
 function renderTasks(){
@@ -1208,13 +1411,13 @@ function deleteTask(e,id){
 
 let editingClientId=null;
 function saveClient(){
-  const c={id:editingClientId||Date.now(),name:document.getElementById('cf-name').value.trim()||'Unnamed',world:'WORK-IH',status:document.getElementById('cf-status').value,revenue:document.getElementById('cf-rev').value,next:document.getElementById('cf-next').value,contact:document.getElementById('cf-contact').value};
+  const c={id:editingClientId||Date.now(),name:document.getElementById('cf-name').value.trim()||'Unnamed',world:'WORK-IH',status:document.getElementById('cf-status').value,next:document.getElementById('cf-next').value,contact:document.getElementById('cf-contact').value,drive:document.getElementById('cf-drive')?.value||''};
   const isEdit=!!editingClientId;
   if(editingClientId){const i=DB.clients.findIndex(x=>x.id===editingClientId);if(i>=0)DB.clients[i]=c;SB.update('clients',c.id,c,'clients');}else{DB.clients.unshift(c);SB.upsert('clients',c,'clients');}
   addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' client: '+c.name,{...c,_dbKey:'clients'});
   closeModal('clientModal');reRenderAll();showToast('✓ Client saved');
 }
-function editClient(id){const c=DB.clients.find(x=>x.id===id);if(!c)return;editingClientId=id;document.getElementById('clientModalTitle').textContent='Edit Client';['name','status','rev','next','contact'].forEach(f=>{const el=document.getElementById('cf-'+f);if(el)el.value=c[f==='rev'?'revenue':f]||'';});openModal('clientModal');}
+function editClient(id){const c=DB.clients.find(x=>x.id===id);if(!c)return;editingClientId=id;document.getElementById('clientModalTitle').textContent='Edit Client';['name','status','next','contact','drive'].forEach(f=>{const el=document.getElementById('cf-'+f);if(el)el.value=c[f]||'';});openModal('clientModal');}
 function deleteClientBtn(e,id){e.stopPropagation();const c=DB.clients.find(x=>x.id===id);DB.clients=DB.clients.filter(x=>x.id!==id);SB.remove('clients',id,'clients');addHistory('delete','Deleted client: '+c.name,{...c,_dbKey:'clients'});reRenderAll();showToast('Client deleted');}
 
 let editingVentureId=null;
@@ -1222,14 +1425,22 @@ function openVentureModal(id){editingVentureId=id||null;const v=id?DB.venture.fi
 function saveVentureItem(){const v={id:editingVentureId||Date.now(),name:document.getElementById('vm-name').value.trim()||'Unnamed',type:document.getElementById('vm-type').value,stage:document.getElementById('vm-stage').value,notes:document.getElementById('vm-notes').value.trim()};const isEdit=!!editingVentureId;if(editingVentureId){const i=DB.venture.findIndex(x=>x.id===editingVentureId);if(i>=0)DB.venture[i]=v;SB.update('venture',v.id,v,'venture');}else{DB.venture.unshift(v);SB.upsert('venture',v,'venture');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' venture: '+v.name,{...v,_dbKey:'venture'});closeModal('ventureModal');renderVenture();showToast('✓ Saved');}
 function renderVenture(){
   const clients=DB.venture.filter(v=>v.type==='Client');const partners=DB.venture.filter(v=>v.type==='Partner/VA');
-  document.getElementById('vtClientCount').textContent=clients.length;document.getElementById('vtPartnerCount').textContent=partners.length;
+  document.getElementById('vtClientCount').textContent=clients.length;
+  document.getElementById('vtPartnerCount').textContent=partners.length;
+  const activeClients=clients.filter(v=>v.stage==='Active').length;
+  const revEl=document.getElementById('vtRevenue');
+  if(revEl){const tjcRevenue=DB.cashflow.filter(t=>t.type==='Credit'&&t.desc&&/tjc|job collectives/i.test(t.desc)).reduce((s,t)=>s+(t.amount||0),0);revEl.textContent=tjcRevenue>0?'$'+tjcRevenue.toLocaleString():'$0';}
   const cStages=['Lead','Discovery','Proposal','Negotiation','Active'];
   const pStages=['Lead','Discovery','Proposal','Active'];
   const renderVKanban=(containerId,items,stages,isOrange)=>{
     const el=document.getElementById(containerId);if(!el)return;
-    el.innerHTML=stages.map(s=>`<div class="kc">
+    el.innerHTML=stages.map(s=>`<div class="kc" data-stage="${s}" ondragover="event.preventDefault();this.querySelector('.kc-body').style.background='var(--teal4)'" ondragleave="this.querySelector('.kc-body').style.background=''" ondrop="dropVentureCard(event,'${s}',${isOrange?'true':'false'});this.querySelector('.kc-body').style.background=''">
       <div class="kch ${isOrange?'':'todo'}" style="border-top-color:${isOrange?'var(--orange)':'var(--teal)'}"><span class="kch-title" style="color:${isOrange?'var(--orange)':'var(--teal)'}">${s.toUpperCase()}</span><span class="pill ${isOrange?'po':'pt'}" style="font-size:9px">${items.filter(v=>v.stage===s).length}</span></div>
-      <div class="kc-body">${items.filter(v=>v.stage===s).map(v=>`<div class="kcard ${isOrange?'oc':''}" onclick="openVentureModal(${v.id})"><div class="kct">${v.name}</div><div class="kcm"><span class="pill ${v.type==='Client'?'pt':'po'}" style="font-size:9px">${v.type}</span>${v.notes?` ${v.notes}`:''}</div></div>`).join('')||'<div style="font-size:10px;color:var(--text3);padding:7px">Empty</div>'}</div>
+      <div class="kc-body" style="transition:background .15s">${items.filter(v=>v.stage===s).map(v=>`<div class="kcard ${isOrange?'oc':''}" draggable="true" ondragstart="dragVentureCard(event,${v.id})" onclick="openVentureModal(${v.id})">
+        <div class="kct">${v.name}</div>
+        <div class="kcm"><span class="pill ${v.type==='Client'?'pt':'po'}" style="font-size:9px">${v.type}</span>${v.notes?`<span style="font-size:9px;color:var(--text3)">${v.notes}</span>`:''}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:3px"><i class="ti ti-grip-vertical" style="font-size:10px;line-height:1;display:block"></i>drag to move</div>
+      </div>`).join('')||'<div style="font-size:10px;color:var(--text3);padding:7px">Drop here</div>'}</div>
       <div class="kc-add" onclick="openVentureModal()"><i class="ti ti-plus" style="font-size:12px;line-height:1;display:block"></i> Add</div>
     </div>`).join('');
   };
@@ -1244,13 +1455,89 @@ function setVentureTab(tab,el){
   renderVenture();
 }
 
+function renderBriefCal(m,y){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dayLabels=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const today=new Date();
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const prevDays=new Date(y,m,0).getDate();
+  const titleEl=document.getElementById('briefCalTitle');
+  if(titleEl)titleEl.textContent=months[m]+' '+y;
+  let html=`<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px">${dayLabels.map(d=>`<div style="font-size:8px;font-weight:700;color:var(--text3);text-align:center;padding:2px 0;letter-spacing:.05em">${d}</div>`).join('')}</div>`;
+  html+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">';
+  for(let i=firstDay-1;i>=0;i--){html+=`<div style="min-height:42px;background:var(--navy3);border:1px solid var(--border);border-radius:3px;padding:3px;opacity:.3"><div style="font-size:9px;color:var(--text3)">${prevDays-i}</div></div>`;}
+  for(let day=1;day<=daysInMonth;day++){
+    const isToday=today.getDate()===day&&today.getMonth()===m&&today.getFullYear()===y;
+    const ds=y+'-'+(String(m+1).padStart(2,'0'))+'-'+(String(day).padStart(2,'0'));
+    const evs=DB.calEvents.filter(e=>e.date===ds);
+    html+=`<div style="min-height:42px;background:var(--navy3);border:1px solid ${isToday?'var(--teal)':'var(--border)'};border-radius:3px;padding:3px;cursor:pointer;transition:border-color .1s" onclick="openCalEventModalOnDate('${ds}')" onmouseover="this.style.borderColor='var(--teal2)'" onmouseout="this.style.borderColor='${isToday?'var(--teal)':'var(--border)'}'">
+      <div style="font-size:9px;font-weight:${isToday?'700':'400'};color:${isToday?'var(--teal)':'var(--text2)'}">${day}</div>
+      ${evs.slice(0,2).map(e=>`<div style="font-size:7px;background:${e.type==='oc'?'var(--orange3)':e.type==='pu'?'rgba(168,85,247,.1)':'var(--teal3)'};color:${e.type==='oc'?'var(--orange)':e.type==='pu'?'var(--purple)':'var(--teal)'};border-radius:2px;padding:1px 3px;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.title}</div>`).join('')}
+    </div>`;
+  }
+  const rem=42-(firstDay+daysInMonth);
+  for(let i=1;i<=rem;i++){html+=`<div style="min-height:42px;background:var(--navy3);border:1px solid var(--border);border-radius:3px;padding:3px;opacity:.3"><div style="font-size:9px;color:var(--text3)">${i}</div></div>`;}
+  html+='</div>';
+  const calEl=document.getElementById('briefCalendar');
+  if(calEl)calEl.innerHTML=html;
+}
+let _dragVentureId=null;
+function dragVentureCard(e,id){_dragVentureId=id;e.dataTransfer.effectAllowed='move';}
+function dropVentureCard(e,newStage){
+  e.preventDefault();
+  if(!_dragVentureId)return;
+  const idx=DB.venture.findIndex(v=>v.id===_dragVentureId);
+  if(idx<0)return;
+  DB.venture[idx].stage=newStage;
+  SB.update('venture',DB.venture[idx].id,DB.venture[idx],'venture');
+  addHistory('edit','Moved '+DB.venture[idx].name+' to '+newStage,DB.venture[idx]);
+  renderVenture();showToast('Moved to '+newStage+', sir');
+  _dragVentureId=null;
+}
 function renderBuild(){
   const apps=[{name:'NAKNAK v8',icon:'❤️',desc:'Family safety & health app',color:'--teal',key:'NAKNAK',status:'Active',rev:'₱0–₱199/mo'},{name:'DISKARTE',icon:'🏪',desc:'POS / inventory / utang tracker',color:'--orange',key:'DISKARTE',status:'Active',rev:'Beta'},{name:'PASAHERO RPG',icon:'🚌',desc:'Filipino commuter retro RPG',color:'--amber',key:'PASAHERO',status:'In Dev',rev:'Concept'}];
   document.getElementById('buildApps').innerHTML=apps.map(a=>{const tasks=DB.tasks.filter(t=>t.world==='BUILD'&&t.title.toLowerCase().includes(a.key.toLowerCase()));return`<div class="hc" style="border-top:2px solid var(${a.color})"><div style="font-size:24px;margin-bottom:6px">${a.icon}</div><div style="font-size:12px;font-weight:700;color:var(${a.color});margin-bottom:2px">${a.name}</div><div style="font-size:11px;color:var(--text3);margin-bottom:9px">${a.desc}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px"><span class="pill pt" style="font-size:9px">${a.status}</span><span style="font-size:10px;color:var(--text3)">${a.rev}</span></div><div style="border-top:1px solid var(--border);padding-top:7px;margin-bottom:7px"><div style="font-size:8px;font-weight:700;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.1em">Tasks (${tasks.length})</div>${tasks.map(t=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2)"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</span><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':'pgr'}" style="font-size:9px">${t.status}</span></div>`).join('')||'<div style="font-size:10px;color:var(--text3)">No tasks yet.</div>'}</div><button class="btn btn-g" style="width:100%;font-size:10px" onclick="openTaskForStatus('BUILD','Todo');document.getElementById('tf-title').value='[${a.key}] '"><i class="ti ti-plus" style="font-size:11px;line-height:1;display:inline-block"></i> Add Task</button></div>`;}).join('');
 }
-function renderSides(){document.getElementById('sidesTbody').innerHTML=DB.sides.length?DB.sides.map(s=>`<tr><td>${s.name}</td><td>${s.platform}</td><td><span class="pill pt">${s.status}</span></td><td>${s.sales||0}</td><td>${s.revenue||'₱0'}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteSide(${s.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join(''):`<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--text3)">No products yet.</td></tr>`;document.getElementById('sidesCount').textContent=DB.sides.length;}
-function addSidesProduct(){const name=prompt('Product name:');if(!name)return;const p={id:Date.now(),name,platform:prompt('Platform:','RaketPH')||'RaketPH',status:'Active',sales:0,revenue:'₱0'};DB.sides.push(p);SB.upsert('sides',p,'sides');renderSides();}
-function deleteSide(id){DB.sides=DB.sides.filter(x=>x.id!==id);SB.remove('sides',id,'sides');renderSides();}
+function renderSides(){
+  document.getElementById('sidesCount').textContent=DB.sides.length;
+  const grid=document.getElementById('sidesProductGrid');if(!grid)return;
+  if(!DB.sides.length){grid.innerHTML='<div style="font-size:11px;color:var(--text3)">No products yet. Click + Product to start.</div>';return;}
+  grid.innerHTML=DB.sides.map(p=>{
+    const todos=p.todos||[];const done=todos.filter(t=>t.done).length;
+    return`<div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+      <div style="padding:11px 13px;border-bottom:1px solid var(--border);background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.02))">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div style="font-size:13px;font-weight:700;color:var(--amber)">${p.name}</div>
+          <span class="pill pt" style="font-size:9px">${p.status}</span>
+        </div>
+        <div style="font-size:10px;color:var(--text3)">${p.platform||'—'}</div>
+      </div>
+      <div style="padding:10px 13px">
+        <div style="font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;justify-content:space-between">
+          <span>To-Do List (${done}/${todos.length})</span>
+          <button style="background:var(--teal3);border:1px solid var(--teal2);border-radius:3px;color:var(--teal);font-size:9px;padding:1px 7px;cursor:pointer" onclick="addSidesTodo(${p.id})">+ Add</button>
+        </div>
+        <div id="stodos-${p.id}">
+          ${todos.map((t,i)=>`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid var(--border)">
+            <div onclick="toggleSideTodo(${p.id},${i})" style="width:13px;height:13px;border:1px solid ${t.done?'var(--teal)':'var(--border2)'};border-radius:2px;flex-shrink:0;cursor:pointer;background:${t.done?'var(--teal)':'transparent'};display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--navy)">${t.done?'✓':''}</div>
+            <span style="flex:1;font-size:11px;color:${t.done?'var(--text3)':'var(--text1)'};text-decoration:${t.done?'line-through':'none'}">${t.text}</span>
+            <button style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:11px;padding:0 3px" onclick="removeSideTodo(${p.id},${i})">×</button>
+          </div>`).join('')}
+          ${!todos.length?'<div style="font-size:10px;color:var(--text3)">No tasks yet.</div>':''}
+        </div>
+      </div>
+      <div style="padding:6px 13px;border-top:1px solid var(--border);display:flex;gap:5px">
+        <button class="btn btn-d" style="flex:1;font-size:10px" onclick="deleteSide(${p.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:inline-block"></i> Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addSidesProduct(){const name=prompt('Product name:');if(!name)return;const p={id:Date.now(),name,platform:prompt('Platform (RaketPH, Etsy, etc.):','RaketPH')||'RaketPH',status:'Active',todos:[]};DB.sides.push(p);SB.upsert('sides',p,'sides');renderSides();}
+function deleteSide(id){if(!confirm('Delete this product?'))return;DB.sides=DB.sides.filter(x=>x.id!==id);SB.remove('sides',id,'sides');renderSides();}
+function addSidesTodo(pid){const text=prompt('Task:');if(!text)return;const p=DB.sides.find(x=>x.id===pid);if(!p)return;p.todos=p.todos||[];p.todos.push({text,done:false});SB.update('sides',pid,p,'sides');renderSides();}
+function toggleSideTodo(pid,idx){const p=DB.sides.find(x=>x.id===pid);if(!p||!p.todos)return;p.todos[idx].done=!p.todos[idx].done;SB.update('sides',pid,p,'sides');renderSides();}
+function removeSideTodo(pid,idx){const p=DB.sides.find(x=>x.id===pid);if(!p||!p.todos)return;p.todos.splice(idx,1);SB.update('sides',pid,p,'sides');renderSides();}
 
 let editingFaithId=null;
 function openFaithModal(id){editingFaithId=id||null;const a=id?DB.faith.find(x=>x.id===id):null;document.getElementById('faithModalTitle').textContent=a?'Edit Activity':'Add Activity';['activity','group','date','submitted','cfo','aevm','status','assigned','drive'].forEach(f=>{const el=document.getElementById('fa-'+f);if(el)el.value=a?(a[f]||''):'';});openModal('faithModal');}
@@ -1276,24 +1563,52 @@ function openCalEventModal(){openCalEventModalOnDate(new Date().toISOString().sp
 function openCalEventModalOnDate(date){selectedCalDate=date;document.getElementById('calModalTitle').textContent='Add Event — '+date;document.getElementById('ce-date').value=date;['ce-title','ce-time','ce-loc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});openModal('calModal');}
 function saveCalEvent(){const e={id:Date.now(),title:document.getElementById('ce-title').value.trim()||'Event',date:document.getElementById('ce-date').value||selectedCalDate,time:document.getElementById('ce-time').value,type:document.getElementById('ce-type').value,loc:document.getElementById('ce-loc').value.trim(),notes:''};DB.calEvents.push(e);SB.upsert('cal_events',e,'calEvents');closeModal('calModal');addHistory('add','Added event: '+e.title,{...e,_dbKey:'calEvents'});renderCalendar();renderBrief();showToast('✓ Event saved');}
 
-// NOTES
+// NOTES — callout grid
 let noteBlocks=[],currentNote=0;
-function renderNotesList(){const sel=document.getElementById('noteSelect');sel.innerHTML=DB.notes.map((n,i)=>`<option value="${i}">${n.title}</option>`).join('');noteBlocks=[...DB.notes[currentNote].blocks];document.getElementById('noteTitle').textContent=DB.notes[currentNote].title;renderBlocks();}
-function switchNote(){currentNote=parseInt(document.getElementById('noteSelect').value);noteBlocks=[...DB.notes[currentNote].blocks];document.getElementById('noteTitle').textContent=DB.notes[currentNote].title;renderBlocks();}
-function newNote(){DB.notes.push({id:Date.now(),title:'New Note',blocks:[{type:'p',content:'',done:false}]});save('notes');currentNote=DB.notes.length-1;renderNotesList();}
-function saveNoteTitle(){if(DB.notes[currentNote])DB.notes[currentNote].title=document.getElementById('noteTitle').textContent;save('notes');}
-function saveBlocks(){if(DB.notes[currentNote])DB.notes[currentNote].blocks=[...noteBlocks];save('notes');}
+function renderNotesList(){
+  const grid=document.getElementById('notesCalloutGrid');if(!grid)return;
+  if(!DB.notes.length){grid.innerHTML='<div style="font-size:11px;color:var(--text3)">No notes yet. Click "New Note" to start.</div>';return;}
+  grid.innerHTML=DB.notes.map((n,i)=>{
+    const h1=n.blocks.find(b=>b.type==='h1');
+    const h2=n.blocks.find(b=>b.type==='h2');
+    const preview=n.blocks.filter(b=>b.type==='p'||b.type==='bullet').map(b=>b.content).filter(Boolean).join(' ').substring(0,80);
+    const todos=n.blocks.filter(b=>b.type==='todo');
+    const done=todos.filter(b=>b.done).length;
+    return`<div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;overflow:hidden;cursor:pointer;transition:border-color .15s" onclick="openNoteEditor(${i})" onmouseover="this.style.borderColor='var(--teal2)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="background:linear-gradient(135deg,var(--teal3),var(--teal4));padding:12px 14px;border-bottom:1px solid var(--teal2)">
+        <div style="font-size:13px;font-weight:700;color:var(--teal);line-height:1.3">${n.title}</div>
+        ${h1&&h1.content?`<div style="font-size:10px;color:var(--teal2);margin-top:3px;font-weight:600">${h1.content}</div>`:''}
+        ${h2&&h2.content?`<div style="font-size:9px;color:var(--text3);margin-top:2px">${h2.content}</div>`:''}
+      </div>
+      <div style="padding:10px 14px">
+        ${preview?`<div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:8px">${preview}${preview.length>=80?'…':''}</div>`:''}
+        ${todos.length?`<div style="display:flex;align-items:center;gap:6px;font-size:10px;color:var(--text3)"><i class="ti ti-checklist" style="font-size:12px;line-height:1;display:block;color:var(--teal)"></i>${done}/${todos.length} tasks done</div>`:''}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <span style="font-size:9px;color:var(--text3)">${n.blocks.length} block${n.blocks.length!==1?'s':''}</span>
+          <button class="btn btn-d" style="padding:2px 7px;font-size:10px" onclick="event.stopPropagation();deleteNote(${i})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function openNoteEditor(i){currentNote=i;noteBlocks=[...DB.notes[currentNote].blocks];const t=document.getElementById('noteTitle');if(t)t.textContent=DB.notes[currentNote].title;renderBlocks();openModal('noteEditorModal');}
+function switchNote(){openNoteEditor(currentNote);}
+function newNote(){const n={id:Date.now(),title:'New Note',blocks:[{type:'h1',content:'',done:false},{type:'p',content:'',done:false}]};DB.notes.push(n);save('notes');currentNote=DB.notes.length-1;renderNotesList();openNoteEditor(currentNote);}
+function deleteNote(i){if(!confirm('Delete this note?'))return;DB.notes.splice(i,1);save('notes');currentNote=Math.max(0,currentNote-1);renderNotesList();}
+function deleteCurrentNote(){closeModal('noteEditorModal');deleteNote(currentNote);}
+function saveNoteTitle(){if(DB.notes[currentNote]){DB.notes[currentNote].title=document.getElementById('noteTitle').textContent;save('notes');renderNotesList();}}
+function saveBlocks(){if(DB.notes[currentNote]){DB.notes[currentNote].blocks=[...noteBlocks];save('notes');}}
 function renderBlocks(){const c=document.getElementById('blocksContainer');c.innerHTML='';noteBlocks.forEach((b,i)=>{const row=document.createElement('div');row.style.cssText='display:flex;align-items:flex-start;gap:5px;padding:1px 0';if(b.type==='todo'){const ch=document.createElement('div');ch.className='bcheck'+(b.done?' done':'');if(b.done)ch.textContent='✓';ch.onclick=()=>{noteBlocks[i].done=!noteBlocks[i].done;saveBlocks();renderBlocks();};row.appendChild(ch);}else if(b.type==='bullet'){const dot=document.createElement('span');dot.textContent='·';dot.style.cssText='color:var(--teal);font-size:15px;margin-top:2px;flex-shrink:0;padding:0 3px';row.appendChild(dot);}const content=document.createElement('div');content.className='bcontent'+(b.done?' bdone':'');content.dataset.t=b.type;content.contentEditable='true';content.textContent=b.content;content.oninput=()=>{noteBlocks[i].content=content.textContent;saveBlocks();};content.onkeydown=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();noteBlocks.splice(i+1,0,{type:b.type==='h1'||b.type==='h2'?'p':b.type,content:'',done:false});saveBlocks();renderBlocks();setTimeout(()=>{const els=c.querySelectorAll('.bcontent');if(els[i+1])els[i+1].focus();},10);}if(e.key==='Backspace'&&content.textContent===''&&noteBlocks.length>1){e.preventDefault();noteBlocks.splice(i,1);saveBlocks();renderBlocks();}};row.appendChild(content);c.appendChild(row);});}
 function showBlockMenu(e){e.preventDefault();const m=document.getElementById('blockMenu');m.style.left=e.clientX+'px';m.style.top=e.clientY+'px';m.classList.add('open');document.addEventListener('click',()=>m.classList.remove('open'),{once:true});}
 function addBlock(type){noteBlocks.push({type,content:'',done:false});saveBlocks();renderBlocks();setTimeout(()=>{const els=document.querySelectorAll('.bcontent');const last=els[els.length-1];if(last)last.focus();},20);document.getElementById('blockMenu').classList.remove('open');}
 
 // JOURNAL
 let editingJournalId=null;
-function renderJournal(){const list=document.getElementById('journalList');if(!DB.journal.length){list.innerHTML='<div style="font-size:11px;color:var(--text3);padding:10px">No entries yet.</div>';return;}list.innerHTML=DB.journal.map(j=>`<div class="je" onclick="viewJournal(${j.id})"><div class="je-date">${j.mood||''} ${new Date(j.date).toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'})}</div><div class="je-title">${j.title||'Untitled'}</div><div class="je-prev">${(j.content||'').substring(0,60)}...</div></div>`).join('');}
-function viewJournal(id){const j=DB.journal.find(x=>x.id===id);if(!j)return;document.getElementById('journalPanel').innerHTML=`<div style="font-size:10px;color:var(--teal2);margin-bottom:4px">${j.mood||''} ${new Date(j.date).toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div><div style="font-size:16px;font-weight:700;color:var(--teal);margin-bottom:12px">${j.title||'Untitled'}</div><div style="font-size:13px;color:var(--text1);line-height:1.8;white-space:pre-wrap">${j.content||''}</div><div style="margin-top:16px;display:flex;gap:8px"><button class="btn btn-g" onclick="editJournal(${j.id})"><i class="ti ti-pencil" style="font-size:11px;line-height:1;display:inline-block"></i> Edit</button><button class="btn btn-d" onclick="deleteJournal(${j.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:inline-block"></i> Delete</button></div>`;}
+function renderJournal(){/* journal view removed — no-op */}
+function viewJournal(id){/* journal view removed */}
 function saveJournalEntry(){const j={id:editingJournalId||Date.now(),title:document.getElementById('jm-title').value.trim()||'Untitled',content:document.getElementById('jm-content').value,mood:document.getElementById('jm-mood').value,date:new Date().toISOString()};const isEdit=!!editingJournalId;if(editingJournalId){const i=DB.journal.findIndex(x=>x.id===editingJournalId);if(i>=0)DB.journal[i]=j;SB.update('journal',j.id,j,'journal');}else{DB.journal.unshift(j);SB.upsert('journal',j,'journal');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' journal: '+j.title,{...j,_dbKey:'journal'});closeModal('journalModal');renderJournal();showToast('✓ Journal saved');}
 function editJournal(id){const j=DB.journal.find(x=>x.id===id);if(!j)return;editingJournalId=id;document.getElementById('journalModalTitle').textContent='Edit Entry';document.getElementById('jm-title').value=j.title||'';document.getElementById('jm-content').value=j.content||'';document.getElementById('jm-mood').value=j.mood||'🟢';openModal('journalModal');}
-function deleteJournal(id){const j=DB.journal.find(x=>x.id===id);DB.journal=DB.journal.filter(x=>x.id!==id);SB.remove('journal',id,'journal');addHistory('delete','Deleted journal: '+j.title,{...j,_dbKey:'journal'});renderJournal();document.getElementById('journalPanel').innerHTML='<div style="font-size:10px;color:var(--text3);padding:20px;text-align:center">Entry deleted</div>';showToast('Journal deleted');}
+function deleteJournal(id){const j=DB.journal.find(x=>x.id===id);if(!j)return;DB.journal=DB.journal.filter(x=>x.id!==id);SB.remove('journal',id,'journal');addHistory('delete','Deleted journal: '+j.title,{...j,_dbKey:'journal'});showToast('Journal deleted');}
 
 // MEMORY
 function renderMemory(){document.getElementById('memoryTbody').innerHTML=DB.memories.map(m=>`<tr><td style="font-size:12px;max-width:280px">${m.memory}</td><td style="font-size:11px;color:var(--text3)">${m.category}</td><td><span class="pill pt" style="font-size:9px">${m.world}</span></td><td style="font-size:11px;color:var(--text3)">${m.date}</td><td><button class="btn btn-d" style="padding:2px 6px" onclick="deleteMemoryItem(${m.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');}
@@ -1323,7 +1638,7 @@ function parseVoiceCommand(text){
   if(/^(journal|write|log)[:\-\s]+/i.test(t)){const content=text.replace(/^(journal|write|log)[:\-\s]*/i,'').trim();return{action:'add_journal',title:content.substring(0,50)||'Quick Entry',content,mood:'🟢'};}
   if(/\b(mute|silence)\b/i.test(t))return{action:'mute'};
   if(/\b(unmute|speak|voice on)\b/i.test(t))return{action:'unmute'};
-  return{action:'ai_query',message:text};
+  return{action:'unknown',message:text};
 }
 
 async function executeVoiceCommand(text){
@@ -1384,113 +1699,7 @@ async function dispatchVoiceAction(cmd,rawText){
       }
 
       case 'add_client':{
-        const c={id:Date.now(),name:cmd.name||'New Client',world:'WORK-IH',status:cmd.status||'Active',revenue:cmd.revenue||'
-
-// VOICE UI
-let vcState='idle';
-function showVBar(){document.getElementById('vBar').classList.add('active');}
-function closeVBar(){document.getElementById('vBar').classList.remove('active');stopRecording();}
-function showVcResult(text){const r=document.getElementById('vResult');r.textContent=text;r.style.display='block';setTimeout(()=>{r.style.display='none';},4000);}
-function setVcState(state){
-  vcState=state;
-  const pill=document.getElementById('vPill'),orb=document.getElementById('vOrb'),label=document.getElementById('vLabel'),oi=document.getElementById('vOrbIcon');
-  pill.className='vpill'+(state==='listening'?' listening':'');
-  orb.className='vorb '+state;
-  label.className='vlabel'+(state==='error'?' error':state==='listening'?' listening':'');
-  const vsb=document.getElementById('vsbtn'),vst=document.getElementById('vsbtnTxt');
-  const fab=document.getElementById('voiceFab'),fi=document.getElementById('voiceFabIcon');
-  const sd=document.getElementById('statusDot'),st=document.getElementById('statusText');
-  if(state==='listening'){oi.className='ti ti-player-stop';vsb.classList.add('active');fab.style.background='rgba(239,68,68,.2)';fi.className='ti ti-player-stop';label.textContent='LISTENING...';vst.textContent='TAP TO STOP';sd.className='hdot rec';st.textContent='RECORDING';}
-  else{oi.className='ti ti-microphone';vsb.classList.remove('active');fab.style.background='var(--navy3)';fi.className='ti ti-microphone';sd.className='hdot';st.textContent='ONLINE';
-    if(state==='processing'){label.textContent='PROCESSING...';vst.textContent='PROCESSING';}
-    else if(state==='idle'||state==='executing'){label.textContent='VOICE READY';vst.textContent='VOICE · SPACE';}
-    else if(state==='error'){label.textContent='COMMAND UNCLEAR';vst.textContent='VOICE · SPACE';}
-  }
-}
-
-// SPEECH RECOGNITION
-let isRecording=false,recognition=null;
-function initRecognition(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showToast('Voice not supported. Use Chrome or Edge.');return null;}const r=new SR();r.continuous=false;r.interimResults=true;r.lang='en-PH';r.onstart=()=>{isRecording=true;setVcState('listening');showVBar();};r.onresult=(e)=>{let i2='',f2='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f2+=e.results[i][0].transcript;else i2+=e.results[i][0].transcript;}document.getElementById('vTranscript').textContent=f2||i2;};r.onend=()=>{isRecording=false;const txt=document.getElementById('vTranscript').textContent.trim();if(txt)executeVoiceCommand(txt);else{setVcState('idle');showToast('No speech detected.');}};r.onerror=(e)=>{isRecording=false;setVcState('idle');if(e.error==='not-allowed')showToast('Mic permission denied.');else if(e.error!=='no-speech')showToast('Voice error: '+e.error);};return r;}
-function toggleVoice(){showVBar();if(isRecording){stopRecording();return;}if(!recognition)recognition=initRecognition();if(!recognition)return;try{recognition.start();}catch(e){showToast('Voice already active.');}}
-function stopRecording(){if(recognition&&isRecording)recognition.stop();}
-
-// AI
-const AGENTS={exec:{name:'✦ EXECUTIVE AGENT',desc:'Scheduling · Emails · Decisions',system:'You are J.E.L.I.X Executive Agent for Justine Luis Inacay, Marketing Manager in Taguig. Be direct, concise, British cadence. Address as "sir". Lead with solution immediately. No fluff.'},marketing:{name:'📡 MARKETING AGENT',desc:'Campaigns · Copy · Reports',system:'You are J.E.L.I.X Marketing Agent for Justine. Handle campaigns, copy, reports for Ideahub clients and Chainsmoker/Sweetheart. Address as "sir".'},business:{name:'◈ BUSINESS AGENT',desc:'TJC · Operations · Strategy',system:'You are J.E.L.I.X Business Agent for Justine. Handle TJC (The Job Collectives) — Filipino-led VA agency targeting North American SMBs. Pre-revenue. Address as "sir".'},voice:{name:'◉ VOICE AGENT',desc:'OS command interpreter',system:'You are J.E.L.I.X Voice Agent for Justine. Confirm what was done, suggest follow-ups. Extremely concise. Address as "sir".'}};
-let currentAgent='exec',conversation=[],isThinking=false;
-function setAgent(name,el){currentAgent=name;conversation=[];document.querySelectorAll('.ai-agent').forEach(b=>b.classList.remove('active'));el.classList.add('active');const a=AGENTS[name];document.getElementById('agentTitle').textContent=a.name;document.getElementById('agentDesc').textContent=a.desc;document.getElementById('aiMsgs').innerHTML=`<div class="mr-row"><div class="mav aiv">J</div><div><div class="mbubble ai">${a.name} activated, sir. How can I assist?</div></div></div>`;}
-async function callClaude(msg,agent='exec'){const a=AGENTS[agent]||AGENTS.exec;const msgs=[...conversation,{role:'user',content:msg}];const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:a.system+'\n\nTasks: '+JSON.stringify(DB.tasks.slice(0,6))+'\nClients: '+JSON.stringify(DB.clients.slice(0,5))+'\nDate: June 14 2026, Manila, Philippines',messages:msgs})});if(!r.ok)throw new Error('API '+r.status);const d=await r.json();return d.content.find(c=>c.type==='text')?.text||'No response.';}
-function appendAIMsg(role,text){const box=document.getElementById('aiMsgs');const row=document.createElement('div');row.className='mr-row'+(role==='user'?' user':'');const t=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});row.innerHTML=`<div class="mav ${role==='ai'?'aiv':'usrv'}">${role==='ai'?'J':'S'}</div><div><div class="mbubble ${role}">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="mtime">${t}</div></div>`;box.appendChild(row);box.scrollTop=box.scrollHeight;}
-async function sendAI(){if(isThinking)return;const input=document.getElementById('aiInput');const text=input.value.trim();if(!text)return;input.value='';input.style.height='';isThinking=true;document.getElementById('aiSendBtn').disabled=true;appendAIMsg('user',text);conversation.push({role:'user',content:text});const box=document.getElementById('aiMsgs');const row=document.createElement('div');row.className='mr-row';row.id='thinkRow';row.innerHTML=`<div class="mav aiv">J</div><div><div class="mbubble ai"><div style="display:flex;gap:4px;align-items:center"><div class="td-dot"></div><div class="td-dot"></div><div class="td-dot"></div></div></div></div>`;box.appendChild(row);box.scrollTop=box.scrollHeight;try{const reply=await callClaude(text,currentAgent);document.getElementById('thinkRow')?.remove();appendAIMsg('ai',reply);speak(reply);conversation.push({role:'assistant',content:reply});}catch(e){document.getElementById('thinkRow')?.remove();const em='Connection error, sir: '+e.message;appendAIMsg('ai',em);speak(em);}isThinking=false;document.getElementById('aiSendBtn').disabled=false;}
-function aiKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}}
-function qp(t){document.getElementById('aiInput').value=t;sendAI();}
-function clearChat(){conversation=[];document.getElementById('aiMsgs').innerHTML='';appendAIMsg('ai','Cleared, sir.');}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px';}
-function exportChat(){const msgs=document.querySelectorAll('.mbubble');let txt='J.E.L.I.X Export\n'+new Date().toISOString()+'\n\n';msgs.forEach(m=>{txt+=(m.classList.contains('user')?'Sir: ':'J.E.L.I.X: ')+m.textContent+'\n\n';});const a=document.createElement('a');a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(txt);a.download='jelix-'+Date.now()+'.txt';a.click();}
-async function runAIBrief(){setView('ai');setTimeout(()=>qp('Daily brief: urgent tasks across Ideahub and Chainsmoker, tonight\'s schedule, and top 3 priorities.'),300);}
-
-// CMD PALETTE
-const CMD_ITEMS=[
-  {label:'Daily Brief',sub:'Home dashboard',icon:'🏠',action:()=>setView('brief'),group:'Navigate'},
-  {label:'WORK — Ideahub',sub:'Clients + Task Kanban',icon:'💼',action:()=>setView('work-ih'),group:'Navigate'},
-  {label:'WORK — Chainsmoker & Sweetheart',sub:'CS tasks kanban',icon:'🔥',action:()=>setView('work-cs'),group:'Navigate'},
-  {label:'VENTURE — TJC',sub:'Client + Partner kanban',icon:'🚀',action:()=>setView('venture'),group:'Navigate'},
-  {label:'BUILD — Apps',sub:'NAKNAK · DISKARTE · PASAHERO',icon:'🔧',action:()=>setView('build'),group:'Navigate'},
-  {label:'SIDES — Income',sub:'RaketPH · Etsy',icon:'💰',action:()=>setView('sides'),group:'Navigate'},
-  {label:'FAITH — Buklod',sub:'CAA activities log',icon:'✝',action:()=>setView('faith'),group:'Navigate'},
-  {label:'LIFE — Cash Flow',sub:'Debit · Credit · Cashflow',icon:'🌿',action:()=>setView('life'),group:'Navigate'},
-  {label:'Calendar',sub:'Schedule · Events',icon:'📅',action:()=>setView('calendar'),group:'Navigate'},
-  {label:'Journal',sub:'Personal entries',icon:'📖',action:()=>setView('journal'),group:'Navigate'},
-  {label:'All Tasks',sub:'Cross-world tasks',icon:'✓',action:()=>setView('tasks'),group:'Navigate'},
-  {label:'AI Workspace',sub:'J.E.L.I.X agents',icon:'✦',action:()=>setView('ai'),group:'Navigate'},
-  {label:'Memory',sub:'Persistent context',icon:'🧠',action:()=>setView('memory'),group:'Navigate'},
-  {label:'Activity History',sub:'All actions + restore',icon:'🕐',action:()=>setView('history'),group:'Navigate'},
-  {label:'New Task',sub:'Add task',icon:'+',action:()=>openModal('taskModal'),group:'Create'},
-  {label:'New Client',sub:'Add Ideahub client',icon:'🤝',action:()=>openModal('clientModal'),group:'Create'},
-  {label:'New Journal Entry',sub:'Write in journal',icon:'📝',action:()=>openModal('journalModal'),group:'Create'},
-  {label:'Add Debit',sub:'Expense transaction',icon:'−',action:()=>openCashModal('Debit'),group:'Create'},
-  {label:'Add Credit',sub:'Income transaction',icon:'+',action:()=>openCashModal('Credit'),group:'Create'},
-  {label:'Add Faith Activity',sub:'Buklod / KADIWA / Binhi',icon:'✝',action:()=>openFaithModal(),group:'Create'},
-  {label:'Add Calendar Event',sub:'Schedule an event',icon:'📅',action:()=>openCalEventModal(),group:'Create'},
-  {label:'Voice Mode',sub:'Speak commands · Space',icon:'🎙',action:toggleVoice,group:'Voice'},
-  {label:'Daily AI Brief',sub:'AI summary of today',icon:'✦',action:runAIBrief,group:'AI'},
-  {label:'Undo Last Delete',sub:'Restore deleted item · ⌘Z',icon:'↩',action:()=>{const last=DB.history.find(h=>h.type==='delete');if(last)restoreFromHistory(last.id);else showToast('Nothing to undo');},group:'AI'},
-];
-let filteredCmds=CMD_ITEMS,cmdSelIdx=-1;
-function openCmd(){document.getElementById('cmdOv').classList.add('open');document.getElementById('cmdInput').value='';filteredCmds=CMD_ITEMS;renderCmds();setTimeout(()=>document.getElementById('cmdInput').focus(),50);}
-function closeCmdBg(e){if(e.target===document.getElementById('cmdOv'))document.getElementById('cmdOv').classList.remove('open');}
-function filterCmd(){const q=document.getElementById('cmdInput').value.toLowerCase();filteredCmds=CMD_ITEMS.filter(c=>c.label.toLowerCase().includes(q)||c.sub.toLowerCase().includes(q));cmdSelIdx=-1;renderCmds();}
-function renderCmds(){const r=document.getElementById('cmdResults');const groups=[...new Set(filteredCmds.map(c=>c.group))];r.innerHTML=groups.map(g=>`<div class="cgl">${g}</div>`+filteredCmds.filter(c=>c.group===g).map(c=>`<div class="cr" onclick="execCmd(${CMD_ITEMS.indexOf(c)})" data-idx="${CMD_ITEMS.indexOf(c)}"><div class="cri">${c.icon}</div><div><div class="crl">${c.label}</div><div class="crs">${c.sub}</div></div></div>`).join('')).join('');}
-function execCmd(idx){CMD_ITEMS[idx]?.action();document.getElementById('cmdOv').classList.remove('open');}
-function cmdKey(e){const items=document.querySelectorAll('.cr');if(e.key==='ArrowDown'){e.preventDefault();cmdSelIdx=Math.min(cmdSelIdx+1,items.length-1);items.forEach((el,i)=>el.classList.toggle('sel',i===cmdSelIdx));items[cmdSelIdx]?.scrollIntoView({block:'nearest'});}else if(e.key==='ArrowUp'){e.preventDefault();cmdSelIdx=Math.max(cmdSelIdx-1,0);items.forEach((el,i)=>el.classList.toggle('sel',i===cmdSelIdx));items[cmdSelIdx]?.scrollIntoView({block:'nearest'});}else if(e.key==='Enter'&&cmdSelIdx>=0){execCmd(parseInt(items[cmdSelIdx].dataset.idx));}}
-
-// CTX MENU
-let ctxTarget=null;
-function showCtx(e,id,type){e.preventDefault();ctxTarget={id,type};const m=document.getElementById('ctxMenu');m.style.left=e.clientX+'px';m.style.top=e.clientY+'px';m.style.display='block';document.addEventListener('click',()=>m.style.display='none',{once:true});}
-function ctxAct(action){
-  if(!ctxTarget)return;
-  if(action==='edit'){if(ctxTarget.type==='task')editTask(ctxTarget.id);else if(ctxTarget.type==='client')editClient(ctxTarget.id);}
-  else if(action==='duplicate'){if(ctxTarget.type==='task'){const t=DB.tasks.find(x=>x.id===ctxTarget.id);if(t){const n={...t,id:Date.now(),title:'Copy — '+t.title};DB.tasks.unshift(n);SB.upsert('tasks',n,'tasks');reRenderAll();showToast('✓ Duplicated');}}else if(ctxTarget.type==='client'){const c=DB.clients.find(x=>x.id===ctxTarget.id);if(c){const n={...c,id:Date.now(),name:'Copy — '+c.name};DB.clients.unshift(n);SB.upsert('clients',n,'clients');renderWorkIH();showToast('✓ Duplicated');}}}
-  else if(action==='delete'){if(ctxTarget.type==='task')deleteTask({stopPropagation:()=>{}},ctxTarget.id);else if(ctxTarget.type==='client')deleteClientBtn({stopPropagation:()=>{}},ctxTarget.id);}
-}
-
-// TOAST
-function showToast(msg,isUndo,undoCb){const stack=document.getElementById('tstack');const item=document.createElement('div');item.className='titem'+(isUndo?' undo':'');item.innerHTML=msg+(isUndo&&undoCb?` <button class="ubtn">↩ Undo</button>`:'');if(isUndo&&undoCb){item.querySelector('.ubtn').addEventListener('click',undoCb);}stack.appendChild(item);setTimeout(()=>{item.style.opacity='0';setTimeout(()=>item.remove(),300);},4000);}
-
-// KEYBOARD
-document.addEventListener('keydown',e=>{
-  if(e.key===' '&&!['INPUT','TEXTAREA'].includes(document.activeElement?.tagName)){e.preventDefault();toggleVoice();}
-  if(e.key==='Escape'){closeVBar();document.getElementById('cmdOv').classList.remove('open');document.querySelectorAll('.mov').forEach(m=>m.classList.remove('open'));}
-  if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCmd();}
-  if((e.metaKey||e.ctrlKey)&&e.key==='z'){const last=DB.history.find(h=>h.type==='delete');if(last)restoreFromHistory(last.id);}
-});
-
-// INIT
-reRenderAll();
-loadAllFromSupabase();
-</script>
-</body>
-</html>
-,next:cmd.next||'',contact:cmd.contact||''};
+        const c={id:Date.now(),name:cmd.name||'New Client',world:'WORK-IH',status:cmd.status||'Active',revenue:cmd.revenue||'$$',next:cmd.next||'',contact:cmd.contact||''};
         DB.clients.unshift(c);
         SB.upsert('clients',c,'clients');
         addHistory('add','Added client: '+c.name,{...c,_dbKey:'clients'});
@@ -1521,7 +1730,7 @@ loadAllFromSupabase();
       }
 
       case 'add_journal':{
-        const j={id:Date.now(),title:cmd.title||rawText,content:cmd.content||'',mood:cmd.mood||'🟢',date:new Date().toISOString()};
+        const j={id:Date.now(),title:cmd.title||'Voice Entry',content:cmd.content||rawText,mood:'🟢',date:new Date().toISOString()};
         DB.journal.unshift(j);
         SB.upsert('journal',j,'journal');
         addHistory('add','Added journal: '+j.title,{...j,_dbKey:'journal'});
@@ -1542,32 +1751,31 @@ loadAllFromSupabase();
         speak(result);
         break;
 
-      case 'ai_query':{
-        setView('ai');
-        setVcState('processing');
-        const reply=await callClaude(cmd.message||rawText,currentAgent);
-        appendAIMsg('user',rawText);
-        conversation.push({role:'user',content:rawText});
-        appendAIMsg('ai',reply);
-        conversation.push({role:'assistant',content:reply});
-        speak(reply);
-        result=reply.substring(0,100)+(reply.length>100?'…':'');
+      case 'unknown':
+      default:{
+        // Fully local — no cloud call
+        const suggestions=[
+          '"Add task: [title]"',
+          '"Go to [view]"',
+          '"Mark [task] as done"',
+          '"Delete task: [name]"',
+          '"Add client: [name]"',
+          '"Add debit: [desc] [amount]"',
+          '"Mute" / "Unmute"',
+        ];
+        result='Command not recognised, sir. Try: '+suggestions[Math.floor(Math.random()*suggestions.length)]+'.';
         break;
       }
-
-      default:
-        result='Command not understood. Try: "Add task: [title]", "Go to [view]", "Mark [task] as done", or "Delete task: [name]".';
     }
   }catch(e){
     result='Error processing command, sir: '+e.message;
   }
 
-  // Always resolve cleanly — never stay stuck
   setVcState('idle');
   showVcResult(result);
   showToast(result.length>60?result.substring(0,57)+'…':result);
   addHistory('voice','Voice: '+rawText.substring(0,60),{cmd:cmd.action,raw:rawText});
-  if(!isMuted&&result&&cmd.action!=='ai_query'&&cmd.action!=='unmute'){
+  if(!isMuted&&result&&cmd.action!=='unmute'){
     speak(result);
   }
 }
@@ -1601,10 +1809,39 @@ function toggleVoice(){showVBar();if(isRecording){stopRecording();return;}if(!re
 function stopRecording(){if(recognition&&isRecording)recognition.stop();}
 
 // AI
-const AGENTS={exec:{name:'✦ EXECUTIVE AGENT',desc:'Scheduling · Emails · Decisions',system:'You are J.E.L.I.X Executive Agent for Justine Luis Inacay, Marketing Manager in Taguig. Be direct, concise, British cadence. Address as "sir". Lead with solution immediately. No fluff.'},marketing:{name:'📡 MARKETING AGENT',desc:'Campaigns · Copy · Reports',system:'You are J.E.L.I.X Marketing Agent for Justine. Handle campaigns, copy, reports for Ideahub clients and Chainsmoker/Sweetheart. Address as "sir".'},business:{name:'◈ BUSINESS AGENT',desc:'TJC · Operations · Strategy',system:'You are J.E.L.I.X Business Agent for Justine. Handle TJC (The Job Collectives) — Filipino-led VA agency targeting North American SMBs. Pre-revenue. Address as "sir".'},voice:{name:'◉ VOICE AGENT',desc:'OS command interpreter',system:'You are J.E.L.I.X Voice Agent for Justine. Confirm what was done, suggest follow-ups. Extremely concise. Address as "sir".'}};
+const AGENTS={exec:{name:'✦ EXECUTIVE AGENT',desc:'Scheduling · Emails · Decisions',system:'You are J.E.L.I.X Executive Agent for Justine Luis Inacay, Marketing Manager in Taguig. Be direct, concise, British cadence. Address as "sir". Lead with solution immediately. No fluff.'},marketing:{name:'📡 MARKETING AGENT',desc:'Campaigns · Copy · Reports',system:'You are J.E.L.I.X Marketing Agent for Justine. Handle campaigns, copy, reports for Ideahub clients and Chainsmoker/Sweetheart. Address as "sir".'},business:{name:'◈ BUSINESS AGENT',desc:'TJC · Operations · Strategy',system:'You are J.E.L.I.X Business Agent for Justine. Handle TJC (The Job Collectives) — Filipino-led VA agency targeting North American SMBs. Pre-revenue. Address as "sir".'},voice:{name:'◉ VOICE AGENT',desc:'OS command interpreter',system:'You are J.E.L.I.X Voice Agent for Justine. Confirm what was done, suggest follow-ups. Extremely concise. Address as "sir".'},finance:{name:'₱ FINANCE AGENT',desc:'Cash flow · Budgets · P&L',system:'You are J.E.L.I.X Finance Agent for Justine Luis Inacay. Handle personal and business cash flow (INACAY Cash Flow), rental income (Culasi Compound), Ideahub billing, TJC pricing. Be analytical, precise, surface numbers immediately. Address as "sir".'},hr:{name:'👥 HR & PEOPLE AGENT',desc:'VA ops · TJC hiring · Onboarding',system:'You are J.E.L.I.X HR Agent for Justine. Handle The Job Collectives VA recruitment, onboarding, partner management, KPIs and shift scheduling. Policies grounded in J.O.B.S. values and Colossians 3:23. Address as "sir".'},design:{name:'🎨 GRAPHIC DESIGN AGENT',desc:'Creatives · Layouts · Branding',system:'You are J.E.L.I.X Graphic Design Agent for Justine. Help with visual directions, copy for creatives, social media layouts, brand guidelines for Ideahub clients (Chainsmoker, Millscope, Celtic Biotech, etc.) and TJC brand. Think like a senior art director. Address as "sir".'}};
 let currentAgent='exec',conversation=[],isThinking=false;
 function setAgent(name,el){currentAgent=name;conversation=[];document.querySelectorAll('.ai-agent').forEach(b=>b.classList.remove('active'));el.classList.add('active');const a=AGENTS[name];document.getElementById('agentTitle').textContent=a.name;document.getElementById('agentDesc').textContent=a.desc;document.getElementById('aiMsgs').innerHTML=`<div class="mr-row"><div class="mav aiv">J</div><div><div class="mbubble ai">${a.name} activated, sir. How can I assist?</div></div></div>`;}
-async function callClaude(msg,agent='exec'){const a=AGENTS[agent]||AGENTS.exec;const msgs=[...conversation,{role:'user',content:msg}];const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:a.system+'\n\nTasks: '+JSON.stringify(DB.tasks.slice(0,6))+'\nClients: '+JSON.stringify(DB.clients.slice(0,5))+'\nDate: June 14 2026, Manila, Philippines',messages:msgs})});if(!r.ok)throw new Error('API '+r.status);const d=await r.json();return d.content.find(c=>c.type==='text')?.text||'No response.';}
+async function callClaude(msg,agent='exec'){
+  const a=AGENTS[agent]||AGENTS.exec;
+  const msgs=[...conversation,{role:'user',content:msg}];
+  const apiKey=localStorage.getItem('jelix-api-key')||'';
+  if(!apiKey){
+    showToast('⚠ No API key. Click JARVIS KEY in topbar to set.');
+    throw new Error('No API key set. Click JARVIS KEY to configure.');
+  }
+  const r=await fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key':apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body:JSON.stringify({
+      model:'claude-sonnet-4-6',
+      max_tokens:1024,
+      system:a.system+'\n\nContext — Tasks: '+JSON.stringify(DB.tasks.slice(0,8))+'\nClients: '+JSON.stringify(DB.clients.slice(0,6))+'\nDate: '+new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Manila'})+', Manila, Philippines',
+      messages:msgs
+    })
+  });
+  if(!r.ok){
+    const err=await r.json().catch(()=>({}));
+    throw new Error(err.error?.message||'API '+r.status);
+  }
+  const d=await r.json();
+  return d.content.find(c=>c.type==='text')?.text||'No response.';
+}
 function appendAIMsg(role,text){const box=document.getElementById('aiMsgs');const row=document.createElement('div');row.className='mr-row'+(role==='user'?' user':'');const t=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});row.innerHTML=`<div class="mav ${role==='ai'?'aiv':'usrv'}">${role==='ai'?'J':'S'}</div><div><div class="mbubble ${role}">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="mtime">${t}</div></div>`;box.appendChild(row);box.scrollTop=box.scrollHeight;}
 async function sendAI(){if(isThinking)return;const input=document.getElementById('aiInput');const text=input.value.trim();if(!text)return;input.value='';input.style.height='';isThinking=true;document.getElementById('aiSendBtn').disabled=true;appendAIMsg('user',text);conversation.push({role:'user',content:text});const box=document.getElementById('aiMsgs');const row=document.createElement('div');row.className='mr-row';row.id='thinkRow';row.innerHTML=`<div class="mav aiv">J</div><div><div class="mbubble ai"><div style="display:flex;gap:4px;align-items:center"><div class="td-dot"></div><div class="td-dot"></div><div class="td-dot"></div></div></div></div>`;box.appendChild(row);box.scrollTop=box.scrollHeight;try{const reply=await callClaude(text,currentAgent);document.getElementById('thinkRow')?.remove();appendAIMsg('ai',reply);speak(reply);conversation.push({role:'assistant',content:reply});}catch(e){document.getElementById('thinkRow')?.remove();const em='Connection error, sir: '+e.message;appendAIMsg('ai',em);speak(em);}isThinking=false;document.getElementById('aiSendBtn').disabled=false;}
 function aiKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}}
@@ -1670,9 +1907,221 @@ document.addEventListener('keydown',e=>{
   if((e.metaKey||e.ctrlKey)&&e.key==='z'){const last=DB.history.find(h=>h.type==='delete');if(last)restoreFromHistory(last.id);}
 });
 
+// ===== BOOT MUSIC — Web Audio API (cinematic ambient synth) =====
+// Works locally, no external server needed, no autoplay policy issue after user click
+let bootAudioCtx=null,bootMasterGain=null,bootMusicPlaying=false,bootMusicNodes=[];
+
+function startBootMusic(){
+  if(bootAudioCtx)return; // already started
+  try{
+    bootAudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const ctx=bootAudioCtx;
+    bootMasterGain=ctx.createGain();
+    bootMasterGain.gain.setValueAtTime(0,ctx.currentTime);
+    bootMasterGain.gain.linearRampToValueAtTime(0.55,ctx.currentTime+2.5); // fade in
+    bootMasterGain.connect(ctx.destination);
+
+    // Reverb via convolver
+    const convolver=ctx.createConvolver();
+    const revLen=ctx.sampleRate*2.5;
+    const revBuf=ctx.createBuffer(2,revLen,ctx.sampleRate);
+    for(let ch=0;ch<2;ch++){const d=revBuf.getChannelData(ch);for(let i=0;i<revLen;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/revLen,2.2);}
+    convolver.buffer=revBuf;
+    const revGain=ctx.createGain();revGain.gain.value=0.28;
+    convolver.connect(revGain);revGain.connect(bootMasterGain);
+
+    const now=ctx.currentTime;
+
+    // ── Low bass drone (Bb) ──
+    const bassFreqs=[58.27,116.54,87.31]; // Bb1, Bb2, F2
+    bassFreqs.forEach((f,i)=>{
+      const osc=ctx.createOscillator();
+      const g=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.value=f;
+      g.gain.value=0.22-i*0.04;
+      osc.connect(g);g.connect(bootMasterGain);
+      osc.start(now);
+      bootMusicNodes.push(osc);
+    });
+
+    // ── Pad chords — Bb minor (Bb Db Eb F) ──
+    const padNotes=[
+      [116.54,0],[138.59,0.3],[155.56,0.6],[174.61,1.0], // Bb3 Db3 Eb3 F3
+      [233.08,0.2],[261.63,0.5],[311.13,0.8],             // Bb3 C4 Eb4
+    ];
+    padNotes.forEach(([f,delay])=>{
+      const osc=ctx.createOscillator();
+      const g=ctx.createGain();
+      osc.type='triangle';
+      osc.frequency.value=f;
+      // Slow tremolo
+      const lfo=ctx.createOscillator();
+      const lfoG=ctx.createGain();
+      lfo.frequency.value=0.18+Math.random()*0.08;
+      lfoG.gain.value=0.018;
+      lfo.connect(lfoG);lfoG.connect(g.gain);
+      lfo.start(now+delay);
+      g.gain.setValueAtTime(0,now+delay);
+      g.gain.linearRampToValueAtTime(0.09,now+delay+1.8);
+      osc.connect(g);
+      g.connect(convolver);g.connect(bootMasterGain);
+      osc.start(now+delay);
+      bootMusicNodes.push(osc,lfo);
+    });
+
+    // ── Gentle melodic arpeggios — pentatonic Bb minor ──
+    const arpNotes=[233.08,261.63,311.13,349.23,391.99,466.16,523.25,391.99,349.23,311.13];
+    const arpInterval=0.72;
+    arpNotes.forEach((f,i)=>{
+      const osc=ctx.createOscillator();
+      const g=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.value=f;
+      const t=now+4+i*arpInterval; // start after 4s
+      g.gain.setValueAtTime(0,t);
+      g.gain.linearRampToValueAtTime(0.06,t+0.12);
+      g.gain.exponentialRampToValueAtTime(0.001,t+arpInterval*0.9);
+      osc.connect(g);g.connect(convolver);g.connect(bootMasterGain);
+      osc.start(t);osc.stop(t+arpInterval);
+      bootMusicNodes.push(osc);
+    });
+
+    // ── High shimmer (high pad) ──
+    [932.33,1046.5].forEach((f,i)=>{
+      const osc=ctx.createOscillator();
+      const g=ctx.createGain();
+      osc.type='sine';
+      osc.frequency.value=f;
+      g.gain.setValueAtTime(0,now+2);
+      g.gain.linearRampToValueAtTime(0.022,now+4);
+      osc.connect(g);g.connect(convolver);
+      osc.start(now+2);
+      bootMusicNodes.push(osc);
+    });
+
+    bootMusicPlaying=true;
+    // Update UI
+    const bars=document.getElementById('bootMusicBars');
+    const btn=document.getElementById('bootMuteBtn');
+    const lbl=document.getElementById('bootMusicLabel');
+    if(bars)bars.style.opacity='1';
+    if(btn){btn.textContent='MUTE';btn.style.color='rgba(0,212,200,.9)';btn.style.borderColor='rgba(0,212,200,.4)';}
+    if(lbl){lbl.textContent='NOW PLAYING · CINEMATIC AMBIENT';lbl.style.color='rgba(0,212,200,.7)';}
+  }catch(e){console.warn('Boot music error:',e);}
+}
+
+function loadYTApi(){startBootMusic();} // called by onclick — redirect to our audio engine
+
+function toggleBootMusic(){
+  if(!bootAudioCtx){startBootMusic();return;}
+  const btn=document.getElementById('bootMuteBtn');
+  const bars=document.getElementById('bootMusicBars');
+  const lbl=document.getElementById('bootMusicLabel');
+  if(bootMusicPlaying){
+    bootMasterGain.gain.linearRampToValueAtTime(0,bootAudioCtx.currentTime+0.3);
+    bootMusicPlaying=false;
+    if(btn)btn.textContent='UNMUTE';
+    if(bars)bars.style.opacity='0.3';
+    if(lbl)lbl.textContent='PAUSED';
+  }else{
+    bootMasterGain.gain.linearRampToValueAtTime(0.55,bootAudioCtx.currentTime+0.3);
+    bootMusicPlaying=true;
+    if(btn)btn.textContent='MUTE';
+    if(bars)bars.style.opacity='1';
+    if(lbl){lbl.textContent='NOW PLAYING · CINEMATIC AMBIENT';lbl.style.color='rgba(0,212,200,.7)';}
+  }
+}
+
+function fadeOutBootAudio(){
+  if(!bootAudioCtx||!bootMasterGain)return;
+  const now=bootAudioCtx.currentTime;
+  bootMasterGain.gain.linearRampToValueAtTime(0,now+1.8);
+  setTimeout(()=>{
+    bootMusicNodes.forEach(n=>{try{n.stop();}catch(e){}});
+    bootMusicNodes=[];
+    try{bootAudioCtx.close();}catch(e){}
+  },2000);
+}
+
+// ===== BOOT SEQUENCE =====
+const BOOT_STEPS=[
+  {pct:8,  msg:'Mounting J.E.L.I.X OS kernel...'},
+  {pct:18, msg:'Loading Six Worlds framework...'},
+  {pct:30, msg:'Initializing Supabase bridge...'},
+  {pct:42, msg:'Loading WORK — Ideahub & Chainsmoker...'},
+  {pct:55, msg:'Loading VENTURE · BUILD · SIDES...'},
+  {pct:67, msg:'Loading FAITH · LIFE · Calendar...'},
+  {pct:78, msg:'Connecting AI agent stack...'},
+  {pct:88, msg:'Syncing memory & history...'},
+  {pct:96, msg:'Rendering dashboard...'},
+  {pct:100,msg:'All systems nominal. Welcome, sir.'},
+];
+function setBootProgress(pct,msg){
+  const bar=document.getElementById('bootBar');
+  const pctEl=document.getElementById('bootPct');
+  const statusEl=document.getElementById('bootStatus');
+  const logEl=document.getElementById('bootLog');
+  if(bar)bar.style.width=pct+'%';
+  if(pctEl)pctEl.textContent=pct+'%';
+  if(statusEl)statusEl.textContent=msg;
+  if(logEl){
+    const line=document.createElement('div');
+    line.style.cssText='color:#00a89e;opacity:0;transition:opacity .3s';
+    line.textContent='> '+msg;
+    logEl.appendChild(line);
+    requestAnimationFrame(()=>{line.style.opacity='1';});
+    logEl.scrollTop=logEl.scrollHeight;
+  }
+}
+function enterOS(){
+  const screen=document.getElementById('bootScreen');
+  const app=document.getElementById('appRoot');
+  fadeOutBootAudio();
+  if(screen){screen.style.animation='bootfadeout .8s ease forwards';}
+  if(app){app.style.opacity='1';}
+  setTimeout(()=>{
+    if(screen)screen.style.display='none';
+    try{reRenderAll();}catch(e){console.warn('reRenderAll:',e);}
+    loadAllFromSupabase();
+  },900);
+}
+
+async function runBootSequence(){
+  // Safety net: if boot takes >18s something broke — force enter OS
+  const safetyTimer=setTimeout(()=>{
+    console.warn('Boot safety timeout fired');
+    enterOS();
+  },18000);
+
+  try{
+    for(let i=0;i<BOOT_STEPS.length;i++){
+      await new Promise(r=>setTimeout(r,i===0?500:350+Math.random()*180));
+      setBootProgress(BOOT_STEPS[i].pct,BOOT_STEPS[i].msg);
+    }
+    await new Promise(r=>setTimeout(r,800));
+  }catch(e){
+    console.warn('Boot step error:',e);
+  }
+
+  clearTimeout(safetyTimer);
+  enterOS();
+}
+
+// Update music label when YT plays
+const _origYTReady=window.onYouTubeIframeAPIReady;
+window.onYouTubeIframeAPIReady=function(){
+  if(_origYTReady)_origYTReady();
+};
+
 // INIT
-reRenderAll();
-loadAllFromSupabase();
+// Restore API key indicator on load
+(function(){
+  const k=localStorage.getItem('jelix-api-key');
+  const btn=document.getElementById('apiKeyBtn');
+  if(k&&btn){btn.style.color='var(--green)';btn.style.borderColor='var(--green)';btn.textContent='KEY ✓';}
+})();
+runBootSequence();
 </script>
 </body>
 </html>
