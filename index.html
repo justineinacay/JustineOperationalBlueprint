@@ -777,7 +777,7 @@ select option{background:var(--navy3)}
 <!-- HEALTH LOG MODAL -->
 <div class="mov" id="healthLogModal">
   <div class="modal" style="width:520px">
-    <div class="mh"><div class="mt">Log Health Entry</div><button class="mc" onclick="closeModal('healthLogModal')">×</button></div>
+    <div class="mh"><div class="mt" id="healthLogModalTitle">Log Health Entry</div><button class="mc" onclick="closeModal('healthLogModal')">×</button></div>
     <div class="mb">
       <div class="fr">
         <div class="fg"><label class="fl">Date</label><input type="date" id="hl-date"></div>
@@ -1366,7 +1366,6 @@ select option{background:var(--navy3)}
         <div><div class="vt" style="color:var(--red)"><i class="ti ti-heart-rate-monitor"></i>HEALTH — Bio Monitor</div><div class="vs">Daily metrics · vitals · wellness log · Apple Health sync</div></div>
         <div class="va">
           <button class="btn" style="background:rgba(255,34,68,.1);color:var(--red);border:1px solid rgba(255,34,68,.3);font-weight:700" onclick="openModal('healthLogModal')"><i class="ti ti-plus"></i> Log Entry</button>
-          <button class="btn btn-t" onclick="syncAppleHealth()"><i class="ti ti-brand-apple"></i> Sync Apple Health</button>
         </div>
       </div>
       <div class="vb">
@@ -1402,6 +1401,24 @@ select option{background:var(--navy3)}
             <div class="cl">Water</div>
             <div class="cv" style="color:var(--purple);font-size:22px" id="h-water">—</div>
             <div class="csub" id="h-water-sub">glasses · today</div>
+          </div>
+        </div>
+
+        <!-- QUICK LOG BUTTONS -->
+        <div style="background:#050a12;border:1px solid var(--border);border-radius:4px;padding:10px 14px;margin-bottom:14px;position:relative;overflow:hidden;flex-shrink:0">
+          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),var(--teal),transparent)"></div>
+          <div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-bolt" style="font-size:13px;color:var(--teal);line-height:1;display:block"></i>QUICK LOG</div>
+          <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px">
+            <button onclick="quickLog('Exercise')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:6px;color:var(--green);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(34,197,94,.18)'" onmouseout="this.style.background='rgba(34,197,94,.08)'"><i class="ti ti-run" style="font-size:18px;line-height:1;display:block"></i>Exercise</button>
+            <button onclick="quickLog('Sleep')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:6px;color:var(--purple);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(168,85,247,.18)'" onmouseout="this.style.background='rgba(168,85,247,.08)'"><i class="ti ti-moon" style="font-size:18px;line-height:1;display:block"></i>Sleep</button>
+            <button onclick="quickLog('Nutrition')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:6px;color:var(--amber);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(245,158,11,.18)'" onmouseout="this.style.background='rgba(245,158,11,.08)'"><i class="ti ti-salad" style="font-size:18px;line-height:1;display:block"></i>Nutrition</button>
+            <button onclick="quickLog('Mental')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(0,255,242,.06);border:1px solid var(--border2);border-radius:6px;color:var(--teal);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(0,255,242,.14)'" onmouseout="this.style.background='rgba(0,255,242,.06)'"><i class="ti ti-brain" style="font-size:18px;line-height:1;display:block"></i>Mental</button>
+            <button onclick="quickLog('Medication')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(255,40,160,.08);border:1px solid rgba(255,40,160,.25);border-radius:6px;color:var(--pink);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(255,40,160,.18)'" onmouseout="this.style.background='rgba(255,40,160,.08)'"><i class="ti ti-pill" style="font-size:18px;line-height:1;display:block"></i>Medication</button>
+            <button onclick="quickLog('Heart Rate')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.25);border-radius:6px;color:var(--red);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(255,34,68,.18)'" onmouseout="this.style.background='rgba(255,34,68,.08)'"><i class="ti ti-heartbeat" style="font-size:18px;line-height:1;display:block"></i>Heart Rate</button>
+            <button onclick="quickLog('Blood Pressure')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.25);border-radius:6px;color:var(--orange);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(255,140,0,.18)'" onmouseout="this.style.background='rgba(255,140,0,.08)'"><i class="ti ti-activity" style="font-size:18px;line-height:1;display:block"></i>Blood Pressure</button>
+            <button onclick="quickLog('Steps')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);border-radius:6px;color:var(--green);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(0,255,136,.18)'" onmouseout="this.style.background='rgba(0,255,136,.08)'"><i class="ti ti-shoe" style="font-size:18px;line-height:1;display:block"></i>Steps</button>
+            <button onclick="quickLog('Weight')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:6px;color:var(--amber);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(245,158,11,.18)'" onmouseout="this.style.background='rgba(245,158,11,.08)'"><i class="ti ti-scale" style="font-size:18px;line-height:1;display:block"></i>Weight</button>
+            <button onclick="quickLog('Water')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(128,255,250,.06);border:1px solid rgba(128,255,250,.25);border-radius:6px;color:var(--teal2);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(128,255,250,.14)'" onmouseout="this.style.background='rgba(128,255,250,.06)'"><i class="ti ti-droplet" style="font-size:18px;line-height:1;display:block"></i>Water</button>
           </div>
         </div>
 
@@ -1492,30 +1509,21 @@ select option{background:var(--navy3)}
             </div>
           </div>
 
-          <!-- APPLE HEALTH SYNC STATUS -->
-          <div class="hc" style="border:1px solid rgba(255,34,68,.2)">
+          <!-- CSV IMPORT CARD -->
+          <div class="hc" style="border:1px solid rgba(0,255,136,.2)">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-              <i class="ti ti-brand-apple" style="font-size:28px;color:var(--text2);line-height:1;display:block"></i>
+              <i class="ti ti-file-import" style="font-size:28px;color:var(--green);line-height:1;display:block"></i>
               <div>
-                <div style="font-size:13px;font-weight:700;color:var(--text1)">Apple Health</div>
-                <div style="font-size:11px;color:var(--text3)" id="ahSyncStatus">Not connected — read below to set up</div>
+                <div style="font-size:13px;font-weight:700;color:var(--text1)">Import Health Data</div>
+                <div style="font-size:11px;color:var(--text3)">Upload CSV or log manually</div>
               </div>
             </div>
-            <div style="font-size:11px;color:var(--text2);line-height:1.7;background:rgba(0,0,0,.3);border-radius:4px;padding:10px;border:1px solid var(--border)">
-              <div style="font-weight:700;color:var(--teal);margin-bottom:6px;font-size:12px">📱 HOW TO CONNECT APPLE HEALTH</div>
-              <div style="color:var(--text3)">iOS blocks direct web→HealthKit access (security policy). Use this workflow:</div>
-              <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px">
-                <div><span style="color:var(--teal);font-weight:700">1.</span> Install the free <a href="https://apps.apple.com/app/health-export-csv/id1477944755" target="_blank" style="color:var(--teal)">Health Export app</a> on iPhone</div>
-                <div><span style="color:var(--teal);font-weight:700">2.</span> Export to CSV → AirDrop or iCloud Drive</div>
-                <div><span style="color:var(--teal);font-weight:700">3.</span> Click Import CSV below to parse your metrics</div>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;margin-top:12px">
-              <label style="flex:1;padding:8px 12px;background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.3);border-radius:4px;color:var(--red);font-size:12px;font-weight:700;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <label style="flex:1;padding:8px 12px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:4px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">
                 <i class="ti ti-upload" style="font-size:13px;line-height:1;display:block"></i> Import CSV
                 <input type="file" accept=".csv" onchange="importHealthCSV(event)" style="display:none">
               </label>
-              <button onclick="openModal('healthLogModal')" style="flex:1;padding:8px 12px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:4px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer"><i class="ti ti-pencil" style="font-size:13px;line-height:1;display:inline-block"></i> Manual Log</button>
+              <button onclick="openModal('healthLogModal')" style="flex:1;padding:8px 12px;background:rgba(0,255,242,.08);border:1px solid var(--teal2);border-radius:4px;color:var(--teal);font-size:12px;font-weight:700;cursor:pointer"><i class="ti ti-pencil" style="font-size:13px;line-height:1;display:inline-block"></i> Manual Log</button>
             </div>
           </div>
 
@@ -2813,6 +2821,12 @@ function logWater(n){
   if(h)h.textContent=n;
   const s=document.getElementById('h-water-sub');
   if(s)s.textContent=n+' / 8 glasses today';
+  // Auto-save to today's wellness so it persists on reload
+  const d=getWellness();
+  const today=new Date().toISOString().split('T')[0];
+  if(!d[today])d[today]={};
+  d[today].water=n;
+  saveWellnessData(d);
 }
 function saveWellness(){
   const notes=document.getElementById('wellnessNotes');
@@ -2825,7 +2839,7 @@ function saveWellness(){
 }
 
 // ── Health Log Entry ──
-function openHealthLogModal(){const d=document.getElementById('hl-date');if(d)d.value=new Date().toISOString().split('T')[0];openModal('healthLogModal');}
+function openHealthLogModal(){const d=document.getElementById('hl-date');if(d)d.value=new Date().toISOString().split('T')[0];const t=document.getElementById('healthLogModalTitle');if(t)t.textContent='Log Health Entry';openModal('healthLogModal');}
 function syncAppleHealth(){
   showToast('Open Health Export app on iPhone → export CSV → use Import CSV button, sir.');
 }
@@ -2883,6 +2897,33 @@ function saveHealthEntry(){
   const logs=getHealthLogs();logs.unshift(entry);saveHealthLogs(logs);
   closeModal('healthLogModal');renderHealth();
   showToast('✓ Health entry logged, sir.');
+}
+
+// Quick log shortcut — pre-fills the health log modal for a specific category/metric
+function quickLog(type){
+  const presets={
+    'Exercise':     {cat:'Exercise',   metric:'Exercise',      unit:'min',  label:'Duration (minutes)'},
+    'Sleep':        {cat:'Sleep',      metric:'Sleep Duration',unit:'hrs',  label:'Hours slept'},
+    'Nutrition':    {cat:'Nutrition',  metric:'Nutrition',     unit:'kcal', label:'Calories'},
+    'Mental':       {cat:'Mental',     metric:'Mental Health', unit:'/10',  label:'Score (1–10)'},
+    'Medication':   {cat:'Medication', metric:'Medication',    unit:'dose', label:'Doses taken'},
+    'Heart Rate':   {cat:'Vitals',     metric:'Heart Rate',    unit:'bpm',  label:'BPM (resting)'},
+    'Blood Pressure':{cat:'Vitals',   metric:'Blood Pressure',unit:'mmHg', label:'Systolic (e.g. 120)'},
+    'Steps':        {cat:'Exercise',   metric:'Steps',         unit:'steps',label:'Step count'},
+    'Weight':       {cat:'Vitals',     metric:'Weight',        unit:'kg',   label:'Weight (kg)'},
+    'Water':        {cat:'Nutrition',  metric:'Water Intake',  unit:'glasses',label:'Glasses of water'},
+  };
+  const p=presets[type];
+  if(!p)return;
+  // Pre-fill modal fields
+  const d=document.getElementById('hl-date');if(d)d.value=new Date().toISOString().split('T')[0];
+  const cat=document.getElementById('hl-cat');if(cat)cat.value=p.cat;
+  const metric=document.getElementById('hl-metric');if(metric)metric.value=p.metric;
+  const unit=document.getElementById('hl-unit');if(unit)unit.value=p.unit;
+  const val=document.getElementById('hl-value');if(val){val.value='';val.placeholder=p.label;}
+  const notes=document.getElementById('hl-notes');if(notes)notes.value='';
+  document.getElementById('healthLogModalTitle').textContent='Log — '+type;
+  openModal('healthLogModal');
 }
 
 // ── Trend Chart ──
@@ -2944,11 +2985,18 @@ function renderHealth(){
   if(sleep)setCard('h-sleep',sleep.value.toFixed(1),'h-sleep-sub','hrs · '+sleep.date);
   if(weight)setCard('h-weight',weight.value.toFixed(1),'h-weight-sub','kg · '+weight.date);
 
-  // Restore water from today's wellness
+  // Restore water from today's wellness — must run AFTER wellnessPanel is in DOM
   const wellness=getWellness();
   const todayKey=new Date().toISOString().split('T')[0];
   const todayData=wellness[todayKey]||{};
+  // Sync todayWellness from stored data
+  if(todayData.mood)todayWellness.mood=todayData.mood;
+  if(todayData.energy)todayWellness.energy=todayData.energy;
+  if(todayData.stress)todayWellness.stress=todayData.stress;
+  if(todayData.water)todayWellness.water=todayData.water;
+  // Apply water glasses (glass elements exist in DOM at this point)
   if(todayData.water)logWater(todayData.water);
+  else{const h=document.getElementById('h-water');if(h)h.textContent='0';const s=document.getElementById('h-water-sub');if(s)s.textContent='0 / 8 glasses today';}
 
   // Health log list
   const listEl=document.getElementById('healthLogList');
