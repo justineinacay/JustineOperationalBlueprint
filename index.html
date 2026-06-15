@@ -777,7 +777,7 @@ select option{background:var(--navy3)}
 <!-- HEALTH LOG MODAL -->
 <div class="mov" id="healthLogModal">
   <div class="modal" style="width:520px">
-    <div class="mh"><div class="mt" id="healthLogModalTitle">Log Health Entry</div><button class="mc" onclick="closeModal('healthLogModal')">×</button></div>
+    <div class="mh"><div class="mt">Log Health Entry</div><button class="mc" onclick="closeModal('healthLogModal')">×</button></div>
     <div class="mb">
       <div class="fr">
         <div class="fg"><label class="fl">Date</label><input type="date" id="hl-date"></div>
@@ -958,6 +958,8 @@ select option{background:var(--navy3)}
       <div class="hpill"><div class="hdot" id="statusDot"></div><span id="statusText" style="font-size:10px">ONLINE</span></div>
       <div class="hpill"><span id="topDate" style="font-size:10px"></span></div>
       <div class="hpill"><span id="topClock" style="font-size:11px">--:--</span></div>
+      <button class="tb-btn" onclick="loadAllFromSupabase()" title="Pull latest from Supabase" style="font-size:9px;letter-spacing:.06em;color:var(--teal);border-color:rgba(0,255,242,.3)">↻ SYNC</button>
+      <button class="tb-btn" onclick="pushLocalToSupabase()" title="Seed Supabase with current local data — run once on first setup" style="font-size:9px;letter-spacing:.06em;color:var(--amber);border-color:rgba(255,170,0,.3)">↑ SEED</button>
       <button class="tb-btn" onclick="toggleVoice()" id="voiceFab" title="Voice (Space)"><i class="ti ti-microphone" id="voiceFabIcon"></i></button>
       <button class="tb-btn" onclick="toggleMute()" id="muteBtn" title="Toggle voice output"><i class="ti ti-volume" id="muteIcon"></i></button>
       <button class="tb-btn" id="onyxBtn" onclick="setOpenAIKey()" title="Set OpenAI key for premium JARVIS voice" style="font-size:9px;letter-spacing:.06em;color:var(--teal2);border-color:var(--teal2)">ONYX</button>
@@ -1112,10 +1114,9 @@ select option{background:var(--navy3)}
                 <button onclick="setView('life')" style="flex:1;padding:10px 12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.25);border-radius:4px;color:var(--green);font-size:11px;font-weight:600;cursor:pointer;transition:all .2s" onmouseover="this.style.background='rgba(34,197,94,.14)'" onmouseout="this.style.background='rgba(34,197,94,.07)'">Life & Cash</button>
               </div>
             </div>
-            <!-- JARVIS Orb decorative -->
             <div style="display:flex;justify-content:center;padding:8px 0">
               <div style="width:44px;height:44px;border-radius:50%;background:radial-gradient(circle,rgba(0,255,242,.2),transparent 70%);border:1px solid rgba(0,255,242,.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(0,255,242,.15)">
-                <i class="ti ti-diamond" style="font-size:16px;color:var(--teal);line-height:1;display:block"></i>
+                <span style="font-size:9px;font-weight:900;color:var(--teal);letter-spacing:.05em;text-shadow:0 0 8px rgba(0,255,242,.6)">J</span>
               </div>
             </div>
           </div>
@@ -1363,8 +1364,14 @@ select option{background:var(--navy3)}
     <!-- ===== HEALTH ===== -->
     <div class="view" id="view-health">
       <div class="vh">
-        <div><div class="vt" style="color:var(--red)"><i class="ti ti-heart-rate-monitor"></i>HEALTH — Bio Monitor</div><div class="vs">Daily metrics · vitals · wellness log · Apple Health sync</div></div>
+        <div><div class="vt" style="color:var(--red)"><i class="ti ti-heart-rate-monitor"></i>HEALTH — Bio Monitor</div><div class="vs">Daily metrics · vitals · wellness log · manual entry</div></div>
         <div class="va">
+          <button class="btn btn-g" onclick="openQuickHealthAdd('hr')" title="Heart Rate"><i class="ti ti-heart-rate-monitor"></i> HR</button>
+          <button class="btn btn-g" onclick="openQuickHealthAdd('bp')" title="Blood Pressure"><i class="ti ti-activity-heartbeat"></i> BP</button>
+          <button class="btn btn-g" onclick="openQuickHealthAdd('steps')" title="Steps"><i class="ti ti-shoe"></i> Steps</button>
+          <button class="btn btn-g" onclick="openQuickHealthAdd('sleep')" title="Sleep"><i class="ti ti-moon"></i> Sleep</button>
+          <button class="btn btn-g" onclick="openQuickHealthAdd('water')" title="Water"><i class="ti ti-droplet"></i> Water</button>
+          <button class="btn btn-g" onclick="openQuickHealthAdd('weight')" title="Weight"><i class="ti ti-scale"></i> Weight</button>
           <button class="btn" style="background:rgba(255,34,68,.1);color:var(--red);border:1px solid rgba(255,34,68,.3);font-weight:700" onclick="openModal('healthLogModal')"><i class="ti ti-plus"></i> Log Entry</button>
         </div>
       </div>
@@ -1401,24 +1408,6 @@ select option{background:var(--navy3)}
             <div class="cl">Water</div>
             <div class="cv" style="color:var(--purple);font-size:22px" id="h-water">—</div>
             <div class="csub" id="h-water-sub">glasses · today</div>
-          </div>
-        </div>
-
-        <!-- QUICK LOG BUTTONS -->
-        <div style="background:#050a12;border:1px solid var(--border);border-radius:4px;padding:10px 14px;margin-bottom:14px;position:relative;overflow:hidden;flex-shrink:0">
-          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--red),var(--teal),transparent)"></div>
-          <div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px"><i class="ti ti-bolt" style="font-size:13px;color:var(--teal);line-height:1;display:block"></i>QUICK LOG</div>
-          <div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px">
-            <button onclick="quickLog('Exercise')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:6px;color:var(--green);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(34,197,94,.18)'" onmouseout="this.style.background='rgba(34,197,94,.08)'"><i class="ti ti-run" style="font-size:18px;line-height:1;display:block"></i>Exercise</button>
-            <button onclick="quickLog('Sleep')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.25);border-radius:6px;color:var(--purple);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(168,85,247,.18)'" onmouseout="this.style.background='rgba(168,85,247,.08)'"><i class="ti ti-moon" style="font-size:18px;line-height:1;display:block"></i>Sleep</button>
-            <button onclick="quickLog('Nutrition')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:6px;color:var(--amber);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(245,158,11,.18)'" onmouseout="this.style.background='rgba(245,158,11,.08)'"><i class="ti ti-salad" style="font-size:18px;line-height:1;display:block"></i>Nutrition</button>
-            <button onclick="quickLog('Mental')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(0,255,242,.06);border:1px solid var(--border2);border-radius:6px;color:var(--teal);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(0,255,242,.14)'" onmouseout="this.style.background='rgba(0,255,242,.06)'"><i class="ti ti-brain" style="font-size:18px;line-height:1;display:block"></i>Mental</button>
-            <button onclick="quickLog('Medication')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(255,40,160,.08);border:1px solid rgba(255,40,160,.25);border-radius:6px;color:var(--pink);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(255,40,160,.18)'" onmouseout="this.style.background='rgba(255,40,160,.08)'"><i class="ti ti-pill" style="font-size:18px;line-height:1;display:block"></i>Medication</button>
-            <button onclick="quickLog('Heart Rate')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.25);border-radius:6px;color:var(--red);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(255,34,68,.18)'" onmouseout="this.style.background='rgba(255,34,68,.08)'"><i class="ti ti-heartbeat" style="font-size:18px;line-height:1;display:block"></i>Heart Rate</button>
-            <button onclick="quickLog('Blood Pressure')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.25);border-radius:6px;color:var(--orange);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(255,140,0,.18)'" onmouseout="this.style.background='rgba(255,140,0,.08)'"><i class="ti ti-activity" style="font-size:18px;line-height:1;display:block"></i>Blood Pressure</button>
-            <button onclick="quickLog('Steps')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);border-radius:6px;color:var(--green);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(0,255,136,.18)'" onmouseout="this.style.background='rgba(0,255,136,.08)'"><i class="ti ti-shoe" style="font-size:18px;line-height:1;display:block"></i>Steps</button>
-            <button onclick="quickLog('Weight')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:6px;color:var(--amber);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(245,158,11,.18)'" onmouseout="this.style.background='rgba(245,158,11,.08)'"><i class="ti ti-scale" style="font-size:18px;line-height:1;display:block"></i>Weight</button>
-            <button onclick="quickLog('Water')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;background:rgba(128,255,250,.06);border:1px solid rgba(128,255,250,.25);border-radius:6px;color:var(--teal2);cursor:pointer;transition:all .2s;font-size:9px;font-weight:700;letter-spacing:.04em" onmouseover="this.style.background='rgba(128,255,250,.14)'" onmouseout="this.style.background='rgba(128,255,250,.06)'"><i class="ti ti-droplet" style="font-size:18px;line-height:1;display:block"></i>Water</button>
           </div>
         </div>
 
@@ -1480,7 +1469,14 @@ select option{background:var(--navy3)}
                 <div>
                   <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px">Hydration</div>
                   <div style="display:flex;gap:4px" id="waterTracker">
-                    ${Array.from({length:8},(_,i)=>`<div onclick="logWater(${i+1})" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-${i+1}" title="${i+1} glass${i+1>1?'es':''}"></div>`).join('')}
+                    <div onclick="logWater(1)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-1" title="1 glass"></div>
+                    <div onclick="logWater(2)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-2" title="2 glasses"></div>
+                    <div onclick="logWater(3)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-3" title="3 glasses"></div>
+                    <div onclick="logWater(4)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-4" title="4 glasses"></div>
+                    <div onclick="logWater(5)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-5" title="5 glasses"></div>
+                    <div onclick="logWater(6)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-6" title="6 glasses"></div>
+                    <div onclick="logWater(7)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-7" title="7 glasses"></div>
+                    <div onclick="logWater(8)" style="width:18px;height:18px;border-radius:3px;border:1px solid var(--border2);background:transparent;cursor:pointer;transition:all .2s" id="wg-8" title="8 glasses"></div>
                   </div>
                 </div>
               </div>
@@ -1496,11 +1492,13 @@ select option{background:var(--navy3)}
           <div class="hc" style="padding:0;overflow:hidden">
             <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
               <span style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase"><i class="ti ti-chart-line" style="font-size:13px;display:inline-block;margin-right:6px;color:var(--teal)"></i>7-Day Trend</span>
-              <select id="healthTrendMetric" onchange="renderHealthTrend()" style="width:120px;font-size:11px;padding:3px 6px">
+              <select id="healthTrendMetric" onchange="renderHealthTrend()" style="width:130px;font-size:11px;padding:3px 6px">
                 <option value="hr">Heart Rate</option>
-                <option value="weight">Weight</option>
-                <option value="sleep">Sleep</option>
+                <option value="bp">Blood Pressure</option>
                 <option value="steps">Steps</option>
+                <option value="sleep">Sleep</option>
+                <option value="water">Water</option>
+                <option value="weight">Weight</option>
               </select>
             </div>
             <div style="padding:14px">
@@ -1509,21 +1507,18 @@ select option{background:var(--navy3)}
             </div>
           </div>
 
-          <!-- CSV IMPORT CARD -->
-          <div class="hc" style="border:1px solid rgba(0,255,136,.2)">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-              <i class="ti ti-file-import" style="font-size:28px;color:var(--green);line-height:1;display:block"></i>
-              <div>
-                <div style="font-size:13px;font-weight:700;color:var(--text1)">Import Health Data</div>
-                <div style="font-size:11px;color:var(--text3)">Upload CSV or log manually</div>
-              </div>
+          <!-- RECENT HEALTH LOG EDIT PANEL -->
+          <div class="hc" style="padding:0;overflow:hidden">
+            <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.08em;text-transform:uppercase"><i class="ti ti-pencil" style="font-size:13px;display:inline-block;margin-right:6px;color:var(--amber)"></i>Quick Add Vitals</span>
             </div>
-            <div style="display:flex;gap:8px;margin-top:4px">
-              <label style="flex:1;padding:8px 12px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.3);border-radius:4px;color:var(--green);font-size:12px;font-weight:700;cursor:pointer;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">
-                <i class="ti ti-upload" style="font-size:13px;line-height:1;display:block"></i> Import CSV
-                <input type="file" accept=".csv" onchange="importHealthCSV(event)" style="display:none">
-              </label>
-              <button onclick="openModal('healthLogModal')" style="flex:1;padding:8px 12px;background:rgba(0,255,242,.08);border:1px solid var(--teal2);border-radius:4px;color:var(--teal);font-size:12px;font-weight:700;cursor:pointer"><i class="ti ti-pencil" style="font-size:13px;line-height:1;display:inline-block"></i> Manual Log</button>
+            <div style="padding:12px 14px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+              <button onclick="openQuickHealthAdd('hr')" style="padding:10px 8px;background:rgba(255,34,68,.08);border:1px solid rgba(255,34,68,.25);border-radius:4px;color:var(--red);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s" onmouseover="this.style.background='rgba(255,34,68,.16)'" onmouseout="this.style.background='rgba(255,34,68,.08)'"><i class="ti ti-heart-rate-monitor" style="font-size:16px;line-height:1;display:block"></i>Heart Rate</button>
+              <button onclick="openQuickHealthAdd('bp')" style="padding:10px 8px;background:rgba(255,140,0,.08);border:1px solid rgba(255,140,0,.25);border-radius:4px;color:var(--orange);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s" onmouseover="this.style.background='rgba(255,140,0,.16)'" onmouseout="this.style.background='rgba(255,140,0,.08)'"><i class="ti ti-activity-heartbeat" style="font-size:16px;line-height:1;display:block"></i>Blood Pressure</button>
+              <button onclick="openQuickHealthAdd('steps')" style="padding:10px 8px;background:rgba(0,255,242,.06);border:1px solid rgba(0,255,242,.2);border-radius:4px;color:var(--teal);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s" onmouseover="this.style.background='rgba(0,255,242,.12)'" onmouseout="this.style.background='rgba(0,255,242,.06)'"><i class="ti ti-shoe" style="font-size:16px;line-height:1;display:block"></i>Steps Today</button>
+              <button onclick="openQuickHealthAdd('sleep')" style="padding:10px 8px;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.2);border-radius:4px;color:var(--green);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s" onmouseover="this.style.background='rgba(0,255,136,.14)'" onmouseout="this.style.background='rgba(0,255,136,.07)'"><i class="ti ti-moon" style="font-size:16px;line-height:1;display:block"></i>Sleep</button>
+              <button onclick="openQuickHealthAdd('water')" style="padding:10px 8px;background:rgba(191,95,255,.07);border:1px solid rgba(191,95,255,.2);border-radius:4px;color:var(--purple);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s" onmouseover="this.style.background='rgba(191,95,255,.14)'" onmouseout="this.style.background='rgba(191,95,255,.07)'"><i class="ti ti-droplet" style="font-size:16px;line-height:1;display:block"></i>Water</button>
+              <button onclick="openQuickHealthAdd('weight')" style="padding:10px 8px;background:rgba(255,170,0,.07);border:1px solid rgba(255,170,0,.2);border-radius:4px;color:var(--amber);font-size:11px;font-weight:700;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all .15s" onmouseover="this.style.background='rgba(255,170,0,.14)'" onmouseout="this.style.background='rgba(255,170,0,.07)'"><i class="ti ti-scale" style="font-size:16px;line-height:1;display:block"></i>Weight</button>
             </div>
           </div>
 
@@ -1587,32 +1582,323 @@ select option{background:var(--navy3)}
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-// ===== SUPABASE =====
-const SB_URL='https://ddxkmidantqgnxfxsrrz.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkeGttaWRhbnRxZ254ZnhzcnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNTIyNTYsImV4cCI6MjA5NjkyODI1Nn0.V4O2QN00wuiKI4xcP0J0oxVHnfHfRPShLxXdAoZxfwc';
-async function sbFetch(table,method='GET',body=null,match=null){
-  let url=`${SB_URL}/rest/v1/${table}`;
-  const qs=[];if(match)qs.push(match);if(method==='GET')qs.push('order=created_at.desc');
-  if(qs.length)url+='?'+qs.join('&');
-  const opts={method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
-  if(body)opts.body=JSON.stringify(body);
-  const res=await fetch(url,opts);
-  if(!res.ok||res.status===204)return method==='GET'?[]:true;
-  return res.json();
-}
-const SB={
-  async load(table,key){const rows=await sbFetch(table);if(rows&&rows.length){if(table==='cashflow')DB[key]=rows.map(r=>({...r,desc:r.description||r.desc||''}));else DB[key]=rows;save(key);}},
-  async upsert(table,row,key){const r={...row};if(table==='cashflow'){r.description=row.desc;delete r.desc;}delete r._dbKey;await sbFetch(table,'POST',r);save(key);},
-  async update(table,id,changes,key){const c={...changes};if(table==='cashflow'&&c.desc){c.description=c.desc;delete c.desc;}await sbFetch(table,'PATCH',c,`id=eq.${id}`);save(key);},
-  async remove(table,id,key){await sbFetch(table,'DELETE',null,`id=eq.${id}`);save(key);},
-  async addHistory(e){await sbFetch('history','POST',e);}
+
+// =============================================================================
+// J.E.L.I.X OS — Refactored Engine v2.0
+// Architecture: Config → Store → Persistence → UI Helpers → Domain Modules
+// =============================================================================
+
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const CONFIG = {
+  SB_URL: 'https://ddxkmidantqgnxfxsrrz.supabase.co',
+  SB_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRkeGttaWRhbnRxZ254ZnhzcnJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNTIyNTYsImV4cCI6MjA5NjkyODI1Nn0.V4O2QN00wuiKI4xcP0J0oxVHnfHfRPShLxXdAoZxfwc',
+  LS_PREFIX: 'j-',
+  HISTORY_LIMIT: 200,
+  WEATHER_URL: 'https://api.open-meteo.com/v1/forecast?latitude=14.5243&longitude=121.0507&current_weather=true&temperature_unit=celsius',
+  CURRENCY: 'PHP',
+  LOCALE: 'en-PH',
+  TZ: 'Asia/Manila',
 };
-async function loadAllFromSupabase(){
-  showToast('↻ Syncing with Supabase...');
-  await Promise.all([SB.load('tasks','tasks'),SB.load('clients','clients'),SB.load('venture','venture'),SB.load('faith','faith'),SB.load('cashflow','cashflow'),SB.load('cal_events','calEvents'),SB.load('journal','journal'),SB.load('notes','notes'),SB.load('memories','memories'),SB.load('sides','sides'),SB.load('history','history')]);
-  reRenderAll();showToast('✓ Supabase synced');speak('All systems synced, sir.');
+
+// ── PERSISTENCE LAYER ─────────────────────────────────────────────────────────
+// Single source of truth for localStorage. All reads/writes go through here.
+const Store = {
+  get(key, fallback = null) {
+    try {
+      const raw = localStorage.getItem(CONFIG.LS_PREFIX + key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch { return fallback; }
+  },
+  set(key, value) {
+    try { localStorage.setItem(CONFIG.LS_PREFIX + key, JSON.stringify(value)); }
+    catch (e) { console.error('Store.set failed:', key, e); }
+  },
+  remove(key) { localStorage.removeItem(CONFIG.LS_PREFIX + key); },
+};
+
+// ── SUPABASE CLIENT ───────────────────────────────────────────────────────────
+// Isolated — swap this block to change backends without touching domain logic.
+async function sbFetch(table, method = 'GET', body = null, match = null) {
+  const qs = [];
+  if (match) qs.push(match);
+  if (method === 'GET') qs.push('order=created_at.desc');
+  const url = `${CONFIG.SB_URL}/rest/v1/${table}${qs.length ? '?' + qs.join('&') : ''}`;
+  const opts = {
+    method,
+    headers: {
+      'apikey': CONFIG.SB_KEY,
+      'Authorization': `Bearer ${CONFIG.SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : '',
+    },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch(url, opts);
+    if (!res.ok || res.status === 204) return method === 'GET' ? [] : true;
+    return res.json();
+  } catch (e) {
+    console.warn(`sbFetch ${method} ${table}:`, e.message);
+    return method === 'GET' ? [] : false;
+  }
 }
-function reRenderAll(){renderBrief();renderTasks();renderWorkIH();renderWorkCS();renderVenture();renderBuild();renderSides();renderFaith();renderLife();renderCalendar();renderJournal();renderMemory();renderHistory();renderNotesList();renderHealth();}
+
+// Cashflow uses "description" column in Supabase but "desc" in local DB.
+// Normalised here so the rest of the app never knows.
+function normaliseCashflowForRemote(row) {
+  const r = { ...row };
+  r.description = r.desc;
+  delete r.desc;
+  delete r._dbKey;
+  return r;
+}
+function normaliseCashflowFromRemote(row) {
+  return { ...row, desc: row.description || row.desc || '' };
+}
+
+const SB = {
+  async load(table, key) {
+    const rows = await sbFetch(table);
+    // rows===false means fetch failed (network error) — keep localStorage data.
+    // rows===[] means Supabase responded but table is genuinely empty — still
+    //   respect that and clear local so the OS doesn't ghost stale seed data.
+    if (rows === false) return;                   // network failure — keep local
+    if (!Array.isArray(rows)) return;             // unexpected shape — keep local
+    DB[key] = table === 'cashflow'
+      ? rows.map(normaliseCashflowFromRemote)
+      : rows;
+    save(key);
+  },
+  async upsert(table, row, key) {
+    const r = table === 'cashflow' ? normaliseCashflowForRemote(row) : { ...row };
+    delete r._dbKey;
+    await sbFetch(table, 'POST', r);
+    if (key) save(key);
+  },
+  async update(table, id, changes, key) {
+    const c = table === 'cashflow' ? normaliseCashflowForRemote(changes) : { ...changes };
+    await sbFetch(table, 'PATCH', c, `id=eq.${id}`);
+    if (key) save(key);
+  },
+  async remove(table, id, key) {
+    await sbFetch(table, 'DELETE', null, `id=eq.${id}`);
+    if (key) save(key);
+  },
+  async addHistory(e) { await sbFetch('history', 'POST', e); },
+};
+
+// Separate sbFetch so a network error returns false instead of []
+// Override the catch return for GET to distinguish "empty table" from "failed"
+async function sbFetchSafe(table, method = 'GET', body = null, match = null) {
+  const qs = [];
+  if (match) qs.push(match);
+  if (method === 'GET') qs.push('order=created_at.desc');
+  const url = `${CONFIG.SB_URL}/rest/v1/${table}${qs.length ? '?' + qs.join('&') : ''}`;
+  const opts = {
+    method,
+    headers: {
+      'apikey': CONFIG.SB_KEY,
+      'Authorization': `Bearer ${CONFIG.SB_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : '',
+    },
+  };
+  if (body) opts.body = JSON.stringify(body);
+  try {
+    const res = await fetch(url, opts);
+    if (res.status === 204) return method === 'GET' ? [] : true;
+    if (!res.ok) { console.warn(`sbFetch ${method} ${table}: HTTP ${res.status}`); return method === 'GET' ? false : false; }
+    return res.json();
+  } catch (e) {
+    console.warn(`sbFetch ${method} ${table}:`, e.message);
+    return false; // distinguishable from empty array
+  }
+}
+
+async function loadAllFromSupabase() {
+  showToast('↻ Syncing with Supabase...');
+  const tables = [
+    ['tasks','tasks'], ['clients','clients'], ['venture','venture'],
+    ['faith','faith'], ['cashflow','cashflow'], ['cal_events','calEvents'],
+    ['journal','journal'], ['notes','notes'], ['memories','memories'],
+    ['sides','sides'], ['history','history'],
+  ];
+  const results = await Promise.allSettled(tables.map(([t, k]) => SB.load(t, k)));
+  const failed = results.filter(r => r.status === 'rejected').length;
+  reRenderAll();
+  if (failed === 0) {
+    showToast('✓ Supabase synced');
+    speak('All systems synced, sir.');
+  } else if (failed === tables.length) {
+    showToast('⚠ Offline — running on local data');
+    speak('Running on local data, sir. Supabase unreachable.');
+  } else {
+    showToast(`✓ Partial sync — ${tables.length - failed}/${tables.length} tables`);
+  }
+}
+
+// Push all current localStorage data up to Supabase (one-time seed)
+async function pushLocalToSupabase() {
+  showToast('↑ Pushing local data to Supabase...');
+  const tables = [
+    ['tasks','tasks'], ['clients','clients'], ['venture','venture'],
+    ['faith','faith'], ['cashflow','cashflow'], ['cal_events','calEvents'],
+    ['journal','journal'], ['notes','notes'], ['memories','memories'],
+    ['sides','sides'],
+  ];
+  let pushed = 0;
+  for (const [sbTable, key] of tables) {
+    const rows = DB[key] || [];
+    for (const row of rows) {
+      const r = sbTable === 'cashflow' ? normaliseCashflowForRemote(row) : { ...row };
+      delete r._dbKey;
+      const ok = await sbFetch(sbTable, 'POST', r);
+      if (ok !== false) pushed++;
+    }
+  }
+  showToast(`✓ Pushed ${pushed} records to Supabase, sir.`);
+  speak(`${pushed} records pushed to Supabase, sir.`);
+}
+
+// ── DB ────────────────────────────────────────────────────────────────────────
+// In-memory store. Initialised from localStorage, hydrated from Supabase async.
+const DB = {
+  tasks:     Store.get('tasks')     || [
+    {id:1,title:'Reply to Right Team Provider re: Rachel meeting',world:'WORK-IH',priority:'High',status:'Todo',due:'2026-06-14',platform:'Email',client:'Right Team Provider',notes:'Reschedule CFO Rachel'},
+    {id:2,title:'Review MM01 Webinar 2 LinkedIn campaigns',world:'WORK-IH',priority:'High',status:'In Progress',due:'2026-06-14',platform:'LinkedIn',client:'Millscope Markets',notes:'5 campaigns'},
+    {id:3,title:'Weekly Instagram carousel',world:'WORK-CS',priority:'High',status:'Todo',due:'2026-06-14',platform:'Instagram',client:'Chainsmoker',notes:'BBQ content'},
+    {id:4,title:'TikTok trend post',world:'WORK-CS',priority:'Medium',status:'In Progress',due:'2026-06-15',platform:'TikTok',client:'Chainsmoker',notes:''},
+    {id:5,title:'UberEats campaign review',world:'WORK-CS',priority:'Medium',status:'No Progress',due:'2026-06-16',platform:'UberEats',client:'Chainsmoker',notes:''},
+    {id:6,title:'TJC partner recruitment outreach',world:'VENTURE',priority:'High',status:'In Progress',due:'2026-06-15',platform:'LinkedIn',client:'',notes:'Pre-revenue'},
+    {id:7,title:'NAKNAK v8 iteration plan',world:'BUILD',priority:'Low',status:'Todo',due:'2026-06-20',platform:'',client:'',notes:''},
+    {id:8,title:'DISKARTE beta testing',world:'BUILD',priority:'Medium',status:'In Progress',due:'2026-06-18',platform:'',client:'',notes:''},
+  ],
+  clients:   Store.get('clients')   || [
+    {id:1,name:'Right Team Provider',world:'WORK-IH',status:'Urgent',revenue:'$$',next:'Schedule Rachel meeting',contact:'precious@rightteamprovider.com'},
+    {id:2,name:'Millscope Markets',world:'WORK-IH',status:'Active',revenue:'$$$',next:'Review Webinar 2 campaigns',contact:''},
+    {id:3,name:'Celtic Biotech',world:'WORK-IH',status:'Active',revenue:'$$',next:'Next campaign brief',contact:''},
+    {id:4,name:'Digital Smiles Innovations',world:'WORK-IH',status:'Active',revenue:'$',next:'B2B ad strategy review',contact:''},
+    {id:5,name:'Virgelia Productions',world:'WORK-IH',status:'Active',revenue:'$',next:'Content calendar',contact:''},
+    {id:6,name:'Elite Insurance by Nelson Rivera',world:'WORK-IH',status:'Active',revenue:'$$',next:'Website mockup revisions',contact:''},
+    {id:7,name:'Share the Moment',world:'WORK-IH',status:'Active',revenue:'$',next:'Photo website update',contact:''},
+    {id:8,name:'OptionC',world:'WORK-IH',status:'Pending',revenue:'$',next:'Awaiting brief',contact:''},
+    {id:9,name:'Marketing Media Cloud',world:'WORK-IH',status:'Active',revenue:'$$',next:'Platform management',contact:''},
+  ],
+  venture:   Store.get('venture')   || [
+    {id:1,name:'North American SMB #1',type:'Client',stage:'Discovery',notes:'Warm intro via LinkedIn'},
+    {id:2,name:'VA Applicant A',type:'Partner/VA',stage:'Proposal',notes:'Strong social media background'},
+    {id:3,name:'Maria A.',type:'Partner/VA',stage:'Active',notes:'Executive VA · 10PM–6AM shift'},
+  ],
+  notes:     Store.get('notes')     || [{id:1,title:'Operations Log — June 2026',blocks:[{type:'h2',content:'June 14 2026',done:false},{type:'todo',content:'Reply to Right Team Provider',done:false},{type:'todo',content:'TJC meeting prep',done:false}]}],
+  journal:   Store.get('journal')   || [],
+  memories:  Store.get('memories')  || [
+    {id:1,memory:'RTP prefers meetings with CFO Rachel in the afternoon PHT',category:'Client Preference',world:'WORK-IH',date:'2026-06-09'},
+    {id:2,memory:'Chainsmoker: No pork, halal certified, urban BBQ positioning',category:'Brand',world:'WORK-CS',date:'2026-05-15'},
+    {id:3,memory:'NAKNAK v8 freemium tiers: ₱0 / ₱99 / ₱199',category:'Product',world:'BUILD',date:'2026-05-20'},
+  ],
+  sides:     Store.get('sides')     || [],
+  faith:     Store.get('faith')     || [],
+  cashflow:  Store.get('cashflow')  || [],
+  calEvents: Store.get('calEvents') || [
+    {id:1,title:'Church + Buklod Panata',date:'2026-06-14',time:'18:00',type:'pu',loc:'Church',notes:''},
+    {id:2,title:'Job Collectives Meeting',date:'2026-06-14',time:'22:00',type:'oc',loc:'Google Meet',notes:''},
+    {id:3,title:'CFO Caucus',date:'2026-06-15',time:'20:00',type:'teal',loc:'',notes:''},
+  ],
+  history:   Store.get('history')   || [],
+};
+
+// ── CORE UTILITIES ────────────────────────────────────────────────────────────
+
+// Replaces: function save(k){localStorage.setItem('j-'+k,JSON.stringify(DB[k]))}
+function save(k) { Store.set(k, DB[k]); }
+
+// Unique ID — crypto-based, collision-safe vs Date.now()
+function uid() {
+  return typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID().replace(/-/g,'').substring(0,16)
+    : Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+// Generic entity operations — eliminates 8 near-identical delete/upsert blocks
+function dbInsert(key, item, sbTable) {
+  DB[key].unshift(item);
+  SB.upsert(sbTable, item, key);
+}
+function dbUpdate(key, id, changes, sbTable) {
+  const idx = DB[key].findIndex(x => x.id === id);
+  if (idx < 0) return false;
+  Object.assign(DB[key][idx], changes);
+  SB.update(sbTable, id, DB[key][idx], key);
+  save(key);
+  return DB[key][idx];
+}
+function dbDelete(key, id, sbTable) {
+  const item = DB[key].find(x => x.id === id);
+  if (!item) return null;
+  DB[key] = DB[key].filter(x => x.id !== id);
+  SB.remove(sbTable, id, key);
+  return item;
+}
+function dbFind(key, id) { return DB[key].find(x => x.id === id) || null; }
+
+// XSS-safe text escaping for all innerHTML injections
+function esc(str) {
+  return String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Currency formatter — single definition, used everywhere
+const fmt = v => '₱' + Number(v || 0).toLocaleString(CONFIG.LOCALE, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+// Shared status → CSS pill class map — eliminates 6 duplicated ternary chains
+function statusPill(status) {
+  const m = { Done:'pg', Approved:'pg', 'In Progress':'pt', Submitted:'pt', 'No Progress':'pam', Pending:'po', Rejected:'pr' };
+  return m[status] || 'pgr';
+}
+function priorityDot(priority) {
+  return priority === 'High' ? 'ph' : priority === 'Medium' ? 'pm' : 'pl';
+}
+
+// Today's ISO date string — computed once per call, no repeated inline splits
+function today() { return new Date().toISOString().split('T')[0]; }
+
+// ── RENDER SCHEDULER ──────────────────────────────────────────────────────────
+// Replaces: reRenderAll() called 11 times, rendering 15 views every time.
+// Now only re-renders what's actually visible + always-on widgets.
+const RENDER_MAP = {
+  brief:    () => renderBrief(),
+  'work-ih':() => renderWorkIH(),
+  'work-cs':() => renderWorkCS(),
+  venture:  () => renderVenture(),
+  build:    () => renderBuild(),
+  sides:    () => renderSides(),
+  faith:    () => renderFaith(),
+  life:     () => renderLife(),
+  calendar: () => renderCalendar(),
+  tasks:    () => renderTasks(),
+  notes:    () => renderNotesList(),
+  journal:  () => renderJournal(),
+  memory:   () => renderMemory(),
+  history:  () => renderHistory(),
+  health:   () => renderHealth(),
+};
+let _currentView = 'brief';
+let _renderPending = false;
+
+function reRenderAll() {
+  // Always render brief (stat cards) + the currently visible view
+  if (_renderPending) return;
+  _renderPending = true;
+  requestAnimationFrame(() => {
+    _renderPending = false;
+    try { renderBrief(); } catch(e) { console.warn('renderBrief:', e); }
+    if (_currentView !== 'brief') {
+      try { RENDER_MAP[_currentView]?.(); } catch(e) { console.warn('render:', _currentView, e); }
+    }
+    // Lightweight always-on counters
+    const badge = document.getElementById('taskBadge');
+    if (badge) badge.textContent = DB.tasks.filter(t => t.status !== 'Done').length;
+  });
+}
 
 // ===== TTS =====
 let isMuted=false,ttsVoice=null;
@@ -1648,85 +1934,10 @@ function setJelixAPIKey(){
   }
 }
 
-// ===== DB =====
-const DB={
-  tasks:JSON.parse(localStorage.getItem('j-tasks')||'null')||[
-    {id:1,title:'Reply to Right Team Provider re: Rachel meeting',world:'WORK-IH',priority:'High',status:'Todo',due:'2026-06-14',platform:'Email',client:'Right Team Provider',notes:'Reschedule CFO Rachel'},
-    {id:2,title:'Review MM01 Webinar 2 LinkedIn campaigns',world:'WORK-IH',priority:'High',status:'In Progress',due:'2026-06-14',platform:'LinkedIn',client:'Millscope Markets',notes:'5 campaigns'},
-    {id:3,title:'Weekly Instagram carousel',world:'WORK-CS',priority:'High',status:'Todo',due:'2026-06-14',platform:'Instagram',client:'Chainsmoker',notes:'BBQ content'},
-    {id:4,title:'TikTok trend post',world:'WORK-CS',priority:'Medium',status:'In Progress',due:'2026-06-15',platform:'TikTok',client:'Chainsmoker',notes:''},
-    {id:5,title:'UberEats campaign review',world:'WORK-CS',priority:'Medium',status:'No Progress',due:'2026-06-16',platform:'UberEats',client:'Chainsmoker',notes:''},
-    {id:6,title:'TJC partner recruitment outreach',world:'VENTURE',priority:'High',status:'In Progress',due:'2026-06-15',platform:'LinkedIn',client:'',notes:'Pre-revenue'},
-    {id:7,title:'NAKNAK v8 iteration plan',world:'BUILD',priority:'Low',status:'Todo',due:'2026-06-20',platform:'',client:'',notes:''},
-    {id:8,title:'DISKARTE beta testing',world:'BUILD',priority:'Medium',status:'In Progress',due:'2026-06-18',platform:'',client:'',notes:''},
-  ],
-  clients:JSON.parse(localStorage.getItem('j-clients')||'null')||[
-    {id:1,name:'Right Team Provider',world:'WORK-IH',status:'Urgent',revenue:'$$',next:'Schedule Rachel meeting',contact:'precious@rightteamprovider.com'},
-    {id:2,name:'Millscope Markets',world:'WORK-IH',status:'Active',revenue:'$$$',next:'Review Webinar 2 campaigns',contact:''},
-    {id:3,name:'Celtic Biotech',world:'WORK-IH',status:'Active',revenue:'$$',next:'Next campaign brief',contact:''},
-    {id:4,name:'Digital Smiles Innovations',world:'WORK-IH',status:'Active',revenue:'$',next:'B2B ad strategy review',contact:''},
-    {id:5,name:'Virgelia Productions',world:'WORK-IH',status:'Active',revenue:'$',next:'Content calendar',contact:''},
-    {id:6,name:'Elite Insurance by Nelson Rivera',world:'WORK-IH',status:'Active',revenue:'$$',next:'Website mockup revisions',contact:''},
-    {id:7,name:'Share the Moment',world:'WORK-IH',status:'Active',revenue:'$',next:'Photo website update',contact:''},
-    {id:8,name:'OptionC',world:'WORK-IH',status:'Pending',revenue:'$',next:'Awaiting brief',contact:''},
-    {id:9,name:'Marketing Media Cloud',world:'WORK-IH',status:'Active',revenue:'$$',next:'Platform management',contact:''},
-  ],
-  venture:JSON.parse(localStorage.getItem('j-venture')||'null')||[
-    {id:1,name:'North American SMB #1',type:'Client',stage:'Discovery',notes:'Warm intro via LinkedIn'},
-    {id:2,name:'VA Applicant A',type:'Partner/VA',stage:'Proposal',notes:'Strong social media background'},
-    {id:3,name:'Maria A.',type:'Partner/VA',stage:'Active',notes:'Executive VA · 10PM–6AM shift'},
-  ],
-  notes:JSON.parse(localStorage.getItem('j-notes')||'null')||[{id:1,title:'Operations Log — June 2026',blocks:[{type:'h2',content:'June 14 2026',done:false},{type:'todo',content:'Reply to Right Team Provider',done:false},{type:'todo',content:'TJC meeting prep',done:false}]}],
-  journal:JSON.parse(localStorage.getItem('j-journal')||'null')||[],
-  memories:JSON.parse(localStorage.getItem('j-memories')||'null')||[
-    {id:1,memory:'RTP prefers meetings with CFO Rachel in the afternoon PHT',category:'Client Preference',world:'WORK-IH',date:'2026-06-09'},
-    {id:2,memory:'Chainsmoker: No pork, halal certified, urban BBQ positioning',category:'Brand',world:'WORK-CS',date:'2026-05-15'},
-    {id:3,memory:'NAKNAK v8 freemium tiers: ₱0 / ₱99 / ₱199',category:'Product',world:'BUILD',date:'2026-05-20'},
-  ],
-  sides:JSON.parse(localStorage.getItem('j-sides')||'null')||[],
-  faith:JSON.parse(localStorage.getItem('j-faith')||'null')||[],
-  cashflow:JSON.parse(localStorage.getItem('j-cashflow')||'null')||[],
-  calEvents:JSON.parse(localStorage.getItem('j-calEvents')||'null')||[
-    {id:1,title:'Church + Buklod Panata',date:'2026-06-14',time:'18:00',type:'pu',loc:'Church',notes:''},
-    {id:2,title:'Job Collectives Meeting',date:'2026-06-14',time:'22:00',type:'oc',loc:'Google Meet',notes:''},
-    {id:3,title:'CFO Caucus',date:'2026-06-15',time:'20:00',type:'teal',loc:'',notes:''},
-  ],
-  history:JSON.parse(localStorage.getItem('j-history')||'null')||[],
-};
-function save(k){localStorage.setItem('j-'+k,JSON.stringify(DB[k]))}
-
-// ===== HISTORY =====
-function addHistory(type,label,data){
-  const e={id:Date.now(),type,label,data,time:new Date().toISOString()};
-  DB.history.unshift(e);if(DB.history.length>200)DB.history=DB.history.slice(0,200);
-  save('history');SB.addHistory(e);
-  if(type==='delete')showUndoToast(label,e.id);
-}
-function showUndoToast(label,hid){showToast('Deleted: '+label.substring(0,40),true,()=>restoreFromHistory(hid));}
-function restoreFromHistory(hid){
-  const e=DB.history.find(h=>h.id===hid);if(!e)return;const d=e.data;
-  if(e.type==='delete'){
-    const map={'tasks':'tasks','clients':'clients','venture':'venture','faith':'faith','cashflow':'cashflow','calEvents':'calEvents','journal':'journal','journal_entries':'journal'};
-    const key=d._dbKey;
-    if(key&&DB[key]){DB[key].unshift(d);save(key);SB.upsert(key==='calEvents'?'cal_events':key,d,key);reRenderAll();showToast('Restored: '+e.label.substring(0,40));}
-  }
-}
-function renderHistory(){
-  const f=document.getElementById('histFilter')?.value||'all';
-  const items=DB.history.filter(h=>f==='all'||h.type===f);
-  const body=document.getElementById('historyBody');
-  if(!items.length){body.innerHTML='<div style="font-size:11px;color:var(--text3);text-align:center;padding:30px">No activity yet.</div>';return;}
-  const tc={add:'var(--green)',edit:'var(--teal)',delete:'var(--red)',navigate:'var(--text3)',voice:'var(--purple)'};
-  const ti={add:'ti-plus',edit:'ti-pencil',delete:'ti-trash',navigate:'ti-arrow-right',voice:'ti-microphone'};
-  body.innerHTML=items.map(h=>{
-    const d=new Date(h.time);const ts=d.toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});
-    return`<div class="hitem"><div class="hicon" style="background:rgba(0,0,0,.3);border:1px solid var(--border);color:${tc[h.type]||'var(--text3)'}"><i class="ti ${ti[h.type]||'ti-activity'}" style="font-size:11px;line-height:1;display:block"></i></div><div style="flex:1"><div class="hlabel">${h.label}</div><div class="htime">${ts} · <span style="color:${tc[h.type]||'var(--text3)'}">${h.type.toUpperCase()}</span></div></div>${h.type==='delete'?`<button class="hrestore" onclick="restoreFromHistory(${h.id})"><i class="ti ti-rotate-clockwise" style="display:inline;margin-right:3px"></i>Restore</button>`:''}</div>`;
-  }).join('');
-}
-function clearHistory(){DB.history=[];save('history');renderHistory();showToast('History cleared');}
+// ── TTS ───────────────────────────────────────────────────────────────────────
 
 // ===== CLOCK / WEATHER =====
-let calYear=2026,calMonth=5;
+// ── CLOCK / WEATHER ───────────────────────────────────────────────────────────
 function updateClock(){
   const n=new Date();
   document.getElementById('topClock').textContent=n.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});
@@ -1738,16 +1949,10 @@ setInterval(updateClock,1000);updateClock();
 async function fetchWeather(){try{const r=await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5243&longitude=121.0507&current_weather=true&temperature_unit=celsius');const d=await r.json();document.getElementById('weatherText').textContent=Math.round(d.current_weather.temperature)+'°C · Taguig';}catch(e){document.getElementById('weatherText').textContent='-- °C';}}
 fetchWeather();setInterval(fetchWeather,600000);
 
-// ===== VIEWS =====
-let currentView='brief';
-function setView(v){
-  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===v));
-  const el=document.getElementById('view-'+v);if(el)el.classList.add('active');
-  currentView=v;addHistory('navigate','Navigated to '+v,{view:v});
-  const r={brief:renderBrief,'work-ih':renderWorkIH,'work-cs':renderWorkCS,venture:renderVenture,build:renderBuild,sides:renderSides,faith:renderFaith,life:renderLife,calendar:renderCalendar,tasks:renderTasks,notes:renderNotesList,journal:renderJournal,memory:renderMemory,history:renderHistory};
-  if(r[v])r[v]();
-}
+// ===== VIEWS — legacy shim: currentView proxies _currentView =====
+Object.defineProperty(window,'currentView',{get:()=>_currentView,set:v=>{_currentView=v;}});
+// setView, mobileNav, toggleMobileMore defined above in refactored navigation block.
+// Old inline definition removed — RENDER_MAP + _currentView handle routing.
 
 // ===== DAILY BRIEF =====
 let wtFilter='all';
@@ -2045,15 +2250,29 @@ function renderTasks(){
   document.getElementById('taskBadge').textContent=DB.tasks.filter(t=>t.status!=='Done').length;
 }
 
-// ===== MODALS =====
-function openModal(id){document.getElementById(id).classList.add('open')}
-function closeModal(id){document.getElementById(id).classList.remove('open');editingTaskId=null;editingClientId=null;editingFaithId=null;editingVentureId=null;editingJournalId=null;}
-function openTaskFor(world){document.getElementById('tf-world').value=world;document.getElementById('taskModalTitle').textContent='New Task';openModal('taskModal');}
-function openTaskForStatus(world,status){document.getElementById('tf-world').value=world;document.getElementById('tf-status').value=status;document.getElementById('taskModalTitle').textContent='New Task';openModal('taskModal');}
+// ===== MODALS — openModal/closeModal defined in refactored engine =====
+function openTaskFor(world){
+  editing.taskId=null;
+  document.getElementById('taskModalTitle').textContent='New Task';
+  document.getElementById('tf-world').value=world;
+  ['title','platform','notes','client'].forEach(f=>{const el=document.getElementById('tf-'+f);if(el)el.value='';});
+  document.getElementById('tf-prio').value='Medium';
+  document.getElementById('tf-status').value='Todo';
+  document.getElementById('tf-due').value='';
+  openModal('taskModal');
+}
+function openTaskForStatus(world, status){
+  editing.taskId=null;
+  document.getElementById('tf-world').value=world;
+  document.getElementById('tf-status').value=status;
+  document.getElementById('taskModalTitle').textContent='New Task';
+  openModal('taskModal');
+}
 
-let editingTaskId=null;
+let editingTaskId=null; // proxy via editing.taskId
+
 function saveTask(){
-  const t={id:editingTaskId||Date.now(),title:document.getElementById('tf-title').value.trim()||'Untitled Task',world:document.getElementById('tf-world').value,priority:document.getElementById('tf-prio').value,status:document.getElementById('tf-status').value,due:document.getElementById('tf-due').value,platform:document.getElementById('tf-platform').value.trim(),client:document.getElementById('tf-client').value.trim(),notes:document.getElementById('tf-notes').value};
+  const t={id:editingTaskId||uid(),title:document.getElementById('tf-title').value.trim()||'Untitled Task',world:document.getElementById('tf-world').value,priority:document.getElementById('tf-prio').value,status:document.getElementById('tf-status').value,due:document.getElementById('tf-due').value,platform:document.getElementById('tf-platform').value.trim(),client:document.getElementById('tf-client').value.trim(),notes:document.getElementById('tf-notes').value};
   const isEdit=!!editingTaskId;
   if(editingTaskId){const i=DB.tasks.findIndex(x=>x.id===editingTaskId);if(i>=0)DB.tasks[i]=t;SB.update('tasks',t.id,t,'tasks');}else{DB.tasks.unshift(t);SB.upsert('tasks',t,'tasks');}
   addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' task: '+t.title,{...t,_dbKey:'tasks'});
@@ -2076,9 +2295,8 @@ function deleteTask(e,id){
   reRenderAll();showToast('Task deleted');
 }
 
-let editingClientId=null;
 function saveClient(){
-  const c={id:editingClientId||Date.now(),name:document.getElementById('cf-name').value.trim()||'Unnamed',world:'WORK-IH',status:document.getElementById('cf-status').value,next:document.getElementById('cf-next').value,contact:document.getElementById('cf-contact').value,drive:document.getElementById('cf-drive')?.value||''};
+  const c={id:editingClientId||uid(),name:document.getElementById('cf-name').value.trim()||'Unnamed',world:'WORK-IH',status:document.getElementById('cf-status').value,next:document.getElementById('cf-next').value,contact:document.getElementById('cf-contact').value,drive:document.getElementById('cf-drive')?.value||''};
   const isEdit=!!editingClientId;
   if(editingClientId){const i=DB.clients.findIndex(x=>x.id===editingClientId);if(i>=0)DB.clients[i]=c;SB.update('clients',c.id,c,'clients');}else{DB.clients.unshift(c);SB.upsert('clients',c,'clients');}
   addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' client: '+c.name,{...c,_dbKey:'clients'});
@@ -2087,9 +2305,8 @@ function saveClient(){
 function editClient(id){const c=DB.clients.find(x=>x.id===id);if(!c)return;editingClientId=id;document.getElementById('clientModalTitle').textContent='Edit Client';['name','status','next','contact','drive'].forEach(f=>{const el=document.getElementById('cf-'+f);if(el)el.value=c[f]||'';});openModal('clientModal');}
 function deleteClientBtn(e,id){e.stopPropagation();const c=DB.clients.find(x=>x.id===id);DB.clients=DB.clients.filter(x=>x.id!==id);SB.remove('clients',id,'clients');addHistory('delete','Deleted client: '+c.name,{...c,_dbKey:'clients'});reRenderAll();showToast('Client deleted');}
 
-let editingVentureId=null;
 function openVentureModal(id){editingVentureId=id||null;const v=id?DB.venture.find(x=>x.id===id):null;document.getElementById('ventureModalTitle').textContent=v?'Edit Item':'New Item';['name','type','stage','notes'].forEach(f=>{const el=document.getElementById('vm-'+f);if(el)el.value=v?(v[f]||''):'';});openModal('ventureModal');}
-function saveVentureItem(){const v={id:editingVentureId||Date.now(),name:document.getElementById('vm-name').value.trim()||'Unnamed',type:document.getElementById('vm-type').value,stage:document.getElementById('vm-stage').value,notes:document.getElementById('vm-notes').value.trim()};const isEdit=!!editingVentureId;if(editingVentureId){const i=DB.venture.findIndex(x=>x.id===editingVentureId);if(i>=0)DB.venture[i]=v;SB.update('venture',v.id,v,'venture');}else{DB.venture.unshift(v);SB.upsert('venture',v,'venture');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' venture: '+v.name,{...v,_dbKey:'venture'});closeModal('ventureModal');renderVenture();showToast('✓ Saved');}
+function saveVentureItem(){const v={id:editingVentureId||uid(),name:document.getElementById('vm-name').value.trim()||'Unnamed',type:document.getElementById('vm-type').value,stage:document.getElementById('vm-stage').value,notes:document.getElementById('vm-notes').value.trim()};const isEdit=!!editingVentureId;if(editingVentureId){const i=DB.venture.findIndex(x=>x.id===editingVentureId);if(i>=0)DB.venture[i]=v;SB.update('venture',v.id,v,'venture');}else{DB.venture.unshift(v);SB.upsert('venture',v,'venture');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' venture: '+v.name,{...v,_dbKey:'venture'});closeModal('ventureModal');renderVenture();showToast('✓ Saved');}
 function renderVenture(){
   const clients=DB.venture.filter(v=>v.type==='Client');const partners=DB.venture.filter(v=>v.type==='Partner/VA');
   document.getElementById('vtClientCount').textContent=clients.length;
@@ -2205,38 +2422,178 @@ function renderSides(){
     </div>`;
   }).join('');
 }
-let editingSidesId=null;
 function addSidesProduct(){editingSidesId=null;document.getElementById('sidesModalTitle').textContent='New Product';['sp-name','sp-platform','sp-price','sp-drive','sp-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('sp-status').value='Active';openModal('sidesModal');}
 function editSidesProduct(pid){const p=DB.sides.find(x=>x.id===pid);if(!p)return;editingSidesId=pid;document.getElementById('sidesModalTitle').textContent='Edit Product';document.getElementById('sp-name').value=p.name||'';document.getElementById('sp-platform').value=p.platform||'';document.getElementById('sp-status').value=p.status||'Active';document.getElementById('sp-price').value=p.price||'';document.getElementById('sp-drive').value=p.drive||'';document.getElementById('sp-notes').value=p.notes||'';openModal('sidesModal');}
-function saveSidesProduct(){const name=document.getElementById('sp-name').value.trim();if(!name)return showToast('Product name required.');const p={id:editingSidesId||Date.now(),name,platform:document.getElementById('sp-platform').value.trim()||'RaketPH',status:document.getElementById('sp-status').value,price:parseFloat(document.getElementById('sp-price').value)||0,drive:document.getElementById('sp-drive').value.trim(),notes:document.getElementById('sp-notes').value.trim(),todos:editingSidesId?(DB.sides.find(x=>x.id===editingSidesId)?.todos||[]):[]};if(editingSidesId){const i=DB.sides.findIndex(x=>x.id===editingSidesId);if(i>=0)DB.sides[i]=p;SB.update('sides',p.id,p,'sides');}else{DB.sides.push(p);SB.upsert('sides',p,'sides');}closeModal('sidesModal');renderSides();showToast('✓ Product saved');}
+function saveSidesProduct(){const name=document.getElementById('sp-name').value.trim();if(!name)return showToast('Product name required.');const p={id:editingSidesId||uid(),name,platform:document.getElementById('sp-platform').value.trim()||'RaketPH',status:document.getElementById('sp-status').value,price:parseFloat(document.getElementById('sp-price').value)||0,drive:document.getElementById('sp-drive').value.trim(),notes:document.getElementById('sp-notes').value.trim(),todos:editingSidesId?(DB.sides.find(x=>x.id===editingSidesId)?.todos||[]):[]};if(editingSidesId){const i=DB.sides.findIndex(x=>x.id===editingSidesId);if(i>=0)DB.sides[i]=p;SB.update('sides',p.id,p,'sides');}else{DB.sides.push(p);SB.upsert('sides',p,'sides');}closeModal('sidesModal');renderSides();showToast('✓ Product saved');}
 function deleteSide(id){if(!confirm('Delete this product?'))return;DB.sides=DB.sides.filter(x=>x.id!==id);SB.remove('sides',id,'sides');renderSides();}
 function addSidesTodo(pid){const text=prompt('Task:');if(!text)return;const p=DB.sides.find(x=>x.id===pid);if(!p)return;p.todos=p.todos||[];p.todos.push({text,done:false});SB.update('sides',pid,p,'sides');renderSides();}
 function toggleSideTodo(pid,idx){const p=DB.sides.find(x=>x.id===pid);if(!p||!p.todos)return;p.todos[idx].done=!p.todos[idx].done;SB.update('sides',pid,p,'sides');renderSides();}
 function removeSideTodo(pid,idx){const p=DB.sides.find(x=>x.id===pid);if(!p||!p.todos)return;p.todos.splice(idx,1);SB.update('sides',pid,p,'sides');renderSides();}
 
-let editingFaithId=null;
 function openFaithModal(id){editingFaithId=id||null;const a=id?DB.faith.find(x=>x.id===id):null;document.getElementById('faithModalTitle').textContent=a?'Edit Activity':'Add Activity';['activity','group','date','submitted','cfo','aevm','status','assigned','drive'].forEach(f=>{const el=document.getElementById('fa-'+f);if(el)el.value=a?(a[f]||''):'';});openModal('faithModal');}
-function saveFaithActivity(){const a={id:editingFaithId||Date.now(),activity:document.getElementById('fa-activity').value.trim(),group:document.getElementById('fa-group').value.trim(),date:document.getElementById('fa-date').value,submitted:document.getElementById('fa-submitted').value,cfo:document.getElementById('fa-cfo').value.trim(),aevm:document.getElementById('fa-aevm').value.trim(),status:document.getElementById('fa-status').value,assigned:document.getElementById('fa-assigned').value.trim(),drive:document.getElementById('fa-drive').value.trim()};if(!a.activity){showToast('Activity name required');return;}const isEdit=!!editingFaithId;if(editingFaithId){const i=DB.faith.findIndex(x=>x.id===editingFaithId);if(i>=0)DB.faith[i]=a;SB.update('faith',a.id,a,'faith');}else{DB.faith.unshift(a);SB.upsert('faith',a,'faith');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' faith: '+a.activity,{...a,_dbKey:'faith'});closeModal('faithModal');renderFaith();showToast('✓ Activity saved');}
+function saveFaithActivity(){const a={id:editingFaithId||uid(),activity:document.getElementById('fa-activity').value.trim(),group:document.getElementById('fa-group').value.trim(),date:document.getElementById('fa-date').value,submitted:document.getElementById('fa-submitted').value,cfo:document.getElementById('fa-cfo').value.trim(),aevm:document.getElementById('fa-aevm').value.trim(),status:document.getElementById('fa-status').value,assigned:document.getElementById('fa-assigned').value.trim(),drive:document.getElementById('fa-drive').value.trim()};if(!a.activity){showToast('Activity name required');return;}const isEdit=!!editingFaithId;if(editingFaithId){const i=DB.faith.findIndex(x=>x.id===editingFaithId);if(i>=0)DB.faith[i]=a;SB.update('faith',a.id,a,'faith');}else{DB.faith.unshift(a);SB.upsert('faith',a,'faith');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' faith: '+a.activity,{...a,_dbKey:'faith'});closeModal('faithModal');renderFaith();showToast('✓ Activity saved');}
 function deleteFaith(id){const a=DB.faith.find(x=>x.id===id);DB.faith=DB.faith.filter(x=>x.id!==id);SB.remove('faith',id,'faith');addHistory('delete','Deleted faith: '+a.activity,{...a,_dbKey:'faith'});renderFaith();showToast('Deleted');}
 function renderFaith(){const tb=document.getElementById('faithTbody'),em=document.getElementById('faithEmpty');if(!DB.faith.length){tb.innerHTML='';em.style.display='';return;}em.style.display='none';tb.innerHTML=DB.faith.map(f=>`<tr onclick="openFaithModal(${f.id})"><td style="font-weight:500">${f.group||'—'}</td><td>${f.activity}</td><td style="font-size:11px;color:var(--text3)">${f.date||'—'}</td><td style="font-size:11px;color:var(--text3)">${f.submitted||'—'}</td><td style="font-size:11px">${f.cfo||'—'}</td><td style="font-size:11px">${f.aevm||'—'}</td><td><span class="pill ${f.status==='Done'||f.status==='Approved'?'pg':f.status==='Submitted'?'pt':f.status==='Rejected'?'pr':'po'}">${f.status}</span></td><td style="font-size:11px">${f.assigned||'—'}</td><td>${f.drive?`<a href="${f.drive}" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);font-size:11px;display:inline-flex;align-items:center;gap:3px"><i class="ti ti-brand-google-drive" style="font-size:11px;line-height:1;display:block"></i>Open</a>`:'—'}</td><td><button class="btn btn-d" style="padding:2px 6px" onclick="event.stopPropagation();deleteFaith(${f.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');document.getElementById('faithTotal').textContent=DB.faith.length;document.getElementById('faithApproved').textContent=DB.faith.filter(f=>f.status==='Approved'||f.status==='Done').length;document.getElementById('faithSubmitted').textContent=DB.faith.filter(f=>f.status==='Submitted').length;document.getElementById('faithPending').textContent=DB.faith.filter(f=>f.status==='Pending').length;}
 
-// LIFE
-let cfActiveTab='overview',cfCharts={};
-function setCFTab(tab,el){cfActiveTab=tab;['overview','transactions','chart','property'].forEach(t=>{const d=document.getElementById('cf-'+t);if(d)d.style.display='none';});document.getElementById('cf-'+tab).style.display='';document.querySelectorAll('.cfbt').forEach(b=>b.classList.remove('active'));el.classList.add('active');if(tab==='chart')renderCashCharts();if(tab==='transactions')renderCashTable();}
-function openCashModal(type){document.getElementById('cashModalTitle').textContent='Add '+(type==='Debit'?'Debit':'Credit');document.getElementById('ca-type').value=type;document.getElementById('ca-date').value=new Date().toISOString().split('T')[0];['ca-desc','ca-amount'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});openModal('cashModal');}
-function saveCashflow(){const t={id:Date.now(),type:document.getElementById('ca-type').value,date:document.getElementById('ca-date').value,desc:document.getElementById('ca-desc').value.trim()||'Transaction',amount:parseFloat(document.getElementById('ca-amount').value)||0,account:document.getElementById('ca-account').value,category:document.getElementById('ca-cat').value};DB.cashflow.unshift(t);SB.upsert('cashflow',t,'cashflow');closeModal('cashModal');addHistory('add','Added '+t.type+': ₱'+t.amount+' — '+t.desc,{...t,_dbKey:'cashflow'});renderLife();renderBrief();showToast('✓ Transaction saved');}
-function deleteCash(id){const t=DB.cashflow.find(x=>x.id===id);DB.cashflow=DB.cashflow.filter(x=>x.id!==id);SB.remove('cashflow',id,'cashflow');addHistory('delete','Deleted transaction: '+t.desc,{...t,_dbKey:'cashflow'});renderLife();renderBrief();showToast('Deleted');}
-function renderLife(){const credits=DB.cashflow.filter(t=>t.type==='Debit'),debits=DB.cashflow.filter(t=>t.type==='Credit');const ti=credits.reduce((s,t)=>s+(t.amount||0),0),to=debits.reduce((s,t)=>s+(t.amount||0),0),net=ti-to;const fmt=v=>'₱'+v.toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('cf-income').textContent=fmt(ti);document.getElementById('cf-expense').textContent=fmt(to);const ne=document.getElementById('cf-net');ne.textContent=fmt(Math.abs(net));ne.style.color=net>=0?'var(--green)':'var(--red)';document.getElementById('cf-count').textContent=DB.cashflow.length;document.getElementById('cf-recent-credits').innerHTML=credits.slice(0,4).map(t=>`<div class="brow"><div class="bdot" style="background:var(--green)"></div><div class="btxt">${t.desc}</div><span class="btag pg">+₱${t.amount.toLocaleString()}</span></div>`).join('')||'<div style="font-size:11px;color:var(--text3)">No debit entries yet.</div>';document.getElementById('cf-recent-debits').innerHTML=debits.slice(0,4).map(t=>`<div class="brow"><div class="bdot" style="background:var(--red)"></div><div class="btxt">${t.desc}</div><span class="btag pr">-₱${t.amount.toLocaleString()}</span></div>`).join('')||'<div style="font-size:11px;color:var(--text3)">No credit entries yet.</div>';if(cfActiveTab==='transactions')renderCashTable();if(cfActiveTab==='chart')renderCashCharts();}
-function renderCashTable(){const em=document.getElementById('cashEmpty'),tb=document.getElementById('cashTbody');if(!DB.cashflow.length){tb.innerHTML='';em.style.display='';return;}em.style.display='none';tb.innerHTML=DB.cashflow.map(t=>`<tr><td style="font-size:11px;color:var(--text3)">${t.date||'—'}</td><td style="font-weight:500">${t.desc}</td><td><span class="pill ${t.type==='Credit'?'pg':'pr'}">${t.type.toUpperCase()}</span></td><td style="font-size:11px;color:var(--text3)">${t.category}</td><td style="font-size:11px;color:var(--text3)">${t.account}</td><td style="font-weight:700;color:${t.type==='Debit'?'var(--green)':'var(--red)'}">${t.type==='Debit'?'+':'-'}₱${(t.amount||0).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2})}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteCash(${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');}
-function renderCashCharts(){const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const mI=new Array(12).fill(0),mO=new Array(12).fill(0);DB.cashflow.forEach(t=>{const m=new Date(t.date).getMonth();if(t.type==='Debit')mI[m]+=(t.amount||0);else mO[m]+=(t.amount||0);});const ctx1=document.getElementById('cashflowChart');if(cfCharts.flow)cfCharts.flow.destroy();cfCharts.flow=new Chart(ctx1,{type:'bar',data:{labels:months,datasets:[{label:'Debit (+)',data:mI,backgroundColor:'rgba(0,212,200,.5)',borderColor:'var(--teal)',borderWidth:1},{label:'Credit (−)',data:mO,backgroundColor:'rgba(255,107,26,.4)',borderColor:'var(--orange)',borderWidth:1}]},options:{responsive:true,plugins:{legend:{labels:{color:'#7ab8c8',font:{size:10}}}},scales:{x:{ticks:{color:'#3a6878',font:{size:9}}},y:{ticks:{color:'#3a6878',font:{size:9}}}}}});const cats={};DB.cashflow.filter(t=>t.type==='Credit').forEach(t=>{cats[t.category]=(cats[t.category]||0)+(t.amount||0);});const ctx2=document.getElementById('catChart');if(cfCharts.cat)cfCharts.cat.destroy();const colors=['rgba(0,212,200,.7)','rgba(255,107,26,.7)','rgba(168,85,247,.7)','rgba(34,197,94,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.7)'];cfCharts.cat=new Chart(ctx2,{type:'doughnut',data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:colors.slice(0,Object.keys(cats).length),borderColor:'#040d1a',borderWidth:2}]},options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#7ab8c8',font:{size:10},boxWidth:10}}}}});}
+// ── LIFE / CASHFLOW ───────────────────────────────────────────────────────────
+// BUG FIX: original code had credits=filter(Debit) and debits=filter(Credit) — inverted.
+let cfActiveTab='overview', cfCharts={};
+function setCFTab(tab, el) {
+  cfActiveTab = tab;
+  ['overview','transactions','chart','property'].forEach(t => {
+    const d = document.getElementById('cf-' + t);
+    if (d) d.style.display = 'none';
+  });
+  document.getElementById('cf-' + tab).style.display = '';
+  document.querySelectorAll('.cfbt').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  if (tab === 'chart') renderCashCharts();
+  if (tab === 'transactions') renderCashTable();
+}
+function openCashModal(type) {
+  document.getElementById('cashModalTitle').textContent = 'Add ' + (type === 'Debit' ? 'Debit' : 'Credit');
+  document.getElementById('ca-type').value = type;
+  document.getElementById('ca-date').value = today();
+  ['ca-desc','ca-amount'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  openModal('cashModal');
+}
+function saveCashflow() {
+  const t = {
+    id: uid(),
+    type: document.getElementById('ca-type').value,
+    date: document.getElementById('ca-date').value,
+    desc: document.getElementById('ca-desc').value.trim() || 'Transaction',
+    amount: parseFloat(document.getElementById('ca-amount').value) || 0,
+    account: document.getElementById('ca-account').value,
+    category: document.getElementById('ca-cat').value,
+  };
+  dbInsert('cashflow', t, 'cashflow');
+  closeModal('cashModal');
+  addHistory('add', 'Added ' + t.type + ': ₱' + t.amount + ' — ' + t.desc, {...t, _dbKey:'cashflow'});
+  renderLife(); renderBrief();
+  showToast('✓ Transaction saved');
+}
+function deleteCash(id) {
+  const t = dbDelete('cashflow', id, 'cashflow');
+  if (!t) return;
+  addHistory('delete', 'Deleted transaction: ' + t.desc, {...t, _dbKey:'cashflow'});
+  renderLife(); renderBrief();
+  showToast('Deleted');
+}
+function renderLife() {
+  // Named correctly: debits = money out (Debit), credits = money in (Credit)
+  const debits  = DB.cashflow.filter(t => t.type === 'Debit');
+  const credits = DB.cashflow.filter(t => t.type === 'Credit');
+  const totalIn  = credits.reduce((s, t) => s + (t.amount || 0), 0);
+  const totalOut = debits.reduce((s, t) => s + (t.amount || 0), 0);
+  const net = totalIn - totalOut;
+  const el = id => document.getElementById(id);
+  el('cf-income').textContent  = fmt(totalIn);
+  el('cf-expense').textContent = fmt(totalOut);
+  const ne = el('cf-net');
+  ne.textContent  = fmt(Math.abs(net));
+  ne.style.color  = net >= 0 ? 'var(--green)' : 'var(--red)';
+  el('cf-count').textContent = DB.cashflow.length;
+  const creditRow = t => `<div class="brow"><div class="bdot" style="background:var(--green)"></div><div class="btxt">${esc(t.desc)}</div><span class="btag pg">+₱${t.amount.toLocaleString()}</span></div>`;
+  const debitRow  = t => `<div class="brow"><div class="bdot" style="background:var(--red)"></div><div class="btxt">${esc(t.desc)}</div><span class="btag pr">−₱${t.amount.toLocaleString()}</span></div>`;
+  el('cf-recent-credits').innerHTML = credits.slice(0,4).map(creditRow).join('') || '<div style="font-size:11px;color:var(--text3)">No income entries yet.</div>';
+  el('cf-recent-debits').innerHTML  = debits.slice(0,4).map(debitRow).join('')  || '<div style="font-size:11px;color:var(--text3)">No expense entries yet.</div>';
+  if (cfActiveTab === 'transactions') renderCashTable();
+  if (cfActiveTab === 'chart') renderCashCharts();
+}
+function renderCashTable() {
+  const em = document.getElementById('cashEmpty');
+  const tb = document.getElementById('cashTbody');
+  if (!DB.cashflow.length) { tb.innerHTML = ''; em.style.display = ''; return; }
+  em.style.display = 'none';
+  tb.innerHTML = DB.cashflow.map(t => `<tr>
+    <td style="font-size:11px;color:var(--text3)">${esc(t.date||'—')}</td>
+    <td style="font-weight:500">${esc(t.desc)}</td>
+    <td><span class="pill ${t.type==='Credit'?'pg':'pr'}">${t.type.toUpperCase()}</span></td>
+    <td style="font-size:11px;color:var(--text3)">${esc(t.category)}</td>
+    <td style="font-size:11px;color:var(--text3)">${esc(t.account)}</td>
+    <td style="font-weight:700;color:${t.type==='Credit'?'var(--green)':'var(--red)'}">${t.type==='Credit'?'+':'−'}₱${(t.amount||0).toLocaleString(CONFIG.LOCALE,{minimumFractionDigits:2,maximumFractionDigits:2})}</td>
+    <td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteCash('${t.id}')"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td>
+  </tr>`).join('');
+}
+function renderCashCharts() {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const mIn = new Array(12).fill(0), mOut = new Array(12).fill(0);
+  DB.cashflow.forEach(t => {
+    const m = new Date(t.date).getMonth();
+    if (t.type === 'Credit') mIn[m]  += (t.amount || 0);
+    else                     mOut[m] += (t.amount || 0);
+  });
+  const ctx1 = document.getElementById('cashflowChart');
+  if (cfCharts.flow) cfCharts.flow.destroy();
+  cfCharts.flow = new Chart(ctx1, { type:'bar', data:{labels:months,datasets:[{label:'Income (+)',data:mIn,backgroundColor:'rgba(0,212,200,.5)',borderColor:'var(--teal)',borderWidth:1},{label:'Expense (−)',data:mOut,backgroundColor:'rgba(255,107,26,.4)',borderColor:'var(--orange)',borderWidth:1}]}, options:{responsive:true,plugins:{legend:{labels:{color:'#7ab8c8',font:{size:10}}}},scales:{x:{ticks:{color:'#3a6878',font:{size:9}}},y:{ticks:{color:'#3a6878',font:{size:9}}}}} });
+  const cats = {};
+  DB.cashflow.filter(t => t.type === 'Debit').forEach(t => { cats[t.category] = (cats[t.category]||0) + (t.amount||0); });
+  const ctx2 = document.getElementById('catChart');
+  if (cfCharts.cat) cfCharts.cat.destroy();
+  const colors = ['rgba(0,212,200,.7)','rgba(255,107,26,.7)','rgba(168,85,247,.7)','rgba(34,197,94,.7)','rgba(245,158,11,.7)','rgba(239,68,68,.7)'];
+  cfCharts.cat = new Chart(ctx2, { type:'doughnut', data:{labels:Object.keys(cats),datasets:[{data:Object.values(cats),backgroundColor:colors.slice(0,Object.keys(cats).length),borderColor:'#040d1a',borderWidth:2}]}, options:{responsive:true,plugins:{legend:{position:'right',labels:{color:'#7ab8c8',font:{size:10},boxWidth:10}}}} });
+}
 
-// CALENDAR
-let selectedCalDate='';
-function renderCalendar(){const months=['January','February','March','April','May','June','July','August','September','October','November','December'];document.getElementById('calMonthTitle').textContent=months[calMonth]+' '+calYear;const grid=document.getElementById('calGrid');grid.innerHTML='';const firstDay=new Date(calYear,calMonth,1).getDay();const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const prevDays=new Date(calYear,calMonth,0).getDate();const today=new Date();for(let i=firstDay-1;i>=0;i--){const d=document.createElement('div');d.className='cday om';d.innerHTML=`<div class="dn">${prevDays-i}</div>`;grid.appendChild(d);}for(let day=1;day<=daysInMonth;day++){const isToday=today.getDate()===day&&today.getMonth()===calMonth&&today.getFullYear()===calYear;const ds=calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(day).padStart(2,'0'));const evs=DB.calEvents.filter(e=>e.date===ds);const d=document.createElement('div');d.className='cday'+(isToday?' today':'');d.innerHTML=`<div class="dn">${day}</div>`+evs.slice(0,2).map(e=>`<div class="cev ${e.type}" title="${e.notes||''}">${e.time?e.time.substring(0,5)+' ':''} ${e.title}</div>`).join('')+(evs.length>2?`<div style="font-size:8px;color:var(--text3)">+${evs.length-2} more</div>`:'');d.onclick=()=>openCalEventModalOnDate(ds);grid.appendChild(d);}const rem=42-(firstDay+daysInMonth);for(let i=1;i<=rem;i++){const d=document.createElement('div');d.className='cday om';d.innerHTML=`<div class="dn">${i}</div>`;grid.appendChild(d);}}
-function calNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
-function openCalEventModal(){openCalEventModalOnDate(new Date().toISOString().split('T')[0]);}
-function openCalEventModalOnDate(date){selectedCalDate=date;document.getElementById('calModalTitle').textContent='Add Event — '+date;document.getElementById('ce-date').value=date;['ce-title','ce-time','ce-loc','ce-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});openModal('calModal');}
-function saveCalEvent(){const e={id:Date.now(),title:document.getElementById('ce-title').value.trim()||'Event',date:document.getElementById('ce-date').value||selectedCalDate,time:document.getElementById('ce-time').value,type:document.getElementById('ce-type').value,loc:document.getElementById('ce-loc').value.trim(),notes:document.getElementById('ce-notes')?.value.trim()||''};DB.calEvents.push(e);SB.upsert('cal_events',e,'calEvents');closeModal('calModal');addHistory('add','Added event: '+e.title,{...e,_dbKey:'calEvents'});renderCalendar();renderBrief();showToast('✓ Event saved');}
+// ── CALENDAR ─────────────────────────────────────────────────────────────────
+let selectedCalDate = '', calYear = 2026, calMonth = 5;
+function renderCalendar() {
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('calMonthTitle').textContent = MONTHS[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevDays = new Date(calYear, calMonth, 0).getDate();
+  const todayDate = new Date();
+  // Index calendar events by date for O(1) lookup instead of filter per day
+  const evByDate = {};
+  DB.calEvents.forEach(e => { (evByDate[e.date] = evByDate[e.date] || []).push(e); });
+  const makeDay = (cls, num, date) => {
+    const d = document.createElement('div');
+    d.className = 'cday' + cls;
+    const evs = evByDate[date] || [];
+    d.innerHTML = `<div class="dn">${num}</div>` +
+      evs.slice(0,2).map(e => `<div class="cev ${esc(e.type)}" title="${esc(e.notes||'')}">${e.time?e.time.substring(0,5)+' ':''}${esc(e.title)}</div>`).join('') +
+      (evs.length > 2 ? `<div style="font-size:8px;color:var(--text3)">+${evs.length-2} more</div>` : '');
+    if (date) d.onclick = () => openCalEventModalOnDate(date);
+    grid.appendChild(d);
+  };
+  for (let i = firstDay - 1; i >= 0; i--) makeDay(' om', prevDays - i, null);
+  for (let day = 1; day <= daysInMonth; day++) {
+    const ds = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+    const isToday = todayDate.getDate()===day && todayDate.getMonth()===calMonth && todayDate.getFullYear()===calYear;
+    makeDay(isToday ? ' today' : '', day, ds);
+  }
+  const rem = 42 - (firstDay + daysInMonth);
+  for (let i = 1; i <= rem; i++) makeDay(' om', i, null);
+}
+function calNav(dir) { calMonth += dir; if (calMonth > 11) { calMonth=0; calYear++; } if (calMonth < 0) { calMonth=11; calYear--; } renderCalendar(); }
+function openCalEventModal() { openCalEventModalOnDate(today()); }
+function openCalEventModalOnDate(date) {
+  selectedCalDate = date;
+  document.getElementById('calModalTitle').textContent = 'Add Event — ' + date;
+  document.getElementById('ce-date').value = date;
+  ['ce-title','ce-time','ce-loc','ce-notes'].forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
+  openModal('calModal');
+}
+function saveCalEvent() {
+  const e = {
+    id: uid(),
+    title: document.getElementById('ce-title').value.trim() || 'Event',
+    date:  document.getElementById('ce-date').value || selectedCalDate,
+    time:  document.getElementById('ce-time').value,
+    type:  document.getElementById('ce-type').value,
+    loc:   document.getElementById('ce-loc').value.trim(),
+    notes: document.getElementById('ce-notes')?.value.trim() || '',
+  };
+  DB.calEvents.push(e);
+  SB.upsert('cal_events', e, 'calEvents');
+  closeModal('calModal');
+  addHistory('add', 'Added event: ' + e.title, {...e, _dbKey:'calEvents'});
+  renderCalendar(); renderBrief();
+  showToast('✓ Event saved');
+}
 
 // NOTES — callout grid
 let noteBlocks=[],currentNote=0;
@@ -2268,7 +2625,7 @@ function renderNotesList(){
 }
 function openNoteEditor(i){currentNote=i;noteBlocks=[...DB.notes[currentNote].blocks];const t=document.getElementById('noteTitle');if(t)t.textContent=DB.notes[currentNote].title;renderBlocks();openModal('noteEditorModal');}
 function switchNote(){openNoteEditor(currentNote);}
-function newNote(){const n={id:Date.now(),title:'New Note',blocks:[{type:'h1',content:'',done:false},{type:'p',content:'',done:false}]};DB.notes.push(n);save('notes');currentNote=DB.notes.length-1;renderNotesList();openNoteEditor(currentNote);}
+function newNote(){const n={id:uid(),title:'New Note',blocks:[{type:'h1',content:'',done:false},{type:'p',content:'',done:false}]};DB.notes.push(n);save('notes');currentNote=DB.notes.length-1;renderNotesList();openNoteEditor(currentNote);}
 function deleteNote(i){if(!confirm('Delete this note?'))return;DB.notes.splice(i,1);save('notes');currentNote=Math.max(0,currentNote-1);renderNotesList();}
 function deleteCurrentNote(){closeModal('noteEditorModal');deleteNote(currentNote);}
 function saveNoteTitle(){if(DB.notes[currentNote]){DB.notes[currentNote].title=document.getElementById('noteTitle').textContent;save('notes');renderNotesList();}}
@@ -2285,16 +2642,15 @@ function showBlockMenu(e){e.preventDefault();const m=document.getElementById('bl
 function addBlock(type){noteBlocks.push({type,content:'',done:false});saveBlocks();renderBlocks();setTimeout(()=>{const els=document.querySelectorAll('.bcontent');const last=els[els.length-1];if(last)last.focus();},20);document.getElementById('blockMenu').classList.remove('open');}
 
 // JOURNAL
-let editingJournalId=null;
 function renderJournal(){/* journal view removed — no-op */}
 function viewJournal(id){/* journal view removed */}
-function saveJournalEntry(){const j={id:editingJournalId||Date.now(),title:document.getElementById('jm-title').value.trim()||'Untitled',content:document.getElementById('jm-content').value,mood:document.getElementById('jm-mood').value,date:new Date().toISOString()};const isEdit=!!editingJournalId;if(editingJournalId){const i=DB.journal.findIndex(x=>x.id===editingJournalId);if(i>=0)DB.journal[i]=j;SB.update('journal',j.id,j,'journal');}else{DB.journal.unshift(j);SB.upsert('journal',j,'journal');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' journal: '+j.title,{...j,_dbKey:'journal'});closeModal('journalModal');renderJournal();showToast('✓ Journal saved');}
+function saveJournalEntry(){const j={id:editingJournalId||uid(),title:document.getElementById('jm-title').value.trim()||'Untitled',content:document.getElementById('jm-content').value,mood:document.getElementById('jm-mood').value,date:new Date().toISOString()};const isEdit=!!editingJournalId;if(editingJournalId){const i=DB.journal.findIndex(x=>x.id===editingJournalId);if(i>=0)DB.journal[i]=j;SB.update('journal',j.id,j,'journal');}else{DB.journal.unshift(j);SB.upsert('journal',j,'journal');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' journal: '+j.title,{...j,_dbKey:'journal'});closeModal('journalModal');renderJournal();showToast('✓ Journal saved');}
 function editJournal(id){const j=DB.journal.find(x=>x.id===id);if(!j)return;editingJournalId=id;document.getElementById('journalModalTitle').textContent='Edit Entry';document.getElementById('jm-title').value=j.title||'';document.getElementById('jm-content').value=j.content||'';document.getElementById('jm-mood').value=j.mood||'🟢';openModal('journalModal');}
 function deleteJournal(id){const j=DB.journal.find(x=>x.id===id);if(!j)return;DB.journal=DB.journal.filter(x=>x.id!==id);SB.remove('journal',id,'journal');addHistory('delete','Deleted journal: '+j.title,{...j,_dbKey:'journal'});showToast('Journal deleted');}
 
 // MEMORY
 function renderMemory(){document.getElementById('memoryTbody').innerHTML=DB.memories.map(m=>`<tr><td style="font-size:11px;max-width:280px">${m.memory}</td><td style="font-size:11px;color:var(--text3)">${m.category}</td><td><span class="pill pt" style="font-size:9px">${m.world}</span></td><td style="font-size:11px;color:var(--text3)">${m.date}</td><td><button class="btn btn-d" style="padding:2px 6px" onclick="deleteMemoryItem(${m.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');}
-function addMemory(){const mem=prompt('Memory:');if(!mem)return;const m={id:Date.now(),memory:mem,category:prompt('Category:','General')||'General',world:prompt('World:','WORK-IH')||'WORK-IH',date:new Date().toISOString().split('T')[0]};DB.memories.unshift(m);SB.upsert('memories',m,'memories');renderMemory();showToast('✓ Memory saved');}
+function addMemory(){const mem=prompt('Memory:');if(!mem)return;const m={id:uid(),memory:mem,category:prompt('Category:','General')||'General',world:prompt('World:','WORK-IH')||'WORK-IH',date:new Date().toISOString().split('T')[0]};DB.memories.unshift(m);SB.upsert('memories',m,'memories');renderMemory();showToast('✓ Memory saved');}
 function deleteMemoryItem(id){DB.memories=DB.memories.filter(m=>m.id!==id);SB.remove('memories',id,'memories');renderMemory();}
 
 // CAPTURE
@@ -2304,22 +2660,154 @@ async function processCapture(){const input=document.getElementById('captureInpu
 const WAKE_WORDS=['hey jelix','hey felix','hey jelly','hey jellix','angelix','hi jelix','jelix'];
 function stripWakeWord(text){const t=text.toLowerCase().trim();for(const w of WAKE_WORDS){if(t.startsWith(w)){const rest=text.slice(w.length).replace(/^[\s,]+/,'').trim();return rest||null;}}return text;}
 
+// ===== FUZZY MATCH HELPERS =====
+function getLevenshtein(a,b){
+  a=a.toLowerCase();b=b.toLowerCase();
+  const m=a.length,n=b.length;
+  const dp=Array.from({length:m+1},(_,i)=>Array.from({length:n+1},(_,j)=>i===0?j:j===0?i:0));
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function fuzzyFind(query,collection,keyFn,threshold=0.45){
+  if(!query||!collection||!collection.length)return null;
+  const q=query.toLowerCase().trim();
+  let best=null,bestScore=-1;
+  for(const item of collection){
+    const key=(keyFn(item)||'').toLowerCase().trim();
+    if(key===q||key.includes(q)||q.includes(key)){
+      const score=1-(Math.abs(key.length-q.length)/(Math.max(key.length,q.length)||1))*0.1;
+      if(score>bestScore){bestScore=score;best=item;}
+      continue;
+    }
+    const dist=getLevenshtein(q,key);
+    const maxLen=Math.max(q.length,key.length)||1;
+    const score=1-(dist/maxLen);
+    if(score>bestScore){bestScore=score;best=item;}
+  }
+  return bestScore>=threshold?best:null;
+}
+
+// ===== FLUID VOICE INTENTS =====
+const FLUID_VOICE_INTENTS=[
+  // NAVIGATE
+  {re:/^(go to|open|show|navigate to|switch to)\s+(.+)/i,fn:(m)=>{
+    const navMap={'brief':'brief','home':'brief','dashboard':'brief','work ideahub':'work-ih','ideahub':'work-ih','work chainsmoker':'work-cs','chainsmoker':'work-cs','sweetheart':'work-cs','venture':'venture','tjc':'venture','build':'build','sides':'sides','faith':'faith','buklod':'faith','life':'life','cashflow':'life','calendar':'calendar','journal':'journal','diary':'journal','tasks':'tasks','all tasks':'tasks','notes':'notes','ai':'ai','memory':'memory','history':'history'};
+    const dest=m[2].trim().toLowerCase();
+    for(const[k,v]of Object.entries(navMap)){if(dest.includes(k))return{action:'navigate',view:v};}
+    return{action:'navigate',view:'brief'};
+  }},
+  // BARE NAV WORDS
+  {re:/^(brief|home|dashboard|ideahub|chainsmoker|sweetheart|venture|build|sides|faith|buklod|life|cashflow|calendar|journal|diary|tasks|notes|ai|memory|history)$/i,fn:(m)=>{
+    const navMap={brief:'brief',home:'brief',dashboard:'brief',ideahub:'work-ih',chainsmoker:'work-cs',sweetheart:'work-cs',venture:'venture',build:'build',sides:'sides',faith:'faith',buklod:'faith',life:'life',cashflow:'life',calendar:'calendar',journal:'journal',diary:'journal',tasks:'tasks',notes:'notes',ai:'ai',memory:'memory',history:'history'};
+    return{action:'navigate',view:navMap[m[1].toLowerCase()]||'brief'};
+  }},
+  // ADD TASK
+  {re:/^(add|create|new)\s+(task|todo)[:\-\s]+(.+)/i,fn:(m)=>{
+    const title=m[3].trim();
+    let world='WORK-IH',priority='Medium',platform='';
+    if(/chainsmoker|sweetheart/i.test(title))world='WORK-CS';
+    else if(/tjc|venture|partner/i.test(title))world='VENTURE';
+    else if(/naknak|diskarte|pasahero/i.test(title))world='BUILD';
+    else if(/buklod|faith|church/i.test(title))world='FAITH';
+    else if(/cash|expense|life/i.test(title))world='LIFE';
+    if(/urgent|asap|high/i.test(title))priority='High';
+    else if(/low|someday/i.test(title))priority='Low';
+    const pm=title.match(/\b(instagram|facebook|tiktok|linkedin|twitter|email|ubereats)\b/i);
+    if(pm)platform=pm[1];
+    return{action:'add_task',title,world,priority,status:'Todo',due:'',platform,client:'',notes:''};
+  }},
+  // UPDATE TASK STATUS
+  {re:/^mark\s+(.+?)\s+as\s+(done|complete|in progress|no progress|blocked|todo)/i,fn:(m)=>{
+    const sm={'done':'Done','complete':'Done','in progress':'In Progress','no progress':'No Progress','blocked':'No Progress','todo':'Todo'};
+    return{action:'edit_task',target:m[1].trim(),changes:{status:sm[m[2].toLowerCase()]||'Done'}};
+  }},
+  // UPDATE TASK PRIORITY
+  {re:/^(set|change|update)\s+(.+?)\s+(priority\s+to|to)\s+(high|medium|low|urgent)/i,fn:(m)=>{
+    const pm={'high':'High','medium':'Medium','low':'Low','urgent':'High'};
+    return{action:'edit_task',target:m[2].trim(),changes:{priority:pm[m[4].toLowerCase()]||'Medium'}};
+  }},
+  // MOVE TASK TO WORLD
+  {re:/^move\s+task\s+(.+?)\s+to\s+(work-ih|work-cs|venture|build|sides|faith|life|ideahub|chainsmoker)/i,fn:(m)=>{
+    const wm={'ideahub':'WORK-IH','work-ih':'WORK-IH','chainsmoker':'WORK-CS','work-cs':'WORK-CS',venture:'VENTURE',build:'BUILD',sides:'SIDES',faith:'FAITH',life:'LIFE'};
+    return{action:'edit_task',target:m[1].trim(),changes:{world:wm[m[2].toLowerCase()]||'WORK-IH'}};
+  }},
+  // DELETE TASK
+  {re:/^(delete|remove)\s+(task)[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'delete_task',target:m[3].trim()};
+  }},
+  // ADD CLIENT
+  {re:/^(add|new|create)\s+client[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'add_client',name:m[2].trim(),status:'Active',revenue:'$$',next:'',contact:''};
+  }},
+  // UPDATE CLIENT STATUS
+  {re:/^(update|set|change)\s+client\s+(.+?)\s+(status\s+to|to)\s+(active|inactive|prospect|paused)/i,fn:(m)=>{
+    const sm={'active':'Active','inactive':'Inactive','prospect':'Prospect','paused':'Paused'};
+    return{action:'edit_client',target:m[2].trim(),changes:{status:sm[m[4].toLowerCase()]||'Active'}};
+  }},
+  // DELETE CLIENT
+  {re:/^(delete|remove)\s+client[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'delete_client',target:m[2].trim()};
+  }},
+  // ADD VENTURE
+  {re:/^(add|new|create)\s+venture[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'add_venture',name:m[2].trim(),type:'Client',stage:'Lead',notes:''};
+  }},
+  // MOVE VENTURE STAGE
+  {re:/^move\s+(.+?)\s+to\s+(lead|discovery|proposal|negotiation|active|won)/i,fn:(m)=>{
+    const stages={lead:'Lead',discovery:'Discovery',proposal:'Proposal',negotiation:'Negotiation',active:'Active',won:'Won'};
+    return{action:'move_venture',target:m[1].trim(),stage:stages[m[2].toLowerCase()]||'Lead'};
+  }},
+  // SET VENTURE STAGE
+  {re:/^(set|update|change)\s+(.+?)\s+stage\s+to\s+(lead|discovery|proposal|negotiation|active|won)/i,fn:(m)=>{
+    const stages={lead:'Lead',discovery:'Discovery',proposal:'Proposal',negotiation:'Negotiation',active:'Active',won:'Won'};
+    return{action:'move_venture',target:m[2].trim(),stage:stages[m[3].toLowerCase()]||'Lead'};
+  }},
+  // DELETE VENTURE
+  {re:/^(delete|remove)\s+venture[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'delete_venture',target:m[2].trim()};
+  }},
+  // ADD FAITH
+  {re:/^(add|new|create)\s+(faith|buklod|activity)[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'add_faith',activity:m[3].trim(),group:'',date:new Date().toISOString().split('T')[0],submitted:'',cfo:'',aevm:'',status:'Pending',assigned:'',drive:''};
+  }},
+  // UPDATE FAITH STATUS
+  {re:/^(mark|set|update)\s+(.+?)\s+(faith\s+)?as\s+(pending|submitted|approved|done|rejected)/i,fn:(m)=>{
+    const sm={'pending':'Pending','submitted':'Submitted','approved':'Approved','done':'Done','rejected':'Rejected'};
+    return{action:'edit_faith',target:m[2].trim(),changes:{status:sm[m[4].toLowerCase()]||'Pending'}};
+  }},
+  // DELETE FAITH
+  {re:/^(delete|remove)\s+(faith|activity)[:\-\s]+(.+)/i,fn:(m)=>{
+    return{action:'delete_faith',target:m[3].trim()};
+  }},
+  // CASHFLOW CREDIT
+  {re:/^(add\s+)?(credit|income)[:\-\s]+(.+?)\s+([\d,]+)/i,fn:(m)=>{
+    return{action:'add_cashflow',type:'Credit',desc:m[3].trim(),amount:parseFloat(m[4].replace(/,/g,'')),category:'Income',account:'Cash'};
+  }},
+  // CASHFLOW DEBIT
+  {re:/^(add\s+)?(debit|expense|paid)[:\-\s]+(.+?)\s+([\d,]+)/i,fn:(m)=>{
+    return{action:'add_cashflow',type:'Debit',desc:m[3].trim(),amount:parseFloat(m[4].replace(/,/g,'')),category:'Other',account:'Cash'};
+  }},
+  // JOURNAL
+  {re:/^(journal|write|log)[:\-\s]+(.+)/i,fn:(m)=>{
+    const content=m[2].trim();
+    return{action:'add_journal',title:content.substring(0,50)||'Quick Entry',content,mood:'🟢'};
+  }},
+  // MUTE / UNMUTE
+  {re:/\b(mute|silence)\b/i,fn:()=>({action:'mute'})},
+  {re:/\b(unmute|speak|voice on)\b/i,fn:()=>({action:'unmute'})},
+];
+
 function parseVoiceCommand(text){
-  const t=text.toLowerCase().trim();
-  const navMap={'brief':'brief','home':'brief','dashboard':'brief','work ideahub':'work-ih','ideahub':'work-ih','work chainsmoker':'work-cs','chainsmoker':'work-cs','sweetheart':'work-cs','venture':'venture','tjc':'venture','build':'build','sides':'sides','faith':'faith','buklod':'faith','life':'life','cashflow':'life','calendar':'calendar','journal':'journal','diary':'journal','tasks':'tasks','all tasks':'tasks','notes':'notes','ai':'ai','memory':'memory','history':'history'};
-  if(/^(go to|open|show|navigate to|switch to)\s+/i.test(t)){const dest=t.replace(/^(go to|open|show|navigate to|switch to)\s+/i,'').trim();for(const[k,v] of Object.entries(navMap)){if(dest.includes(k))return{action:'navigate',view:v};}}
-  for(const[k,v] of Object.entries(navMap)){if(t===k)return{action:'navigate',view:v};}
-  if(/^(add|create|new)\s+(task|todo)/i.test(t)){const title=text.replace(/^(add|create|new)\s+(task|todo)[:\-\s]*/i,'').trim();let world='WORK-IH',priority='Medium',platform='';if(/chainsmoker|sweetheart/i.test(title))world='WORK-CS';if(/tjc|venture|partner/i.test(title))world='VENTURE';if(/naknak|diskarte|pasahero/i.test(title))world='BUILD';if(/buklod|faith|church/i.test(title))world='FAITH';if(/cash|expense|life/i.test(title))world='LIFE';if(/urgent|asap|high/i.test(title))priority='High';if(/low|someday/i.test(title))priority='Low';const pm=title.match(/\b(instagram|facebook|tiktok|linkedin|twitter|email|ubereats)\b/i);if(pm)platform=pm[1];return{action:'add_task',title,world,priority,status:'Todo',due:'',platform,client:'',notes:''};}
-  const mm=t.match(/^mark\s+(.+?)\s+as\s+(done|complete|in progress|no progress|blocked|todo)/i);
-  if(mm){const sm={'done':'Done','complete':'Done','in progress':'In Progress','no progress':'No Progress','blocked':'Blocked','todo':'Todo'};return{action:'edit_task',match:mm[1].trim(),changes:{status:sm[mm[2].toLowerCase()]||'Done'}};}
-  if(/^(delete|remove)\s+(task)[:\-\s]+/i.test(t))return{action:'delete_task',match:text.replace(/^(delete|remove)\s+(task)[:\-\s]*/i,'').trim()};
-  if(/^(add|new|create)\s+client[:\-\s]+/i.test(t))return{action:'add_client',name:text.replace(/^(add|new|create)\s+client[:\-\s]*/i,'').trim(),status:'Active',revenue:'$$',next:'',contact:''};
-  if(/^(delete|remove)\s+client[:\-\s]+/i.test(t))return{action:'delete_client',match:text.replace(/^(delete|remove)\s+client[:\-\s]*/i,'').trim()};
-  const cm=t.match(/^(add\s+)?(credit|income)[:\-\s]+(.+?)\s+([\d,]+)/i);if(cm)return{action:'add_cashflow',type:'Credit',desc:cm[3].trim(),amount:parseFloat(cm[4].replace(',','')),category:'Income',account:'Cash'};
-  const dm=t.match(/^(add\s+)?(debit|expense|paid)[:\-\s]+(.+?)\s+([\d,]+)/i);if(dm)return{action:'add_cashflow',type:'Debit',desc:dm[3].trim(),amount:parseFloat(dm[4].replace(',','')),category:'Other',account:'Cash'};
-  if(/^(journal|write|log)[:\-\s]+/i.test(t)){const content=text.replace(/^(journal|write|log)[:\-\s]*/i,'').trim();return{action:'add_journal',title:content.substring(0,50)||'Quick Entry',content,mood:'🟢'};}
-  if(/\b(mute|silence)\b/i.test(t))return{action:'mute'};
-  if(/\b(unmute|speak|voice on)\b/i.test(t))return{action:'unmute'};
+  const t=text.trim();
+  for(const intent of FLUID_VOICE_INTENTS){
+    const m=t.match(intent.re);
+    if(m)return intent.fn(m,t);
+  }
   return{action:'unknown',message:text};
 }
 
@@ -2341,13 +2829,15 @@ async function dispatchVoiceAction(cmd,rawText){
   let result='';
   try{
     switch(cmd.action){
+
       case 'navigate':
         setView(cmd.view||'brief');
         result='Navigated to '+cmd.view+', sir.';
         break;
 
+      // ─── TASKS ───────────────────────────────────────────────────────────
       case 'add_task':{
-        const t={id:Date.now(),title:cmd.title||rawText,world:cmd.world||'WORK-IH',priority:cmd.priority||'Medium',status:cmd.status||'Todo',due:cmd.due||'',platform:cmd.platform||'',client:cmd.client||'',notes:cmd.notes||''};
+        const t={id:uid(),title:cmd.title||rawText,world:cmd.world||'WORK-IH',priority:cmd.priority||'Medium',status:cmd.status||'Todo',due:cmd.due||'',platform:cmd.platform||'',client:cmd.client||'',notes:cmd.notes||''};
         DB.tasks.unshift(t);
         SB.upsert('tasks',t,'tasks');
         addHistory('add','Added task: '+t.title,{...t,_dbKey:'tasks'});
@@ -2357,21 +2847,22 @@ async function dispatchVoiceAction(cmd,rawText){
       }
 
       case 'edit_task':{
-        const idx=DB.tasks.findIndex(t=>t.title.toLowerCase().includes((cmd.match||'').toLowerCase()));
-        if(idx<0){result='No task found matching "'+cmd.match+'", sir.';break;}
-        const prev=DB.tasks[idx].title;
-        Object.assign(DB.tasks[idx],cmd.changes);
-        SB.update('tasks',DB.tasks[idx].id,DB.tasks[idx],'tasks');
+        const t=fuzzyFind(cmd.target,DB.tasks,x=>x.title);
+        if(!t){result='No task found matching "'+cmd.target+'", sir.';break;}
+        const prev=t.title;
+        Object.assign(t,cmd.changes);
+        SB.update('tasks',t.id,t,'tasks');
         save('tasks');
-        addHistory('edit','Edited task: '+prev,DB.tasks[idx]);
+        addHistory('edit','Edited task: '+prev,t);
         reRenderAll();
-        result='Updated "'+prev+'", sir.';
+        const changeDesc=Object.entries(cmd.changes).map(([k,v])=>k+' \u2192 '+v).join(', ');
+        result='Updated "'+prev+'": '+changeDesc+', sir.';
         break;
       }
 
       case 'delete_task':{
-        const t=DB.tasks.find(t=>t.title.toLowerCase().includes((cmd.match||rawText).toLowerCase()));
-        if(!t){result='No task found matching that name, sir.';break;}
+        const t=fuzzyFind(cmd.target,DB.tasks,x=>x.title);
+        if(!t){result='No task found matching "'+cmd.target+'", sir.';break;}
         DB.tasks=DB.tasks.filter(x=>x.id!==t.id);
         SB.remove('tasks',t.id,'tasks');
         addHistory('delete','Deleted task: '+t.title,{...t,_dbKey:'tasks'});
@@ -2380,8 +2871,9 @@ async function dispatchVoiceAction(cmd,rawText){
         break;
       }
 
+      // ─── CLIENTS ─────────────────────────────────────────────────────────
       case 'add_client':{
-        const c={id:Date.now(),name:cmd.name||'New Client',world:'WORK-IH',status:cmd.status||'Active',revenue:cmd.revenue||'$$',next:cmd.next||'',contact:cmd.contact||''};
+        const c={id:uid(),name:cmd.name||'New Client',world:'WORK-IH',status:cmd.status||'Active',revenue:cmd.revenue||'$$',next:cmd.next||'',contact:cmd.contact||''};
         DB.clients.unshift(c);
         SB.upsert('clients',c,'clients');
         addHistory('add','Added client: '+c.name,{...c,_dbKey:'clients'});
@@ -2390,9 +2882,23 @@ async function dispatchVoiceAction(cmd,rawText){
         break;
       }
 
+      case 'edit_client':{
+        const c=fuzzyFind(cmd.target,DB.clients,x=>x.name);
+        if(!c){result='No client found matching "'+cmd.target+'", sir.';break;}
+        const prev=c.name;
+        Object.assign(c,cmd.changes);
+        SB.update('clients',c.id,c,'clients');
+        save('clients');
+        addHistory('edit','Edited client: '+prev,c);
+        renderWorkIH();
+        const changeDesc=Object.entries(cmd.changes).map(([k,v])=>k+' \u2192 '+v).join(', ');
+        result='Client "'+prev+'" updated: '+changeDesc+', sir.';
+        break;
+      }
+
       case 'delete_client':{
-        const c=DB.clients.find(c=>c.name.toLowerCase().includes((cmd.match||rawText).toLowerCase()));
-        if(!c){result='No client found, sir.';break;}
+        const c=fuzzyFind(cmd.target,DB.clients,x=>x.name);
+        if(!c){result='No client found matching "'+cmd.target+'", sir.';break;}
         DB.clients=DB.clients.filter(x=>x.id!==c.id);
         SB.remove('clients',c.id,'clients');
         addHistory('delete','Deleted client: '+c.name,{...c,_dbKey:'clients'});
@@ -2401,18 +2907,91 @@ async function dispatchVoiceAction(cmd,rawText){
         break;
       }
 
-      case 'add_cashflow':{
-        const t={id:Date.now(),type:cmd.type||'Debit',date:new Date().toISOString().split('T')[0],desc:cmd.desc||rawText,amount:cmd.amount||0,account:cmd.account||'Cash',category:cmd.category||'Other'};
-        DB.cashflow.unshift(t);
-        SB.upsert('cashflow',t,'cashflow');
-        addHistory('add','Added '+t.type+': ₱'+t.amount,{...t,_dbKey:'cashflow'});
-        renderLife();renderBrief();
-        result=(cmd.type==='Credit'?'Credit':'Debit')+' of ₱'+cmd.amount+' recorded, sir.';
+      // ─── VENTURE ─────────────────────────────────────────────────────────
+      case 'add_venture':{
+        const v={id:uid(),name:cmd.name||'New Item',type:cmd.type||'Client',stage:cmd.stage||'Lead',notes:cmd.notes||''};
+        DB.venture.unshift(v);
+        SB.upsert('venture',v,'venture');
+        addHistory('add','Added venture: '+v.name,{...v,_dbKey:'venture'});
+        renderVenture();
+        result='Venture item added, sir: "'+v.name+'"';
         break;
       }
 
+      case 'move_venture':{
+        const ven=fuzzyFind(cmd.target,DB.venture,x=>x.name);
+        if(!ven){result='No venture item found matching "'+cmd.target+'", sir.';break;}
+        const prevStage=ven.stage;
+        ven.stage=cmd.stage;
+        SB.update('venture',ven.id,ven,'venture');
+        save('venture');
+        addHistory('edit','Moved '+ven.name+' to '+cmd.stage,ven);
+        renderVenture();
+        result='"'+ven.name+'" moved from '+prevStage+' to '+cmd.stage+', sir.';
+        break;
+      }
+
+      case 'delete_venture':{
+        const ven=fuzzyFind(cmd.target,DB.venture,x=>x.name);
+        if(!ven){result='No venture item found matching "'+cmd.target+'", sir.';break;}
+        DB.venture=DB.venture.filter(x=>x.id!==ven.id);
+        SB.remove('venture',ven.id,'venture');
+        addHistory('delete','Deleted venture: '+ven.name,{...ven,_dbKey:'venture'});
+        renderVenture();
+        result='Venture item deleted, sir: "'+ven.name+'"';
+        break;
+      }
+
+      // ─── FAITH ───────────────────────────────────────────────────────────
+      case 'add_faith':{
+        const a={id:uid(),activity:cmd.activity||rawText,group:cmd.group||'',date:cmd.date||new Date().toISOString().split('T')[0],submitted:cmd.submitted||'',cfo:cmd.cfo||'',aevm:cmd.aevm||'',status:cmd.status||'Pending',assigned:cmd.assigned||'',drive:cmd.drive||''};
+        DB.faith.unshift(a);
+        SB.upsert('faith',a,'faith');
+        addHistory('add','Added faith: '+a.activity,{...a,_dbKey:'faith'});
+        renderFaith();
+        result='Faith activity added, sir: "'+a.activity+'"';
+        break;
+      }
+
+      case 'edit_faith':{
+        const a=fuzzyFind(cmd.target,DB.faith,x=>x.activity);
+        if(!a){result='No faith activity found matching "'+cmd.target+'", sir.';break;}
+        const prev=a.activity;
+        Object.assign(a,cmd.changes);
+        SB.update('faith',a.id,a,'faith');
+        save('faith');
+        addHistory('edit','Edited faith: '+prev,a);
+        renderFaith();
+        const changeDesc=Object.entries(cmd.changes).map(([k,v])=>k+' \u2192 '+v).join(', ');
+        result='Faith activity "'+prev+'" updated: '+changeDesc+', sir.';
+        break;
+      }
+
+      case 'delete_faith':{
+        const a=fuzzyFind(cmd.target,DB.faith,x=>x.activity);
+        if(!a){result='No faith activity found matching "'+cmd.target+'", sir.';break;}
+        DB.faith=DB.faith.filter(x=>x.id!==a.id);
+        SB.remove('faith',a.id,'faith');
+        addHistory('delete','Deleted faith: '+a.activity,{...a,_dbKey:'faith'});
+        renderFaith();
+        result='Faith activity deleted, sir: "'+a.activity+'"';
+        break;
+      }
+
+      // ─── CASHFLOW ────────────────────────────────────────────────────────
+      case 'add_cashflow':{
+        const t={id:uid(),type:cmd.type||'Debit',date:new Date().toISOString().split('T')[0],desc:cmd.desc||rawText,amount:cmd.amount||0,account:cmd.account||'Cash',category:cmd.category||'Other'};
+        DB.cashflow.unshift(t);
+        SB.upsert('cashflow',t,'cashflow');
+        addHistory('add','Added '+t.type+': \u20b1'+t.amount,{...t,_dbKey:'cashflow'});
+        renderLife();renderBrief();
+        result=(cmd.type==='Credit'?'Credit':'Debit')+' of \u20b1'+cmd.amount+' recorded, sir.';
+        break;
+      }
+
+      // ─── JOURNAL ─────────────────────────────────────────────────────────
       case 'add_journal':{
-        const j={id:Date.now(),title:cmd.title||'Voice Entry',content:cmd.content||rawText,mood:'🟢',date:new Date().toISOString()};
+        const j={id:uid(),title:cmd.title||'Voice Entry',content:cmd.content||rawText,mood:'\ud83d\udfe2',date:new Date().toISOString()};
         DB.journal.unshift(j);
         SB.upsert('journal',j,'journal');
         addHistory('add','Added journal: '+j.title,{...j,_dbKey:'journal'});
@@ -2421,6 +3000,7 @@ async function dispatchVoiceAction(cmd,rawText){
         break;
       }
 
+      // ─── SYSTEM ──────────────────────────────────────────────────────────
       case 'mute':
         isMuted=true;speechSynthesis.cancel();
         showToast('Voice muted');
@@ -2435,13 +3015,14 @@ async function dispatchVoiceAction(cmd,rawText){
 
       case 'unknown':
       default:{
-        // Fully local — no cloud call
         const suggestions=[
           '"Add task: [title]"',
           '"Go to [view]"',
           '"Mark [task] as done"',
           '"Delete task: [name]"',
+          '"Move [venture item] to Active"',
           '"Add client: [name]"',
+          '"Add faith: [activity name]"',
           '"Add debit: [desc] [amount]"',
           '"Mute" / "Unmute"',
         ];
@@ -2573,7 +3154,7 @@ function showCtx(e,id,type){e.preventDefault();ctxTarget={id,type};const m=docum
 function ctxAct(action){
   if(!ctxTarget)return;
   if(action==='edit'){if(ctxTarget.type==='task')editTask(ctxTarget.id);else if(ctxTarget.type==='client')editClient(ctxTarget.id);}
-  else if(action==='duplicate'){if(ctxTarget.type==='task'){const t=DB.tasks.find(x=>x.id===ctxTarget.id);if(t){const n={...t,id:Date.now(),title:'Copy — '+t.title};DB.tasks.unshift(n);SB.upsert('tasks',n,'tasks');reRenderAll();showToast('✓ Duplicated');}}else if(ctxTarget.type==='client'){const c=DB.clients.find(x=>x.id===ctxTarget.id);if(c){const n={...c,id:Date.now(),name:'Copy — '+c.name};DB.clients.unshift(n);SB.upsert('clients',n,'clients');renderWorkIH();showToast('✓ Duplicated');}}}
+  else if(action==='duplicate'){if(ctxTarget.type==='task'){const t=DB.tasks.find(x=>x.id===ctxTarget.id);if(t){const n={...t,id:uid(),title:'Copy — '+t.title};DB.tasks.unshift(n);SB.upsert('tasks',n,'tasks');reRenderAll();showToast('✓ Duplicated');}}else if(ctxTarget.type==='client'){const c=DB.clients.find(x=>x.id===ctxTarget.id);if(c){const n={...c,id:uid(),name:'Copy — '+c.name};DB.clients.unshift(n);SB.upsert('clients',n,'clients');renderWorkIH();showToast('✓ Duplicated');}}}
   else if(action==='delete'){if(ctxTarget.type==='task')deleteTask({stopPropagation:()=>{}},ctxTarget.id);else if(ctxTarget.type==='client')deleteClientBtn({stopPropagation:()=>{}},ctxTarget.id);}
 }
 
@@ -2765,6 +3346,42 @@ function enterOS(){
     if(screen)screen.style.display='none';
     try{reRenderAll();}catch(e){console.warn('reRenderAll:',e);}
     loadAllFromSupabase();
+    // Daily brief voice summary — fires 1.8s after OS enters
+    setTimeout(()=>{
+      try{
+        const now=new Date();
+        const hour=now.getHours();
+        const greeting=hour<12?'Good morning':hour<17?'Good afternoon':'Good evening';
+        const dayName=now.toLocaleDateString('en-PH',{weekday:'long'});
+        const dateStr=now.toLocaleDateString('en-PH',{month:'long',day:'numeric'});
+        // Tasks
+        const openTasks=DB.tasks.filter(t=>t.status!=='Done');
+        const highTasks=openTasks.filter(t=>t.priority==='High');
+        const todayTasks=openTasks.filter(t=>t.due===now.toISOString().split('T')[0]);
+        // Calendar events today
+        const todayKey=now.toISOString().split('T')[0];
+        const todayEvents=(DB.calEvents||[]).filter(e=>e.date===todayKey);
+        // Clients
+        const activeClients=(DB.clients||[]).filter(c=>c.status==='Active');
+        // Compose summary
+        let summary=`${greeting}, sir. J.E.L.I.X is online. Today is ${dayName}, ${dateStr}. `;
+        if(openTasks.length>0){
+          summary+=`You have ${openTasks.length} open task${openTasks.length>1?'s':''} across all worlds. `;
+          if(highTasks.length>0)summary+=`${highTasks.length} marked high priority. `;
+          if(todayTasks.length>0)summary+=`${todayTasks.length} due today. `;
+        }else{
+          summary+='No open tasks on the board. ';
+        }
+        if(todayEvents.length>0){
+          summary+=`${todayEvents.length} calendar event${todayEvents.length>1?'s':''} scheduled for today. `;
+        }
+        if(activeClients.length>0){
+          summary+=`${activeClients.length} active client${activeClients.length>1?'s':''} under management. `;
+        }
+        summary+='All systems nominal. Standing by, sir.';
+        speak(summary);
+      }catch(e){console.warn('Boot brief error:',e);}
+    },1800);
   },900);
 }
 
@@ -2804,6 +3421,87 @@ function saveHealthLogs(d){localStorage.setItem(DB_HEALTH_KEY,JSON.stringify(d))
 function getWellness(){return JSON.parse(localStorage.getItem(DB_WELLNESS_KEY)||'{}');}
 function saveWellnessData(d){localStorage.setItem(DB_WELLNESS_KEY,JSON.stringify(d));}
 
+// ── Quick Add / Edit Modal ──
+const QUICK_META={
+  hr:  {label:'Heart Rate',    metric:'Heart Rate',    category:'Vitals',    unit:'bpm',   placeholder:'e.g. 72',  color:'var(--red)',    step:'1'},
+  bp:  {label:'Blood Pressure',metric:'Blood Pressure',category:'Vitals',    unit:'mmHg',  placeholder:'e.g. 120/80',color:'var(--orange)',step:'any'},
+  steps:{label:'Steps Today',  metric:'Steps',         category:'Exercise',  unit:'steps', placeholder:'e.g. 8000',color:'var(--teal)',   step:'1'},
+  sleep:{label:'Sleep',        metric:'Sleep Duration',category:'Sleep',     unit:'hrs',   placeholder:'e.g. 7.5', color:'var(--green)',  step:'0.1'},
+  water:{label:'Water Intake', metric:'Water Intake',  category:'Nutrition', unit:'glasses',placeholder:'e.g. 6',  color:'var(--purple)', step:'1'},
+  weight:{label:'Weight',      metric:'Weight',        category:'Vitals',    unit:'kg',    placeholder:'e.g. 65.5',color:'var(--amber)',  step:'0.1'},
+};
+let _quickEditId=null;
+
+function openQuickHealthAdd(type,editId){
+  _quickEditId=editId||null;
+  const meta=QUICK_META[type]||QUICK_META.hr;
+  let existingVal='',existingNotes='',existingDate=new Date().toISOString().split('T')[0];
+  if(editId){
+    const logs=getHealthLogs();
+    const entry=logs.find(l=>l.id===editId);
+    if(entry){existingVal=entry.value;existingNotes=entry.notes||'';existingDate=entry.date;}
+  }
+  // Build or reuse the quick modal
+  let modal=document.getElementById('quickHealthModal');
+  if(!modal){
+    modal=document.createElement('div');
+    modal.id='quickHealthModal';
+    modal.className='mov';
+    document.body.appendChild(modal);
+  }
+  modal.innerHTML=`
+  <div class="modal" style="width:400px">
+    <div class="mh">
+      <div class="mt" style="color:${meta.color}">${editId?'Edit':'Add'} — ${meta.label}</div>
+      <button class="mc" onclick="closeModal('quickHealthModal')">×</button>
+    </div>
+    <div class="mb">
+      <div class="fg"><label class="fl">Date</label><input type="date" id="qh-date" value="${existingDate}"></div>
+      <div class="fg" style="margin-top:8px">
+        <label class="fl">${meta.label} <span style="color:var(--text3);font-size:9px">(${meta.unit})</span></label>
+        <input id="qh-value" type="${type==='bp'?'text':'number'}" step="${meta.step}" placeholder="${meta.placeholder}" value="${existingVal}" style="font-size:18px;font-weight:700;color:${meta.color};text-align:center;padding:10px">
+      </div>
+      <div class="fg" style="margin-top:8px"><label class="fl">Notes <span style="color:var(--text3);font-size:9px">(optional)</span></label><input id="qh-notes" placeholder="Optional note..." value="${existingNotes}"></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-g" onclick="closeModal('quickHealthModal')">Cancel</button>
+      ${editId?`<button class="btn btn-d" onclick="deleteHealthEntry(${editId});closeModal('quickHealthModal')"><i class="ti ti-trash"></i> Delete</button>`:''}
+      <button class="btn" style="background:rgba(255,34,68,.1);color:${meta.color};border:1px solid ${meta.color};font-weight:700" onclick="saveQuickHealth('${type}')"><i class="ti ti-check"></i> Save</button>
+    </div>
+  </div>`;
+  openModal('quickHealthModal');
+  setTimeout(()=>{const v=document.getElementById('qh-value');if(v)v.focus();},150);
+}
+
+function saveQuickHealth(type){
+  const meta=QUICK_META[type];
+  const valEl=document.getElementById('qh-value');
+  const dateEl=document.getElementById('qh-date');
+  const notesEl=document.getElementById('qh-notes');
+  const rawVal=valEl?.value?.trim();
+  if(!rawVal){showToast('Enter a value, sir.');return;}
+  const value=type==='bp'?rawVal:parseFloat(rawVal);
+  if(type!=='bp'&&isNaN(value)){showToast('Enter a valid number, sir.');return;}
+  const date=dateEl?.value||new Date().toISOString().split('T')[0];
+  const notes=notesEl?.value?.trim()||'';
+  const logs=getHealthLogs();
+  if(_quickEditId){
+    const idx=logs.findIndex(l=>l.id===_quickEditId);
+    if(idx>=0){logs[idx]={...logs[idx],value,date,notes};}
+    _quickEditId=null;
+  }else{
+    const entry={id:uid(),date,category:meta.category,metric:meta.metric,value,unit:meta.unit,notes,source:'manual'};
+    logs.unshift(entry);
+    // also update water tracker if water
+    if(type==='water'){const n=parseInt(value)||0;logWater(n);todayWellness.water=n;}
+  }
+  saveHealthLogs(logs);
+  closeModal('quickHealthModal');
+  renderHealth();
+  showToast('✓ '+meta.label+' logged, sir.');
+  addHistory('add','Health: '+meta.label+' '+value+' '+meta.unit,{category:meta.category,metric:meta.metric,value,date});
+}
+
 // ── Wellness chips ──
 let todayWellness={mood:0,energy:0,stress:0,water:0,notes:''};
 function setWellness(type,val,el){
@@ -2821,28 +3519,20 @@ function logWater(n){
   if(h)h.textContent=n;
   const s=document.getElementById('h-water-sub');
   if(s)s.textContent=n+' / 8 glasses today';
-  // Auto-save to today's wellness so it persists on reload
-  const d=getWellness();
-  const today=new Date().toISOString().split('T')[0];
-  if(!d[today])d[today]={};
-  d[today].water=n;
-  saveWellnessData(d);
 }
 function saveWellness(){
   const notes=document.getElementById('wellnessNotes');
   if(notes)todayWellness.notes=notes.value;
   const d=getWellness();
   const today=new Date().toISOString().split('T')[0];
-  d[today]=todayWellness;
+  d[today]={...todayWellness};
   saveWellnessData(d);
   showToast('✓ Wellness check-in saved, sir.');
 }
 
-// ── Health Log Entry ──
-function openHealthLogModal(){const d=document.getElementById('hl-date');if(d)d.value=new Date().toISOString().split('T')[0];const t=document.getElementById('healthLogModalTitle');if(t)t.textContent='Log Health Entry';openModal('healthLogModal');}
-function syncAppleHealth(){
-  showToast('Open Health Export app on iPhone → export CSV → use Import CSV button, sir.');
-}
+// ── Health Log Entry (full modal) ──
+function openHealthLogModal(){const d=document.getElementById('hl-date');if(d)d.value=new Date().toISOString().split('T')[0];openModal('healthLogModal');}
+function syncAppleHealth(){showToast('Manual logging is enabled, sir. Use the quick-add buttons above.');}
 function importHealthCSV(ev){
   const file=ev.target.files[0];if(!file)return;
   const reader=new FileReader();
@@ -2856,33 +3546,21 @@ function importHealthCSV(ev){
       if(!line.trim())return;
       const vals=line.split(',').map(s=>s.trim().replace(/"/g,''));
       const row={};headers.forEach((h2,i)=>row[h2]=vals[i]||'');
-      // Map common Apple Health CSV fields
-      const entry={
-        id:Date.now()+Math.random(),
-        date:row.date||row.startdate||new Date().toISOString().split('T')[0],
-        category:mapHealthCategory(row.type||row.name||''),
-        metric:row.type||row.name||'Unknown',
-        value:parseFloat(row.value||row.qty||0)||0,
-        unit:row.unit||'',
-        notes:'Imported from Apple Health',
-        source:'apple-health'
-      };
+      const entry={id:uid(),date:row.date||row.startdate||new Date().toISOString().split('T')[0],category:mapHealthCategory(row.type||row.name||''),metric:row.type||row.name||'Unknown',value:parseFloat(row.value||row.qty||0)||0,unit:row.unit||'',notes:'Imported',source:'csv'};
       logs.unshift(entry);imported++;
     });
     saveHealthLogs(logs);renderHealth();
-    showToast('✓ '+imported+' health entries imported, sir.');
-    document.getElementById('ahSyncStatus').textContent='Last sync: '+new Date().toLocaleString('en-PH');
+    showToast('✓ '+imported+' entries imported, sir.');
     ev.target.value='';
   };
   reader.readAsText(file);
 }
 function mapHealthCategory(type){
   const t=type.toLowerCase();
-  if(t.includes('heart')||t.includes('pulse')||t.includes('bp')||t.includes('oxygen'))return'Vitals';
-  if(t.includes('step')||t.includes('walk')||t.includes('run')||t.includes('workout')||t.includes('energy'))return'Exercise';
+  if(t.includes('heart')||t.includes('pulse')||t.includes('bp')||t.includes('oxygen')||t.includes('weight')||t.includes('bmi'))return'Vitals';
+  if(t.includes('step')||t.includes('walk')||t.includes('run')||t.includes('workout'))return'Exercise';
   if(t.includes('sleep'))return'Sleep';
   if(t.includes('calor')||t.includes('nutrition')||t.includes('water')||t.includes('fluid'))return'Nutrition';
-  if(t.includes('weight')||t.includes('bmi'))return'Vitals';
   return'Vitals';
 }
 function saveHealthEntry(){
@@ -2893,49 +3571,29 @@ function saveHealthEntry(){
   const unit=document.getElementById('hl-unit').value;
   const notes=document.getElementById('hl-notes').value;
   if(!metric){showToast('Enter a metric name, sir.');return;}
-  const entry={id:Date.now(),date:d,category:cat,metric,value,unit,notes,source:'manual'};
+  const entry={id:uid(),date:d,category:cat,metric,value,unit,notes,source:'manual'};
   const logs=getHealthLogs();logs.unshift(entry);saveHealthLogs(logs);
   closeModal('healthLogModal');renderHealth();
   showToast('✓ Health entry logged, sir.');
-}
-
-// Quick log shortcut — pre-fills the health log modal for a specific category/metric
-function quickLog(type){
-  const presets={
-    'Exercise':     {cat:'Exercise',   metric:'Exercise',      unit:'min',  label:'Duration (minutes)'},
-    'Sleep':        {cat:'Sleep',      metric:'Sleep Duration',unit:'hrs',  label:'Hours slept'},
-    'Nutrition':    {cat:'Nutrition',  metric:'Nutrition',     unit:'kcal', label:'Calories'},
-    'Mental':       {cat:'Mental',     metric:'Mental Health', unit:'/10',  label:'Score (1–10)'},
-    'Medication':   {cat:'Medication', metric:'Medication',    unit:'dose', label:'Doses taken'},
-    'Heart Rate':   {cat:'Vitals',     metric:'Heart Rate',    unit:'bpm',  label:'BPM (resting)'},
-    'Blood Pressure':{cat:'Vitals',   metric:'Blood Pressure',unit:'mmHg', label:'Systolic (e.g. 120)'},
-    'Steps':        {cat:'Exercise',   metric:'Steps',         unit:'steps',label:'Step count'},
-    'Weight':       {cat:'Vitals',     metric:'Weight',        unit:'kg',   label:'Weight (kg)'},
-    'Water':        {cat:'Nutrition',  metric:'Water Intake',  unit:'glasses',label:'Glasses of water'},
-  };
-  const p=presets[type];
-  if(!p)return;
-  // Pre-fill modal fields
-  const d=document.getElementById('hl-date');if(d)d.value=new Date().toISOString().split('T')[0];
-  const cat=document.getElementById('hl-cat');if(cat)cat.value=p.cat;
-  const metric=document.getElementById('hl-metric');if(metric)metric.value=p.metric;
-  const unit=document.getElementById('hl-unit');if(unit)unit.value=p.unit;
-  const val=document.getElementById('hl-value');if(val){val.value='';val.placeholder=p.label;}
-  const notes=document.getElementById('hl-notes');if(notes)notes.value='';
-  document.getElementById('healthLogModalTitle').textContent='Log — '+type;
-  openModal('healthLogModal');
 }
 
 // ── Trend Chart ──
 let _healthChart=null;
 function renderHealthTrend(){
   const metric=document.getElementById('healthTrendMetric')?.value||'hr';
-  const metricMap={hr:['Heart Rate','bpm'],weight:['Weight','kg'],sleep:['Sleep','hrs'],steps:['Steps','steps']};
-  const [label,unit]=metricMap[metric]||['Metric',''];
-  const logs=getHealthLogs().filter(l=>l.metric.toLowerCase().includes(metric==='hr'?'heart':metric));
+  const metricMap={
+    hr:    {label:'Heart Rate',    unit:'bpm',    keywords:['heart rate','hr','bpm'],  color:'rgba(255,34,68,.8)',   bg:'rgba(255,34,68,.08)'},
+    bp:    {label:'Blood Pressure',unit:'mmHg',   keywords:['blood pressure','bp','systolic'],color:'rgba(255,140,0,.8)',bg:'rgba(255,140,0,.08)'},
+    steps: {label:'Steps',         unit:'steps',  keywords:['steps','step count'],     color:'rgba(0,212,200,.8)',   bg:'rgba(0,212,200,.08)'},
+    sleep: {label:'Sleep',         unit:'hrs',    keywords:['sleep'],                  color:'rgba(0,255,136,.8)',   bg:'rgba(0,255,136,.08)'},
+    water: {label:'Water',         unit:'glasses',keywords:['water'],                  color:'rgba(191,95,255,.8)', bg:'rgba(191,95,255,.08)'},
+    weight:{label:'Weight',        unit:'kg',     keywords:['weight'],                 color:'rgba(255,170,0,.8)',  bg:'rgba(255,170,0,.08)'},
+  };
+  const m=metricMap[metric]||metricMap.hr;
+  const logs=getHealthLogs().filter(l=>m.keywords.some(k=>l.metric.toLowerCase().includes(k)));
   const last7=[];const today=new Date();
   for(let i=6;i>=0;i--){const d=new Date(today);d.setDate(today.getDate()-i);last7.push({date:d.toISOString().split('T')[0],val:null});}
-  logs.forEach(l=>{const row=last7.find(r=>r.date===l.date);if(row)row.val=l.value;});
+  logs.forEach(l=>{const row=last7.find(r=>r.date===l.date);if(row&&row.val===null)row.val=typeof l.value==='string'?parseFloat(l.value)||0:l.value;});
   const canvas=document.getElementById('healthTrendChart');
   const empty=document.getElementById('healthTrendEmpty');
   if(!canvas)return;
@@ -2948,11 +3606,11 @@ function renderHealthTrend(){
     type:'line',
     data:{
       labels:last7.map(r=>r.date.slice(5)),
-      datasets:[{label:label+' ('+unit+')',data:last7.map(r=>r.val),borderColor:'rgba(128,255,250,.8)',backgroundColor:'rgba(128,255,250,.08)',tension:.4,pointBackgroundColor:'rgba(128,255,250,1)',pointRadius:4,fill:true}]
+      datasets:[{label:m.label+' ('+m.unit+')',data:last7.map(r=>r.val),borderColor:m.color,backgroundColor:m.bg,tension:.4,pointBackgroundColor:m.color,pointRadius:4,fill:true,spanGaps:true}]
     },
     options:{
       responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>c.parsed.y+' '+m.unit}}},
       scales:{
         x:{ticks:{color:'rgba(152,216,240,.6)',font:{size:11}},grid:{color:'rgba(128,255,250,.05)'}},
         y:{ticks:{color:'rgba(152,216,240,.6)',font:{size:11}},grid:{color:'rgba(128,255,250,.05)'}}
@@ -2964,64 +3622,74 @@ function renderHealthTrend(){
 // ── Main Render ──
 function renderHealth(){
   const logs=getHealthLogs();
-  // Update vital cards from most recent matching log
-  const getLatest=(keywords)=>{
-    for(const log of logs){
-      if(keywords.some(k=>log.metric.toLowerCase().includes(k)))return log;
-    }return null;
-  };
-  const hr=getLatest(['heart rate','bpm','hr']);
+  const getLatest=(keywords)=>{for(const log of logs){if(keywords.some(k=>log.metric.toLowerCase().includes(k)))return log;}return null;};
+  const hr=getLatest(['heart rate','bpm','resting heart']);
   const bp=getLatest(['blood pressure','systolic','bp']);
   const steps=getLatest(['steps','step count']);
-  const sleep=getLatest(['sleep','sleep duration']);
+  const sleep=getLatest(['sleep']);
   const weight=getLatest(['weight','body mass']);
-  const setCard=(id,val,subId,sub)=>{
-    const el=document.getElementById(id);if(el&&val!==null)el.textContent=val;
-    const s=document.getElementById(subId);if(s&&sub)s.textContent=sub;
-  };
+  const setCard=(id,val,subId,sub)=>{const el=document.getElementById(id);if(el&&val!==null)el.textContent=val;const s=document.getElementById(subId);if(s&&sub)s.textContent=sub;};
   if(hr)setCard('h-hr',Math.round(hr.value),'h-hr-sub','bpm · '+hr.date);
   if(bp)setCard('h-bp',bp.value,'h-bp-sub','mmHg · '+bp.date);
   if(steps)setCard('h-steps',Math.round(steps.value).toLocaleString(),'h-steps-sub','goal: 10,000');
-  if(sleep)setCard('h-sleep',sleep.value.toFixed(1),'h-sleep-sub','hrs · '+sleep.date);
-  if(weight)setCard('h-weight',weight.value.toFixed(1),'h-weight-sub','kg · '+weight.date);
+  if(sleep)setCard('h-sleep',parseFloat(sleep.value).toFixed(1),'h-sleep-sub','hrs · '+sleep.date);
+  if(weight)setCard('h-weight',parseFloat(weight.value).toFixed(1),'h-weight-sub','kg · '+weight.date);
 
-  // Restore water from today's wellness — must run AFTER wellnessPanel is in DOM
+  // Restore water from today's wellness
   const wellness=getWellness();
   const todayKey=new Date().toISOString().split('T')[0];
   const todayData=wellness[todayKey]||{};
-  // Sync todayWellness from stored data
-  if(todayData.mood)todayWellness.mood=todayData.mood;
-  if(todayData.energy)todayWellness.energy=todayData.energy;
-  if(todayData.stress)todayWellness.stress=todayData.stress;
-  if(todayData.water)todayWellness.water=todayData.water;
-  // Apply water glasses (glass elements exist in DOM at this point)
-  if(todayData.water)logWater(todayData.water);
-  else{const h=document.getElementById('h-water');if(h)h.textContent='0';const s=document.getElementById('h-water-sub');if(s)s.textContent='0 / 8 glasses today';}
+  if(todayData.water){
+    todayWellness.water=todayData.water;
+    logWater(todayData.water);
+  }
+  // Restore mood/energy/stress chips
+  ['mood','energy','stress'].forEach(type=>{
+    if(todayData[type]){
+      todayWellness[type]=todayData[type];
+      const chips=document.querySelectorAll(`[onclick*="setWellness('${type}',"]`);
+      chips.forEach((c,i)=>{
+        if(i+1===todayData[type])c.classList.add('sel');else c.classList.remove('sel');
+      });
+    }
+  });
+  if(todayData.notes){const n=document.getElementById('wellnessNotes');if(n)n.value=todayData.notes;}
 
-  // Health log list
+  // Health log list with edit support
   const listEl=document.getElementById('healthLogList');
   const catFilter=document.getElementById('healthCatFilter')?.value||'all';
   const filtered=catFilter==='all'?logs:logs.filter(l=>l.category===catFilter);
+  const colMap={Vitals:'var(--red)',Exercise:'var(--green)',Sleep:'var(--purple)',Nutrition:'var(--amber)',Mental:'var(--teal)',Medication:'var(--orange)'};
   if(listEl){
     listEl.innerHTML=filtered.length?filtered.slice(0,30).map(l=>`
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border)">
-        <div style="width:7px;height:7px;border-radius:50%;background:${l.category==='Vitals'?'var(--red)':l.category==='Exercise'?'var(--green)':l.category==='Sleep'?'var(--purple)':l.category==='Nutrition'?'var(--amber)':l.category==='Mental'?'var(--teal)':'var(--orange)'};flex-shrink:0"></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s" onclick="editHealthEntry(${l.id})" onmouseover="this.style.background='var(--teal4)'" onmouseout="this.style.background='transparent'">
+        <div style="width:7px;height:7px;border-radius:50%;background:${colMap[l.category]||'var(--orange)'};flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
           <div style="font-size:12px;font-weight:600;color:var(--text1)">${l.metric}</div>
           <div style="font-size:10px;color:var(--text3)">${l.category} · ${l.date}${l.notes?' · '+l.notes:''}</div>
         </div>
-        <div style="font-size:14px;font-weight:800;color:${l.category==='Vitals'?'var(--red)':l.category==='Exercise'?'var(--green)':l.category==='Sleep'?'var(--purple)':'var(--amber)'};white-space:nowrap">${l.value} <span style="font-size:10px;font-weight:400;color:var(--text3)">${l.unit||''}</span></div>
-        <button onclick="deleteHealthEntry(${l.id})" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 3px;line-height:1">×</button>
+        <div style="font-size:14px;font-weight:800;color:${colMap[l.category]||'var(--orange)'};white-space:nowrap">${l.value} <span style="font-size:10px;font-weight:400;color:var(--text3)">${l.unit||''}</span></div>
+        <button onclick="event.stopPropagation();deleteHealthEntry(${l.id})" style="background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0 3px;line-height:1" title="Delete">×</button>
       </div>`).join('')
     :'<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">No entries in this category.</div>';
   }
   renderHealthTrend();
 }
+
+function editHealthEntry(id){
+  const logs=getHealthLogs();
+  const entry=logs.find(l=>l.id===id);
+  if(!entry)return;
+  const typeMap={'Heart Rate':'hr','Blood Pressure':'bp','Steps':'steps','Sleep Duration':'sleep','Water Intake':'water','Weight':'weight'};
+  const type=typeMap[entry.metric]||'hr';
+  openQuickHealthAdd(type,id);
+}
 function deleteHealthEntry(id){
   const logs=getHealthLogs().filter(l=>l.id!==id);
   saveHealthLogs(logs);renderHealth();showToast('Entry deleted.');
 }
-function renderEndurance(){renderHealth();}  // alias for safety
+function renderHealthLog(){renderHealth();}
+function renderEndurance(){renderHealth();}
 
 // ===== DARK/LIGHT THEME =====
 function toggleTheme(){
