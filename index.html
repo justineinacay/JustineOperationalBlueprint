@@ -192,6 +192,133 @@ select option{background:var(--navy3)}
 
 /* CAL MINI */
 .cal-mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px}
+
+/* ═══════════════════════════════════════════════════════
+   JELIX CALENDAR — Full GCal-parity module
+═══════════════════════════════════════════════════════ */
+
+/* ── Calendar shell ── */
+.cal-shell{display:flex;flex-direction:column;height:100%;overflow:hidden}
+
+/* ── Top toolbar ── */
+.cal-toolbar{display:flex;align-items:center;gap:8px;padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--navy2)}
+.cal-toolbar-title{font-size:14px;font-weight:700;color:var(--teal);letter-spacing:.04em;min-width:160px}
+.cal-view-tabs{display:flex;gap:2px;background:var(--navy3);border:1px solid var(--border);border-radius:5px;padding:2px}
+.cal-vt{padding:4px 10px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.06em;cursor:pointer;color:var(--text3);border:none;background:transparent;transition:all .15s;text-transform:uppercase}
+.cal-vt.active{background:var(--teal3);color:var(--teal);border:1px solid var(--teal2)}
+.cal-ctx-filters{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.cal-ctx-pill{padding:3px 10px;border-radius:100px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:all .15s;text-transform:uppercase;letter-spacing:.05em;opacity:.5}
+.cal-ctx-pill.on{opacity:1}
+
+/* ── Layout: sidebar mini-cal + main grid ── */
+.cal-body{display:flex;flex:1;overflow:hidden;min-height:0}
+.cal-sidebar{width:200px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;background:var(--navy2);padding:12px 10px;gap:16px}
+.cal-main{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+
+/* ── Mini calendar in sidebar ── */
+.cal-mini-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cal-mini-month{font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-transform:uppercase}
+.cal-mini-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:2px 5px;line-height:1}
+.cal-mini-btn:hover{color:var(--teal)}
+.cal-mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:4px}
+.cal-mini-day{font-size:9px;text-align:center;padding:3px 1px;border-radius:3px;cursor:pointer;color:var(--text2);line-height:1.2}
+.cal-mini-day:hover{background:var(--teal3);color:var(--teal)}
+.cal-mini-day.today{background:var(--teal);color:var(--navy);font-weight:700;border-radius:50%}
+.cal-mini-day.selected{background:var(--teal3);color:var(--teal);font-weight:700}
+.cal-mini-day.om{opacity:.25}
+.cal-mini-label{font-size:8px;color:var(--text3);font-weight:700;letter-spacing:.05em;text-align:center}
+
+/* ── Context legend in sidebar ── */
+.cal-legend-item{display:flex;align-items:center;gap:7px;font-size:10px;color:var(--text2);cursor:pointer;padding:3px 0;user-select:none}
+.cal-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── Month view ── */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0}
+.cday-label{font-size:9px;color:var(--text3);text-align:center;font-weight:700;letter-spacing:.05em;padding:5px 0;border-bottom:1px solid var(--border);background:var(--navy2)}
+.cday{min-height:100px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:5px 6px;cursor:pointer;transition:background .1s;position:relative;overflow:hidden}
+.cday:hover{background:var(--teal4)}
+.cday.today{background:rgba(0,255,242,.04)}
+.cday.today .dn{color:var(--teal);background:var(--teal);color:var(--navy);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.cday.om{opacity:.3;pointer-events:none}
+.cday.selected{background:var(--teal4);outline:2px solid var(--teal2);outline-offset:-2px}
+.cday .dn{font-size:11px;color:var(--text2);margin-bottom:3px;font-weight:500;width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+.cev{font-size:9px;border-radius:3px;padding:2px 5px;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:opacity .1s}
+.cev:hover{opacity:.8}
+/* World colour tokens */
+.cev-ih  {background:rgba(0,212,200,.15);color:var(--teal);border-left:2px solid var(--teal)}
+.cev-cs  {background:rgba(255,34,68,.1); color:var(--red); border-left:2px solid var(--red)}
+.cev-ven {background:rgba(255,140,0,.12);color:var(--orange);border-left:2px solid var(--orange)}
+.cev-bld {background:rgba(0,255,136,.1); color:var(--green);border-left:2px solid var(--green)}
+.cev-sid {background:rgba(255,170,0,.12);color:var(--amber);border-left:2px solid var(--amber)}
+.cev-fth {background:rgba(168,85,247,.12);color:var(--purple);border-left:2px solid var(--purple)}
+.cev-lif {background:rgba(59,130,246,.12);color:#3b82f6;border-left:2px solid #3b82f6}
+.cev-task{background:rgba(255,170,0,.08);color:var(--amber);border-left:2px solid var(--amber);border-style:dashed solid solid solid}
+
+/* ── Week view ── */
+.cal-week-grid{display:grid;grid-template-columns:48px repeat(7,1fr);flex:1;overflow:hidden;min-height:0}
+.cal-week-header{display:grid;grid-template-columns:48px repeat(7,1fr);border-bottom:1px solid var(--border);flex-shrink:0;background:var(--navy2)}
+.cal-week-hcol{text-align:center;padding:8px 4px;border-right:1px solid var(--border)}
+.cal-week-hcol .wh-day{font-size:9px;color:var(--text3);font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.cal-week-hcol .wh-num{font-size:18px;font-weight:700;color:var(--text2);line-height:1}
+.cal-week-hcol.today .wh-num{color:var(--teal);text-shadow:0 0 8px rgba(128,255,250,.5)}
+.cal-week-body{display:contents}
+.cal-time-col{border-right:1px solid var(--border);overflow:hidden}
+.cal-time-label{height:48px;display:flex;align-items:flex-start;justify-content:flex-end;padding:2px 6px 0 0;font-size:9px;color:var(--text3);letter-spacing:.04em}
+.cal-day-col{border-right:1px solid var(--border);position:relative;min-height:1152px}/* 24h * 48px */
+.cal-hour-line{position:absolute;left:0;right:0;border-top:1px solid var(--border);height:48px}
+.cal-half-line{position:absolute;left:0;right:0;top:24px;border-top:1px dashed rgba(255,255,255,.04)}
+.cal-now-line{position:absolute;left:0;right:0;height:2px;background:var(--red);z-index:5;pointer-events:none}
+.cal-now-line::before{content:'';position:absolute;left:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--red);box-shadow:0 0 6px var(--red)}
+.cal-event-block{position:absolute;left:3px;right:3px;border-radius:4px;padding:3px 6px;font-size:10px;cursor:pointer;overflow:hidden;z-index:2;transition:opacity .1s,box-shadow .1s;min-height:20px}
+.cal-event-block:hover{opacity:.9;box-shadow:0 2px 12px rgba(0,0,0,.4);z-index:3}
+.cal-event-block .ceb-title{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cal-event-block .ceb-time{font-size:9px;opacity:.7;margin-top:1px}
+
+/* ── Day view ── */
+.cal-day-view{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0}
+.cal-day-header{padding:10px 16px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--navy2)}
+.cal-day-title{font-size:20px;font-weight:700;color:var(--teal);line-height:1}
+.cal-day-sub{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── Agenda view ── */
+.cal-agenda{flex:1;overflow-y:auto;padding:0}
+.cal-agenda-date{padding:12px 16px 6px;font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--navy2);z-index:2;display:flex;align-items:center;gap:10px}
+.cal-agenda-date.today-hdr{color:var(--teal)}
+.cal-agenda-date .adn{font-size:22px;font-weight:800;width:36px;text-align:center;line-height:1}
+.cal-agenda-date .adow{font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+.cal-agenda-event{display:flex;gap:12px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .1s;align-items:flex-start}
+.cal-agenda-event:hover{background:var(--teal4)}
+.cal-agenda-event .ae-time{font-size:10px;color:var(--text3);width:80px;flex-shrink:0;padding-top:2px}
+.cal-agenda-event .ae-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.cal-agenda-event .ae-body{flex:1;min-width:0}
+.cal-agenda-event .ae-title{font-size:12px;font-weight:600;color:var(--text1)}
+.cal-agenda-event .ae-sub{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ── Quarter view ── */
+.cal-quarter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:14px;overflow-y:auto;flex:1}
+.cal-quarter-month{border:1px solid var(--border);border-radius:6px;overflow:hidden;background:var(--navy3)}
+.cal-quarter-mh{padding:8px 10px;background:var(--navy2);border-bottom:1px solid var(--border);font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.06em;text-transform:uppercase}
+.cal-quarter-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:6px}
+.cqd{font-size:9px;text-align:center;padding:2px;border-radius:2px;cursor:pointer;color:var(--text3);position:relative}
+.cqd:hover{background:var(--teal3);color:var(--teal)}
+.cqd.today{background:var(--teal);color:var(--navy);border-radius:50%}
+.cqd.has-ev::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--teal)}
+.cqd.om{opacity:.2;pointer-events:none}
+
+/* ── Event detail popover ── */
+.cal-popover{position:fixed;background:var(--navy2);border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.6);padding:14px 16px;min-width:240px;max-width:320px;z-index:8000;display:none}
+.cal-popover.open{display:block}
+.cal-popover-title{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px}
+.cal-popover-row{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text3);margin-bottom:4px}
+.cal-popover-row i{font-size:12px;color:var(--teal);flex-shrink:0;margin-top:1px}
+.cal-popover-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .cal-sidebar{display:none}
+  .cal-week-grid,.cal-week-header{grid-template-columns:36px repeat(7,1fr)}
+  .cal-quarter-grid{grid-template-columns:1fr}
+}
 .cmd-label{font-size:9px;color:var(--text3);text-align:center;font-weight:700;letter-spacing:.05em}
 .cmd-day{min-height:32px;background:var(--navy3);border:1px solid var(--border);border-radius:3px;padding:3px;font-size:10px;cursor:pointer;transition:border-color .15s}
 .cmd-day:hover{border-color:var(--teal2)}
@@ -818,6 +945,115 @@ select option{background:var(--navy3)}
 @keyframes mb-ripple-out {
   to { transform: scale(1); opacity: 0; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   JELIX TASK OS — Monday.com structural layer
+   Token inheritance: all vars from :root / [data-theme="light"]
+═══════════════════════════════════════════════════════════════ */
+
+/* ── Board chrome ──────────────────────────────────────────── */
+.board-shell{display:flex;flex-direction:column;height:100%;overflow:hidden}
+.board-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--navy2);flex-wrap:wrap}
+.board-view-tabs{display:flex;gap:2px;background:var(--navy3);border:1px solid var(--border);border-radius:5px;padding:2px}
+.bvt{padding:4px 11px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.06em;cursor:pointer;color:var(--text3);border:none;background:transparent;transition:all .15s;text-transform:uppercase}
+.bvt.active{background:var(--teal3);color:var(--teal);border:1px solid var(--teal2)}
+.board-search{background:var(--navy3);border:1px solid var(--border);border-radius:4px;padding:4px 10px;color:var(--text1);font-size:12px;width:160px;outline:none}
+.board-search:focus{border-color:var(--teal2)}
+.filter-chip-sel{background:transparent;border:none;color:var(--text2);font-size:11px;font-family:var(--font);cursor:pointer;outline:none;padding:1px 2px;appearance:none;-webkit-appearance:none;min-width:60px}
+.filter-chip-sel:focus{color:var(--teal)}
+.filter-chip-sel option{background:var(--navy2);color:var(--text1)}
+.filter-sep{width:1px;height:14px;background:var(--border);flex-shrink:0}
+[data-theme="light"] .filter-chip-sel{color:var(--text2)}
+[data-theme="light"] .filter-chip-sel option{background:#fff}
+
+/* ── Group divider (Monday "Group" = collapsible section) ──── */
+.task-group{margin-bottom:14px;position:relative}
+.task-group-header{display:flex;align-items:center;gap:8px;padding:7px 10px;cursor:pointer;user-select:none;border-radius:4px 4px 0 0;border-left:4px solid;transition:background .15s;position:relative}
+.task-group-header:hover{background:rgba(255,255,255,.03)}
+.task-group-header .tgh-label{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;flex:1}
+.task-group-header .tgh-count{font-size:9px;color:var(--text3);background:var(--navy3);border:1px solid var(--border);border-radius:10px;padding:1px 7px;font-weight:700}
+.task-group-header .tgh-toggle{font-size:10px;color:var(--text3);transition:transform .2s;line-height:1;display:block}
+.task-group-header .tgh-add{opacity:0;font-size:9px;color:var(--text3);background:var(--navy3);border:1px solid var(--border2);border-radius:3px;padding:2px 8px;cursor:pointer;transition:all .15s}
+.task-group-header:hover .tgh-add{opacity:1}
+.task-group-header .tgh-add:hover{color:var(--teal);border-color:var(--teal2)}
+.task-group.collapsed .tgh-toggle{transform:rotate(-90deg)}
+.task-group.collapsed .task-group-body{display:none}
+/* World colour tokens for group bars */
+.tg-ih  {border-left-color:var(--teal)}
+.tg-cs  {border-left-color:var(--red)}
+.tg-ven {border-left-color:var(--orange)}
+.tg-bld {border-left-color:var(--green)}
+.tg-sid {border-left-color:var(--amber)}
+.tg-fth {border-left-color:var(--purple)}
+.tg-lif {border-left-color:#3b82f6}
+
+/* ── Table body (inherits .ht styles) ──────────────────────── */
+.task-group-body{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.board-table{width:100%;border-collapse:collapse;font-size:12px;min-width:900px;line-height:1.5}
+.board-table thead th{text-align:left;padding:6px 10px;font-size:9px;font-weight:700;letter-spacing:.09em;color:var(--text3);border-bottom:1px solid var(--border);text-transform:uppercase;white-space:nowrap;background:var(--navy2);position:sticky;top:0;z-index:2;cursor:pointer;user-select:none}
+.board-table thead th:hover{color:var(--teal)}
+.board-table thead th .sort-arrow{margin-left:4px;opacity:.4;font-size:9px}
+.board-table thead th.sort-asc .sort-arrow::after{content:'↑';opacity:1}
+.board-table thead th.sort-desc .sort-arrow::after{content:'↓';opacity:1}
+.board-table td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text1);vertical-align:middle;white-space:nowrap;max-width:220px;overflow:hidden;text-overflow:ellipsis;font-size:12px}
+.board-table tr.item-row{cursor:pointer;transition:background .1s}
+.board-table tr.item-row:hover td{background:var(--teal4)}
+.board-table tr.item-row.selected td{background:rgba(128,255,250,.06);outline:1px solid var(--teal2)}
+/* Group aggregate footer */
+.board-table tr.group-footer td{font-size:10px;color:var(--text3);border-top:1px solid var(--border2);border-bottom:none;padding:4px 10px;background:var(--navy3)}
+.board-table td .inline-edit{background:transparent;border:none;color:var(--text1);font-size:12px;font-family:var(--font);outline:none;width:100%;cursor:pointer}
+.board-table td .inline-edit:focus{background:var(--navy3);border:1px solid var(--teal2);border-radius:2px;cursor:text;padding:1px 4px}
+
+/* ── Timeline bar (inside table cell) ─────────────────────── */
+.timeline-bar-wrap{display:flex;align-items:center;gap:6px;min-width:120px}
+.timeline-bar{height:6px;border-radius:3px;background:var(--teal3);border:1px solid var(--teal2);position:relative;flex:1;overflow:hidden;min-width:60px}
+.timeline-bar-fill{height:100%;border-radius:3px;background:var(--teal);transition:width .3s}
+.timeline-bar-fill.overdue{background:var(--red)}
+.timeline-bar-fill.warning{background:var(--amber)}
+.timeline-dates{font-size:9px;color:var(--text3);white-space:nowrap}
+
+/* ── Sub-item rows ─────────────────────────────────────────── */
+.board-table tr.subitem-row td{padding:4px 10px 4px 32px;background:rgba(0,0,0,.25);border-bottom:1px solid rgba(255,255,255,.03);font-size:11px;color:var(--text2)}
+.board-table tr.subitem-row:hover td{background:rgba(128,255,250,.04)}
+.board-table tr.subitem-row td:first-child{position:relative}
+.board-table tr.subitem-row td:first-child::before{content:'';position:absolute;left:16px;top:0;bottom:0;width:1px;background:var(--border2)}
+.subitem-toggle-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:9px;padding:0 4px;line-height:1;transition:color .15s}
+.subitem-toggle-btn:hover{color:var(--teal)}
+.add-subitem-btn{background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:9px;padding:2px 6px;border-radius:3px;transition:all .15s;display:flex;align-items:center;gap:3px}
+.add-subitem-btn:hover{background:var(--teal3);color:var(--teal)}
+
+/* ── Number aggregate cell ─────────────────────────────────── */
+.num-agg{font-size:10px;color:var(--amber);font-weight:700}
+
+/* ── Connected board chip ──────────────────────────────────── */
+.conn-chip{display:inline-flex;align-items:center;gap:4px;background:var(--teal3);border:1px solid var(--teal2);border-radius:100px;padding:2px 8px;font-size:9px;color:var(--teal);cursor:pointer;white-space:nowrap;transition:all .15s}
+.conn-chip:hover{background:var(--teal);color:var(--navy)}
+.conn-chip.sides{background:var(--orange3);border-color:var(--orange2);color:var(--orange)}
+.conn-chip.sides:hover{background:var(--orange);color:var(--navy)}
+
+/* ── Kanban card upgrade ────────────────────────────────────── */
+.kcard .kc-subitems{margin-top:7px;border-top:1px solid var(--border);padding-top:5px}
+.kcard .kc-sub-row{display:flex;align-items:center;gap:5px;padding:2px 0;font-size:10px;color:var(--text3)}
+.kcard .kc-timeline{margin-top:6px}
+.kcard .kc-conn{margin-top:5px;display:flex;gap:4px;flex-wrap:wrap}
+
+/* ── Board list view (Workspace > Board list) ──────────────── */
+.board-list-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;padding:14px}
+.board-card{background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:14px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.board-card:hover{border-color:var(--teal2);box-shadow:var(--cyan-glow)}
+.board-card-name{font-size:13px;font-weight:700;color:var(--text1);margin-bottom:4px}
+.board-card-meta{font-size:10px;color:var(--text3)}
+.board-card-stripe{position:absolute;top:0;left:0;right:0;height:3px}
+
+/* ── Light mode passthrough (inherits existing tokens) ─────── */
+[data-theme="light"] .task-group-header:hover{background:rgba(0,102,204,.05)}
+[data-theme="light"] .board-table tr.item-row:hover td{background:rgba(0,102,204,.05)}
+[data-theme="light"] .board-table tr.item-row.selected td{background:rgba(0,102,204,.08)}
+[data-theme="light"] .board-table tr.subitem-row td{background:rgba(0,0,0,.03)}
+[data-theme="light"] .board-table tr.subitem-row:hover td{background:rgba(0,102,204,.04)}
+[data-theme="light"] .kcard{background:#ffffff}
+[data-theme="light"] .conn-chip{background:rgba(0,102,204,.08);border-color:rgba(0,102,204,.2);color:var(--teal)}
+[data-theme="light"] .board-table thead th{background:var(--navy3)}
 </style>
 </head>
 <body>
@@ -848,6 +1084,11 @@ select option{background:var(--navy3)}
       <div class="fr">
         <div class="fg"><label class="fl">Start Time</label><input type="time" id="tf-start-time"></div>
         <div class="fg"><label class="fl">End Time</label><input type="time" id="tf-end-time"></div>
+        <div class="fg"><label class="fl"># Value</label><input type="number" id="tf-num" placeholder="e.g. hours, revenue…" style="width:100%"></div>
+      </div>
+      <div class="fr">
+        <div class="fg"><label class="fl">Timeline Start</label><input type="date" id="tf-timeline-s"></div>
+        <div class="fg"><label class="fl">Timeline End</label><input type="date" id="tf-timeline-e"></div>
       </div>
       <div class="fr">
         <div class="fg"><label class="fl">Platform</label><input id="tf-platform" placeholder="e.g. Instagram, Facebook..."></div>
@@ -956,7 +1197,7 @@ select option{background:var(--navy3)}
 
 <!-- CAL EVENT MODAL -->
 <div class="mov" id="calModal">
-  <div class="modal">
+  <div class="modal" style="width:520px">
     <div class="mh"><div class="mt" id="calModalTitle">Add Event</div><button class="mc" onclick="closeModal('calModal')">×</button></div>
     <div class="mb">
       <div class="fg"><label class="fl">Title</label><input id="ce-title" placeholder="Event title..."></div>
@@ -966,20 +1207,51 @@ select option{background:var(--navy3)}
         <div class="fg"><label class="fl">End Time</label><input type="time" id="ce-end-time"></div>
       </div>
       <div class="fr">
-        <div class="fg"><label class="fl">World</label><select id="ce-type">
-          <option value="pt">WORK — Ideahub</option>
-          <option value="oc">WORK — Chainsmoker</option>
-          <option value="po">VENTURE — TJC</option>
-          <option value="pg">BUILD</option>
-          <option value="pam">SIDES</option>
-          <option value="pu">FAITH / Church</option>
-          <option value="pgr">LIFE / Personal</option>
+        <div class="fg"><label class="fl">World / Context</label><select id="ce-type">
+          <option value="ih">WORK — Ideahub</option>
+          <option value="cs">WORK — Chainsmoker</option>
+          <option value="ven">VENTURE — TJC</option>
+          <option value="bld">BUILD</option>
+          <option value="sid">SIDES</option>
+          <option value="fth">FAITH / Church</option>
+          <option value="lif">LIFE / Personal</option>
         </select></div>
-        <div class="fg"><label class="fl">Location</label><input id="ce-loc" placeholder="Location or link..."></div>
+        <div class="fg"><label class="fl">Location / Link</label><input id="ce-loc" placeholder="Address or meeting link..."></div>
       </div>
-      <div class="fg"><label class="fl">Remarks / Notes</label><textarea id="ce-notes" rows="2" placeholder="Additional notes or remarks..."></textarea></div>
+      <!-- Recurrence -->
+      <div class="fr">
+        <div class="fg"><label class="fl">Repeat</label><select id="ce-recur" onchange="toggleRecurOptions()">
+          <option value="none">Does not repeat</option>
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly (same day)</option>
+          <option value="biweekly">Every 2 weeks</option>
+          <option value="monthly">Monthly (same date)</option>
+          <option value="monthly-nth">Monthly (nth weekday)</option>
+          <option value="yearly">Annually</option>
+          <option value="weekdays">Every weekday (Mon–Fri)</option>
+          <option value="custom">Custom interval…</option>
+        </select></div>
+        <div class="fg" id="ce-recur-end-wrap" style="display:none">
+          <label class="fl">Repeat Until</label><input type="date" id="ce-recur-end">
+        </div>
+      </div>
+      <div class="fr" id="ce-custom-wrap" style="display:none">
+        <div class="fg"><label class="fl">Every N days</label><input type="number" id="ce-custom-n" min="1" max="365" placeholder="e.g. 3"></div>
+      </div>
+      <!-- All-day toggle -->
+      <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+        <input type="checkbox" id="ce-allday" onchange="toggleAllDay()" style="width:auto;accent-color:var(--teal)">
+        <label for="ce-allday" style="font-size:12px;color:var(--text2);cursor:pointer">All-day event</label>
+        <div style="flex:1"></div>
+        <input type="checkbox" id="ce-reminder" style="width:auto;accent-color:var(--teal)">
+        <label for="ce-reminder" style="font-size:12px;color:var(--text2);cursor:pointer">Remind 30 min before</label>
+      </div>
+      <div class="fg"><label class="fl">Notes / Agenda</label><textarea id="ce-notes" rows="2" placeholder="Additional notes or agenda..."></textarea></div>
     </div>
-    <div class="mf"><button class="btn btn-g" onclick="closeModal('calModal')">Cancel</button><button class="btn btn-t" onclick="saveCalEvent()">Save</button></div>
+    <div class="mf">
+      <button class="btn btn-g" onclick="closeModal('calModal')">Cancel</button>
+      <button class="btn btn-t" onclick="saveCalEvent()">Save Event</button>
+    </div>
   </div>
 </div>
 
@@ -1208,7 +1480,7 @@ select option{background:var(--navy3)}
     <div class="side-nav">
       <div class="ngl">Command</div>
       <div class="ni active" onclick="setView('brief')" data-view="brief"><i class="ti ti-layout-dashboard"></i>Daily Brief</div>
-      <div class="ni" onclick="setView('tasks')" data-view="tasks"><i class="ti ti-checklist"></i>All Tasks<span class="nbadge" id="taskBadge">0</span></div>
+      <div class="ni" onclick="setView('tasks')" data-view="tasks"><i class="ti ti-checklist"></i>Tasks<span class="nbadge" id="taskBadge">0</span></div>
       <div class="ni" onclick="setView('notes')" data-view="notes"><i class="ti ti-notes"></i>Notes</div>
       <div class="ni" onclick="setView('calendar')" data-view="calendar"><i class="ti ti-calendar"></i>Calendar</div>
       <div class="ni" onclick="setView('ai')" data-view="ai"><i class="ti ti-sparkles"></i>AI Workspace</div>
@@ -1552,18 +1824,225 @@ select option{background:var(--navy3)}
 
     <!-- ===== CALENDAR ===== -->
     <div class="view" id="view-calendar">
-      <div class="vh"><div><div class="vt"><i class="ti ti-calendar"></i>Calendar</div><div class="vs">Schedule · Events · Shifts</div></div><div class="va"><button class="btn btn-t" onclick="openCalEventModal()"><i class="ti ti-plus"></i> Event</button></div></div>
-      <div class="vb">
-        <div class="cal-nav"><button class="cal-nav-btn" onclick="calNav(-1)">‹</button><div class="cal-month" id="calMonthTitle"></div><button class="cal-nav-btn" onclick="calNav(1)">›</button></div>
-        <div class="cal-grid" style="gap:3px;margin-bottom:4px"><div class="cday-label">SUN</div><div class="cday-label">MON</div><div class="cday-label">TUE</div><div class="cday-label">WED</div><div class="cday-label">THU</div><div class="cday-label">FRI</div><div class="cday-label">SAT</div></div>
-        <div class="cal-grid" id="calGrid" style="gap:4px"></div>
+      <!-- ╔═══════════════════════════════════════════════╗
+           ║  J.E.L.I.X CALENDAR — GCal-parity module    ║
+           ╚═══════════════════════════════════════════════╝ -->
+      <div class="cal-shell">
+
+        <!-- TOOLBAR -->
+        <div class="cal-toolbar">
+          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+            <button onclick="calNav(-1)" class="cal-nav-btn" style="border-radius:4px;padding:4px 9px">‹</button>
+            <button onclick="calNavToday()" class="btn" style="font-size:10px;padding:4px 10px;background:var(--teal3);border:1px solid var(--teal2);color:var(--teal);font-weight:700;letter-spacing:.06em">TODAY</button>
+            <button onclick="calNav(1)" class="cal-nav-btn" style="border-radius:4px;padding:4px 9px">›</button>
+          </div>
+          <div class="cal-toolbar-title" id="calToolbarTitle"></div>
+          <!-- View tabs -->
+          <div class="cal-view-tabs">
+            <button class="cal-vt active" id="cvt-day"    onclick="setCalView('day')">Day</button>
+            <button class="cal-vt"        id="cvt-week"   onclick="setCalView('week')">Week</button>
+            <button class="cal-vt"        id="cvt-month"  onclick="setCalView('month')">Month</button>
+            <button class="cal-vt"        id="cvt-quarter"onclick="setCalView('quarter')">Quarter</button>
+            <button class="cal-vt"        id="cvt-agenda" onclick="setCalView('agenda')">Agenda</button>
+          </div>
+          <!-- Context filters -->
+          <div class="cal-ctx-filters" id="calCtxFilters"></div>
+          <div style="flex:1"></div>
+          <button class="btn btn-t" onclick="openCalEventModal()" style="font-size:11px;flex-shrink:0"><i class="ti ti-plus"></i> Event</button>
+        </div>
+
+        <!-- BODY -->
+        <div class="cal-body">
+
+          <!-- SIDEBAR: mini calendar + legend + upcoming -->
+          <div class="cal-sidebar">
+            <div>
+              <div class="cal-mini-nav">
+                <span class="cal-mini-month" id="calMiniMonth"></span>
+                <div style="display:flex;gap:2px">
+                  <button class="cal-mini-btn" onclick="calMiniNav(-1)">‹</button>
+                  <button class="cal-mini-btn" onclick="calMiniNav(1)">›</button>
+                </div>
+              </div>
+              <div class="cal-mini-grid">
+                <div class="cal-mini-label">S</div><div class="cal-mini-label">M</div><div class="cal-mini-label">T</div>
+                <div class="cal-mini-label">W</div><div class="cal-mini-label">T</div><div class="cal-mini-label">F</div>
+                <div class="cal-mini-label">S</div>
+              </div>
+              <div class="cal-mini-grid" id="calMiniGrid"></div>
+            </div>
+            <!-- World legend -->
+            <div>
+              <div style="font-size:8px;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Worlds</div>
+              <div id="calLegend"></div>
+            </div>
+            <!-- Upcoming events -->
+            <div>
+              <div style="font-size:8px;font-weight:700;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:8px">Upcoming</div>
+              <div id="calUpcoming" style="display:flex;flex-direction:column;gap:5px"></div>
+            </div>
+          </div>
+
+          <!-- MAIN CALENDAR AREA -->
+          <div class="cal-main" id="calMainArea" style="overflow-y:auto"></div>
+
+        </div><!-- /cal-body -->
+      </div><!-- /cal-shell -->
+
+      <!-- EVENT DETAIL POPOVER -->
+      <div class="cal-popover" id="calPopover">
+        <button onclick="document.getElementById('calPopover').classList.remove('open')" style="position:absolute;top:8px;right:8px;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:16px">×</button>
+        <div id="calPopoverContent"></div>
+        <div class="cal-popover-actions">
+          <button class="btn btn-t" style="font-size:10px;padding:4px 10px" id="calPopEdit">Edit</button>
+          <button class="btn btn-d" style="font-size:10px;padding:4px 10px" id="calPopDelete">Delete</button>
+        </div>
       </div>
     </div>
 
     <!-- ===== TASKS ===== -->
     <div class="view" id="view-tasks">
-      <div class="vh"><div><div class="vt"><i class="ti ti-checklist"></i>All Tasks</div><div class="vs">Across all worlds</div></div><div class="va"><select id="taskFilter" onchange="renderTasks()" style="width:140px;font-size:11px;padding:5px 8px"><option value="all">All</option><option value="WORK-IH">WORK — Ideahub</option><option value="WORK-CS">WORK — Chainsmoker</option><option value="VENTURE">VENTURE</option><option value="BUILD">BUILD</option><option value="SIDES">SIDES</option><option value="FAITH">FAITH</option><option value="LIFE">LIFE</option></select><select id="taskSF" onchange="renderTasks()" style="width:110px;font-size:11px;padding:5px 8px"><option value="all">All Status</option><option>Todo</option><option>In Progress</option><option>No Progress</option><option>Done</option></select><button class="btn btn-t" onclick="openModal('taskModal')"><i class="ti ti-plus"></i> New Task</button></div></div>
-      <div class="vb"><table class="ht"><thead><tr><th>Title</th><th>World</th><th>Platform</th><th>Client</th><th>Priority</th><th>Status</th><th>Deadline</th><th>Note</th><th></th></tr></thead><tbody id="tasksTbody"></tbody></table></div>
+      <div class="board-shell">
+        <!-- BOARD TOOLBAR -->
+        <div class="board-toolbar" style="flex-direction:column;align-items:stretch;gap:0;padding:0">
+
+          <!-- ROW 1: View tabs + search + add button -->
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-wrap:wrap">
+            <div class="board-view-tabs">
+              <button class="bvt active" id="btv-table"   onclick="setBoardView('table')">Table</button>
+              <button class="bvt"        id="btv-kanban"  onclick="setBoardView('kanban')">Kanban</button>
+              <button class="bvt"        id="btv-boards"  onclick="setBoardView('boards')">Boards</button>
+            </div>
+            <input class="board-search" id="boardSearch" placeholder="🔍 Search tasks…" oninput="renderTasks()" style="width:200px">
+            <div style="flex:1"></div>
+            <!-- Column toggles -->
+            <div style="display:flex;gap:4px;align-items:center">
+              <span style="font-size:9px;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap">Cols:</span>
+              <button class="bvt active" id="col-timeline" onclick="toggleBoardCol('timeline',this)" style="padding:2px 7px;font-size:9px">Timeline</button>
+              <button class="bvt active" id="col-conn"     onclick="toggleBoardCol('conn',this)"     style="padding:2px 7px;font-size:9px">Connected</button>
+              <button class="bvt active" id="col-time"     onclick="toggleBoardCol('time',this)"     style="padding:2px 7px;font-size:9px">Time</button>
+            </div>
+            <button class="btn btn-t" onclick="openModal('taskModal')" style="font-size:11px;flex-shrink:0"><i class="ti ti-plus"></i> Task</button>
+          </div>
+
+          <!-- ROW 2: All filter chips inline -->
+          <div style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:var(--navy3);flex-wrap:wrap;border-bottom:1px solid var(--border)">
+
+            <!-- Board / World -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-layout-board" style="font-size:11px;color:var(--teal);line-height:1;display:block"></i>
+              <select id="taskFilter" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">All Boards</option>
+                <option value="WORK-IH">Ideahub</option>
+                <option value="WORK-CS">Chainsmoker</option>
+                <option value="VENTURE">Venture</option>
+                <option value="BUILD">Build</option>
+                <option value="SIDES">Sides</option>
+                <option value="FAITH">Faith</option>
+                <option value="LIFE">Life</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Person / Client -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-user" style="font-size:11px;color:var(--teal);line-height:1;display:block"></i>
+              <select id="filterPerson" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Person</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Priority -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-flag" style="font-size:11px;color:var(--amber);line-height:1;display:block"></i>
+              <select id="filterPriority" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Priority</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Status -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-circle-check" style="font-size:11px;color:var(--green);line-height:1;display:block"></i>
+              <select id="taskSF" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Status</option>
+                <option>Todo</option>
+                <option>In Progress</option>
+                <option>No Progress</option>
+                <option>Done</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Deadline range -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-calendar" style="font-size:11px;color:var(--purple);line-height:1;display:block"></i>
+              <select id="filterDeadline" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Deadline</option>
+                <option value="overdue">Overdue</option>
+                <option value="today">Due Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="none">No Deadline</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Time (has start time) -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-clock" style="font-size:11px;color:var(--teal);line-height:1;display:block"></i>
+              <select id="filterTime" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Time</option>
+                <option value="timed">Has Time Block</option>
+                <option value="untimed">No Time Set</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Connected board -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-link" style="font-size:11px;color:var(--orange);line-height:1;display:block"></i>
+              <select id="filterConn" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Connected</option>
+                <option value="SIDES">→ Sides</option>
+                <option value="VENTURE">→ Venture</option>
+                <option value="none">Unlinked</option>
+              </select>
+            </div>
+
+            <div class="filter-sep"></div>
+
+            <!-- Platform -->
+            <div style="display:flex;align-items:center;gap:4px">
+              <i class="ti ti-device-desktop" style="font-size:11px;color:var(--text3);line-height:1;display:block"></i>
+              <select id="filterPlatform" onchange="renderTasks()" class="filter-chip-sel">
+                <option value="all">Platform</option>
+              </select>
+            </div>
+
+            <!-- Clear all filters -->
+            <button onclick="clearBoardFilters()" style="margin-left:auto;background:transparent;border:none;font-size:10px;color:var(--text3);cursor:pointer;padding:2px 6px;border-radius:3px;transition:color .15s" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text3)'">
+              <i class="ti ti-x" style="font-size:10px;line-height:1;display:inline-block"></i> Clear
+            </button>
+
+            <!-- Active filter count badge -->
+            <div id="filterActiveBadge" style="display:none;background:var(--teal);color:var(--navy);border-radius:100px;padding:1px 7px;font-size:9px;font-weight:700"></div>
+          </div>
+
+        </div>
+        <!-- BOARD BODY -->
+        <div id="boardBody" style="flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0"></div>
+      </div>
     </div>
 
     <!-- ===== NOTES ===== -->
@@ -1979,7 +2458,7 @@ function renderHistory(){
 function clearHistory(){DB.history=[];save('history');renderHistory();showToast('History cleared');}
 
 // ===== CLOCK / WEATHER =====
-let calYear=2026,calMonth=5;
+// calYear/calMonth now managed by calendar engine above
 function updateClock(){
   const n=new Date();
   document.getElementById('topClock').textContent=n.toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});
@@ -2404,26 +2883,493 @@ function renderBrief(){
 }
 
 // ===== KANBAN BUILDER (shared) =====
+
+// ════════════════════════════════════════════════════════════════════════
+// JELIX BOARD ENGINE — Monday.com architecture: Workspace > Board > Group > Item > Subitem
+// Supabase schema mapping: tasks (+ metadata JSONB) → DB.tasks
+// ════════════════════════════════════════════════════════════════════════
+
+// ── Schema: JSONB metadata fields mapped to task properties ──────────────
+// task.groupId    → string  — which Group this item belongs to (null = world default)
+// task.subitems   → array   — [{id, title, status, assignee}]
+// task.timelineS  → string  — start date (YYYY-MM-DD)   — maps to metadata.timeline.start
+// task.timelineE  → string  — end date                  — maps to metadata.timeline.end
+// task.numValue   → number  — numeric aggregate field    — maps to metadata.number
+// task.connBoard  → string  — 'SIDES'|'VENTURE'|null    — Operational Flywheel link
+// task.connItemId → number  — linked item ID in connBoard
+
+// ── Workspace → Board → Group config ─────────────────────────────────────
+const BOARDS = [
+  {id:'WORK-IH', name:'Ideahub',    icon:'ti-briefcase', color:'var(--teal)',   stripe:'#80fffa', tgClass:'tg-ih'},
+  {id:'WORK-CS', name:'Chainsmoker',icon:'ti-flame',     color:'var(--red)',    stripe:'#ff2244', tgClass:'tg-cs'},
+  {id:'VENTURE', name:'Venture',    icon:'ti-rocket',    color:'var(--orange)', stripe:'#ff8c00', tgClass:'tg-ven'},
+  {id:'BUILD',   name:'Build',      icon:'ti-code',      color:'var(--green)',  stripe:'#00ff88', tgClass:'tg-bld'},
+  {id:'SIDES',   name:'Sides',      icon:'ti-coins',     color:'var(--amber)',  stripe:'#ffaa00', tgClass:'tg-sid'},
+  {id:'FAITH',   name:'Faith',      icon:'ti-heart',     color:'var(--purple)', stripe:'#bf5fff', tgClass:'tg-fth'},
+  {id:'LIFE',    name:'Life',       icon:'ti-leaf',      color:'#3b82f6',       stripe:'#3b82f6', tgClass:'tg-lif'},
+];
+
+// ── Column visibility state ──────────────────────────────────────────────
+const boardColVis={timeline:true,conn:true,time:true};
+function toggleBoardCol(col,btn){
+  boardColVis[col]=!boardColVis[col];
+  btn.classList.toggle('active',boardColVis[col]);
+  renderTasks();
+}
+
+// ── Supabase schema → DB.tasks mapping function ──────────────────────────
+// Call after SB.load to normalise JSONB metadata into flat task fields
+function normaliseSBTask(raw){
+  const m=raw.metadata||{};
+  return{
+    ...raw,
+    groupId:   raw.group_id   || raw.groupId   || null,
+    subitems:  m.subitems     || raw.subitems   || [],
+    timelineS: m.timeline?.start || raw.timelineS || raw.due || '',
+    timelineE: m.timeline?.end   || raw.timelineE || '',
+    numValue:  m.number       || raw.numValue   || null,
+    connBoard: m.conn_board   || raw.connBoard  || null,
+    connItemId:m.conn_item_id || raw.connItemId || null,
+  };
+}
+// Patch SB.load to normalise after fetch
+const _origSBLoad=SB.load.bind(SB);
+SB.load=function(table,key,...args){
+  return _origSBLoad(table,key,...args).then?.(r=>{
+    if(key==='tasks'&&DB.tasks)DB.tasks=DB.tasks.map(normaliseSBTask);
+    return r;
+  });
+};
+
+// ── View state ────────────────────────────────────────────────────────────
+let boardView='table';
+let boardSortCol='due',boardSortDir='asc';
+let subitemExpanded=new Set();
+let selectedTaskIds=new Set();
+let collapsedGroups=new Set();
+
+function setBoardView(v){
+  boardView=v;
+  ['table','kanban','boards'].forEach(vv=>{
+    const b=document.getElementById('btv-'+vv);
+    if(b)b.classList.toggle('active',vv===v);
+  });
+  renderTasks();
+}
+
+// ── Filter + sort pipeline ─────────────────────────────────────────────────
+function getFilteredTasks(){
+  const wf  = document.getElementById('taskFilter')?.value    || 'all';
+  const sf  = document.getElementById('taskSF')?.value        || 'all';
+  const pf  = document.getElementById('filterPerson')?.value  || 'all';
+  const prio= document.getElementById('filterPriority')?.value|| 'all';
+  const dl  = document.getElementById('filterDeadline')?.value|| 'all';
+  const tf  = document.getElementById('filterTime')?.value    || 'all';
+  const cf  = document.getElementById('filterConn')?.value    || 'all';
+  const plf = document.getElementById('filterPlatform')?.value|| 'all';
+  const q   = (document.getElementById('boardSearch')?.value  || '').toLowerCase().trim();
+
+  const today     = new Date().toISOString().split('T')[0];
+  const weekEnd   = new Date(); weekEnd.setDate(weekEnd.getDate()+7);
+  const weekEndStr= weekEnd.toISOString().split('T')[0];
+  const monthEnd  = new Date(); monthEnd.setMonth(monthEnd.getMonth()+1);
+  const monthEndStr=monthEnd.toISOString().split('T')[0];
+
+  const tasks = DB.tasks.map(t=>normaliseSBTask(t)).filter(t=>{
+    // Board / world
+    if(wf!=='all' && t.world!==wf)               return false;
+    // Status
+    if(sf!=='all' && t.status!==sf)               return false;
+    // Person / client
+    if(pf!=='all' && t.client!==pf)               return false;
+    // Priority
+    if(prio!=='all' && t.priority!==prio)         return false;
+    // Deadline range
+    if(dl!=='all'){
+      const due=t.due||'';
+      if(dl==='overdue'  && !(due && due<today))  return false;
+      if(dl==='today'    && due!==today)           return false;
+      if(dl==='week'     && !(due>=today&&due<=weekEndStr)) return false;
+      if(dl==='month'    && !(due>=today&&due<=monthEndStr))return false;
+      if(dl==='none'     && due)                   return false;
+    }
+    // Time block
+    if(tf==='timed'   && !t.startTime)            return false;
+    if(tf==='untimed' && t.startTime)              return false;
+    // Connected board
+    if(cf==='none'    && t.connBoard)              return false;
+    if(cf!=='all'&&cf!=='none' && t.connBoard!==cf)return false;
+    // Platform
+    if(plf!=='all' && (t.platform||'').toLowerCase()!==plf.toLowerCase()) return false;
+    // Search
+    if(q && !(t.title+' '+(t.client||'')+' '+(t.notes||'')+' '+(t.platform||'')).toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  // Update active filter badge
+  const activeCount=[wf,sf,pf,prio,dl,tf,cf,plf].filter(v=>v!=='all'&&v!=='none').length+(q?1:0);
+  const badge=document.getElementById('filterActiveBadge');
+  if(badge){
+    badge.style.display=activeCount>0?'':'none';
+    badge.textContent=activeCount+' active';
+  }
+  return tasks;
+}
+
+function clearBoardFilters(){
+  ['taskFilter','taskSF','filterPerson','filterPriority','filterDeadline','filterTime','filterConn','filterPlatform'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='all';
+  });
+  const s=document.getElementById('boardSearch');if(s)s.value='';
+  renderTasks();
+}
+
+// Populate dynamic filters (person and platform) from live DB
+function populateDynamicFilters(){
+  // Person / client
+  const persons=[...new Set(DB.tasks.filter(t=>t.client).map(t=>t.client))].sort();
+  const pSel=document.getElementById('filterPerson');
+  if(pSel){
+    const cur=pSel.value;
+    pSel.innerHTML='<option value="all">Person</option>'+persons.map(p=>`<option value="${p}">${p}</option>`).join('');
+    if(persons.includes(cur))pSel.value=cur;
+  }
+  // Platform
+  const platforms=[...new Set(DB.tasks.filter(t=>t.platform).map(t=>t.platform))].sort();
+  const plSel=document.getElementById('filterPlatform');
+  if(plSel){
+    const cur=plSel.value;
+    plSel.innerHTML='<option value="all">Platform</option>'+platforms.map(p=>`<option value="${p}">${p}</option>`).join('');
+    if(platforms.includes(cur))plSel.value=cur;
+  }
+}
+
+function sortTasks(tasks){
+  const dir=boardSortDir==='asc'?1:-1;
+  return [...tasks].sort((a,b)=>{
+    const av=a[boardSortCol]||'';const bv=b[boardSortCol]||'';
+    return av<bv?-dir:av>bv?dir:0;
+  });
+}
+
+// ── Timeline helpers ───────────────────────────────────────────────────────
+function timelineBar(t){
+  const s=t.timelineS||t.due||'';const e=t.timelineE||t.due||'';
+  if(!s)return '<span style="color:var(--text3);font-size:10px">—</span>';
+  const today=new Date().toISOString().split('T')[0];
+  const sd=new Date(s),ed=new Date(e||s),nd=new Date(today);
+  const total=Math.max((ed-sd)/86400000,1);
+  const elapsed=Math.max(Math.min((nd-sd)/86400000,total),0);
+  const pct=Math.round((elapsed/total)*100);
+  const isOver=nd>ed;
+  const isWarn=!isOver&&pct>70;
+  const cls=isOver?'overdue':isWarn?'warning':'';
+  const label=e&&e!==s?s+' → '+e:s;
+  return`<div class="timeline-bar-wrap"><div class="timeline-bar"><div class="timeline-bar-fill ${cls}" style="width:${pct}%"></div></div><div class="timeline-dates">${label}</div></div>`;
+}
+
+// ── Connected board chip ───────────────────────────────────────────────────
+function connChip(t){
+  if(!t.connBoard)return '<span style="color:var(--text3);font-size:10px">—</span>';
+  const isS=t.connBoard==='SIDES';
+  return`<div class="conn-chip${isS?' sides':''}" onclick="event.stopPropagation();setView('${t.connBoard.toLowerCase()}')"><i class="ti ti-link" style="font-size:9px;line-height:1;display:block"></i>${t.connBoard}${t.connItemId?' #'+t.connItemId:''}</div>`;
+}
+
+// ── World pill helper ──────────────────────────────────────────────────────
+function worldPill(t){
+  const cls=t.world.startsWith('WORK')?'pt':t.world==='VENTURE'?'po':t.world==='BUILD'?'pg':t.world==='FAITH'?'ppu':'pgr';
+  const b=BOARDS.find(b=>b.id===t.world);
+  return`<span class="pill ${cls}" style="font-size:9px">${b?b.name:t.world}</span>`;
+}
+
+// ── Subitem rows ───────────────────────────────────────────────────────────
+function renderSubitemRows(t,colCount){
+  if(!subitemExpanded.has(t.id))return'';
+  const subs=t.subitems||[];
+  const addRow=`<tr class="subitem-row"><td colspan="${colCount}" style="padding:4px 10px 4px 36px">
+    <button class="add-subitem-btn" onclick="addSubitem(${t.id})"><i class="ti ti-plus" style="font-size:10px;line-height:1;display:block"></i> Add sub-item</button>
+  </td></tr>`;
+  if(!subs.length)return addRow;
+  return subs.map(s=>`<tr class="subitem-row" onclick="editSubitem(${t.id},'${s.id}')">
+    <td><span style="opacity:.4;margin-right:4px">↳</span>${s.title||'Sub-item'}</td>
+    <td></td><td>${s.assignee||'—'}</td>
+    <td></td>
+    <td><span class="pill ${s.status==='Done'?'pg':s.status==='In Progress'?'pt':'pgr'}" style="font-size:9px">${s.status||'Todo'}</span></td>
+    <td colspan="${colCount-5}"></td>
+  </tr>`).join('')+addRow;
+}
+
+// ── Group aggregate footer ─────────────────────────────────────────────────
+function groupFooter(tasks,colCount){
+  const done=tasks.filter(t=>t.status==='Done').length;
+  const total=tasks.length;
+  const numSum=tasks.reduce((s,t)=>s+(t.numValue||0),0);
+  const pct=total?Math.round((done/total)*100):0;
+  return`<tr class="group-footer">
+    <td colspan="2">${total} items · ${pct}% complete</td>
+    <td colspan="2"></td>
+    <td>${numSum>0?`<span class="num-agg">Σ ${numSum}</span>`:'—'}</td>
+    <td colspan="${colCount-5}"></td>
+  </tr>`;
+}
+
+// ── TABLE VIEW ─────────────────────────────────────────────────────────────
+function renderBoardTable(tasks){
+  const el=document.getElementById('boardBody');
+  if(!el)return;
+
+  // Dynamic columns
+  const cols=[
+    {key:'title',    label:'Item',      w:'auto',   sortable:true},
+    {key:'world',    label:'Board',     w:'100px',  sortable:true},
+    {key:'client',   label:'Person',    w:'120px',  sortable:true},
+    {key:'priority', label:'Priority',  w:'90px',   sortable:true},
+    {key:'numValue', label:'#',         w:'60px',   sortable:true},
+    {key:'status',   label:'Status',    w:'120px',  sortable:true},
+    ...(boardColVis.timeline?[{key:'timeline',label:'Timeline',w:'200px',sortable:false}]:[]),
+    {key:'due',      label:'Deadline',  w:'100px',  sortable:true},
+    ...(boardColVis.time?[{key:'startTime',label:'Time',w:'90px',sortable:false}]:[]),
+    ...(boardColVis.conn?[{key:'connBoard',label:'Connected',w:'120px',sortable:false}]:[]),
+    {key:'platform', label:'Platform',  w:'100px',  sortable:true},
+    {key:'_actions', label:'',          w:'40px',   sortable:false},
+  ];
+  const cc=cols.length;
+
+  // Group by world → then by groupId
+  const boards=[...new Set(tasks.map(t=>t.world))];
+
+  let html='<div style="overflow-y:auto;flex:1;height:100%">';
+  boards.forEach(world=>{
+    const boardTasks=sortTasks(tasks.filter(t=>t.world===world));
+    const board=BOARDS.find(b=>b.id===world)||{name:world,tgClass:'tg-lif',color:'var(--text2)',stripe:'#666'};
+
+    // Sub-groups within board
+    const groupIds=[...new Set(boardTasks.map(t=>t.groupId||'_default'))];
+    groupIds.forEach(gid=>{
+      const gTasks=boardTasks.filter(t=>(t.groupId||'_default')===gid);
+      const gLabel=gid==='_default'?board.name:gid;
+      const gKey=world+'::'+gid;
+      const collapsed=collapsedGroups.has(gKey);
+
+      html+=`<div class="task-group${collapsed?' collapsed':''}">
+        <div class="task-group-header ${board.tgClass}" onclick="toggleGroup('${gKey}')">
+          <i class="ti ti-chevron-down tgh-toggle" style="line-height:1;display:block"></i>
+          <span class="tgh-label" style="color:${board.color}">${gLabel}</span>
+          <span class="tgh-count">${gTasks.length}</span>
+          <button class="tgh-add" onclick="event.stopPropagation();openTaskFor('${world}')" style="border:1px solid var(--border2);border-radius:3px;padding:2px 8px;cursor:pointer;background:var(--navy3);font-size:9px;color:var(--text3)">+ Add item</button>
+        </div>
+        <div class="task-group-body">
+          <table class="board-table">
+            <thead><tr>${cols.map(c=>`<th style="width:${c.w}" class="${boardSortCol===c.key?'sort-'+boardSortDir:''}" ${c.sortable?`onclick="toggleBoardSort('${c.key}')"`:''}>${c.label}${c.sortable?'<span class="sort-arrow"></span>':''}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${gTasks.map(t=>{
+                const sel=selectedTaskIds.has(t.id);
+                const hasSubs=(t.subitems||[]).length;
+                const expanded=subitemExpanded.has(t.id);
+                return`<tr class="item-row${sel?' selected':''}" onclick="editTask(${t.id})" oncontextmenu="showCtx(event,${t.id},'task')">
+                  <td style="font-weight:500;max-width:200px">
+                    <div style="display:flex;align-items:center;gap:6px">
+                      ${hasSubs||true?`<button class="subitem-toggle-btn" onclick="event.stopPropagation();toggleSubitems(${t.id})">${expanded?'▾':'▸'}</button>`:''}
+                      <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</span>
+                      ${t.priority==='High'?'<span style="color:var(--red);font-size:10px;flex-shrink:0">!</span>':''}
+                    </div>
+                  </td>
+                  <td>${worldPill(t)}</td>
+                  <td style="font-size:11px;color:var(--text3)">${t.client||'—'}</td>
+                  <td><span style="display:flex;align-items:center;gap:4px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</span></td>
+                  <td>${t.numValue!=null?`<span class="num-agg">${t.numValue}</span>`:'—'}</td>
+                  <td><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}">${t.status}</span></td>
+                  ${boardColVis.timeline?`<td style="min-width:180px">${timelineBar(t)}</td>`:''}
+                  <td style="font-size:11px;color:var(--text3)">${t.due||'—'}</td>
+                  ${boardColVis.time?`<td style="font-size:11px;color:var(--text3)">${t.startTime?t.startTime.substring(0,5)+(t.endTime?' – '+t.endTime.substring(0,5):''):'—'}</td>`:''}
+                  ${boardColVis.conn?`<td>${connChip(t)}</td>`:''}
+                  <td style="font-size:10px;color:var(--text3);white-space:nowrap">${t.platform||'—'}</td>
+                  <td onclick="event.stopPropagation()"><button class="btn btn-d" style="padding:2px 7px" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:10px;line-height:1;display:block"></i></button></td>
+                </tr>
+                ${renderSubitemRows(t,cc)}`;
+              }).join('')}
+              ${groupFooter(gTasks,cc)}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+    });
+  });
+
+  if(!tasks.length){
+    html+='<div style="padding:32px;text-align:center;color:var(--text3);font-size:13px">No tasks match the current filters, sir.</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ── KANBAN VIEW (upgraded with subitems + timeline + connected) ────────────
+function renderBoardKanban(tasks){
+  const el=document.getElementById('boardBody');
+  if(!el)return;
+  const statuses=['Todo','In Progress','No Progress','Done'];
+  const sc={
+    'Todo':'var(--text3)','In Progress':'var(--teal)',
+    'No Progress':'var(--amber)','Done':'var(--green)'
+  };
+  const sch={'Todo':'pgr','In Progress':'pt','No Progress':'pam','Done':'pg'};
+  const tgm={'Todo':'','In Progress':'prog','No Progress':'noprog','Done':'done'};
+
+  let html='<div class="kanban-wrap"><div class="kb-cols" style="overflow-y:hidden;overflow-x:auto;min-height:0">';
+  statuses.forEach(s=>{
+    const items=tasks.filter(t=>t.status===s);
+    html+=`<div class="kc">
+      <div class="kch ${tgm[s]||'todo'}">
+        <span class="kch-title">${s.toUpperCase()}</span>
+        <span class="pill ${sch[s]}" style="font-size:9px">${items.length}</span>
+      </div>
+      <div class="kc-body">
+        ${items.map(t=>{
+          const hasSubs=(t.subitems||[]).length;
+          const b=BOARDS.find(b=>b.id===t.world);
+          const subs=t.subitems||[];
+          return`<div class="kcard" onclick="editTask(${t.id})" oncontextmenu="showCtx(event,${t.id},'task')" style="border-top:2px solid ${b?b.stripe:'var(--border)'}">
+            <div class="kct">${t.title}</div>
+            ${t.client?`<div class="kcm"><span style="color:var(--teal)">◈</span>${t.client}</div>`:''}
+            ${t.platform?`<div class="kcm"><i class="ti ti-device-desktop" style="font-size:10px;line-height:1;display:block"></i>${t.platform}</div>`:''}
+            ${t.due?`<div class="kcp">Due: ${t.due}</div>`:''}
+            <div class="kcm" style="margin-top:3px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</div>
+            ${(t.timelineS||t.timelineE)?`<div class="kc-timeline">${timelineBar(t)}</div>`:''}
+            ${t.connBoard?`<div class="kc-conn">${connChip(t)}</div>`:''}
+            ${hasSubs?`<div class="kc-subitems"><div style="font-size:9px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.07em">↳ ${hasSubs} sub-item${hasSubs>1?'s':''}</div>${subs.slice(0,3).map(s=>`<div class="kc-sub-row"><div class="pdot ${s.status==='Done'?'pg':''}" style="width:6px;height:6px;border-radius:50%;background:${s.status==='Done'?'var(--green)':'var(--text3)'}"></div>${s.title}</div>`).join('')}</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="kc-add" onclick="openTaskForStatus('all','${s}')"><i class="ti ti-plus" style="font-size:11px;line-height:1;display:block"></i> Add item</div>
+    </div>`;
+  });
+  html+='</div></div>';
+  el.innerHTML=html;
+}
+
+// ── BOARDS LIST VIEW (Workspace overview) ─────────────────────────────────
+function renderBoardsListView(){
+  const el=document.getElementById('boardBody');
+  if(!el)return;
+  let html='<div class="board-list-grid">';
+  BOARDS.forEach(b=>{
+    const items=DB.tasks.filter(t=>t.world===b.id);
+    const open=items.filter(t=>t.status!=='Done').length;
+    const done=items.filter(t=>t.status==='Done').length;
+    const pct=items.length?Math.round((done/items.length)*100):0;
+    html+=`<div class="board-card" onclick="document.getElementById('taskFilter').value='${b.id}';setBoardView('table')">
+      <div class="board-card-stripe" style="background:${b.stripe}"></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <i class="ti ${b.icon}" style="color:${b.color};font-size:18px;line-height:1;display:block"></i>
+        <div class="board-card-name">${b.name}</div>
+      </div>
+      <div class="board-card-meta">${items.length} items · ${open} open · ${pct}% complete</div>
+      <div style="margin-top:10px;background:var(--navy3);border-radius:4px;height:4px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${b.stripe};border-radius:4px;transition:width .3s"></div>
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ── GROUP / SUBITEM HELPERS ────────────────────────────────────────────────
+function toggleGroup(key){
+  if(collapsedGroups.has(key))collapsedGroups.delete(key);
+  else collapsedGroups.add(key);
+  renderTasks();
+}
+function toggleBoardSort(col){
+  if(boardSortCol===col)boardSortDir=boardSortDir==='asc'?'desc':'asc';
+  else{boardSortCol=col;boardSortDir='asc';}
+  renderTasks();
+}
+function toggleSubitems(id){
+  if(subitemExpanded.has(id))subitemExpanded.delete(id);
+  else subitemExpanded.add(id);
+  renderTasks();
+}
+function addSubitem(taskId){
+  const t=DB.tasks.find(x=>x.id===taskId);if(!t)return;
+  const title=prompt('Sub-item title:','');if(!title)return;
+  if(!t.subitems)t.subitems=[];
+  const sub={id:'sub_'+Date.now(),title:title.trim(),status:'Todo',assignee:''};
+  t.subitems.push(sub);
+  subitemExpanded.add(taskId);
+  SB.update('tasks',t.id,t,'tasks');
+  renderTasks();
+  showToast('✓ Sub-item added');
+}
+function editSubitem(taskId,subId){
+  const t=DB.tasks.find(x=>x.id===taskId);if(!t)return;
+  const sub=t.subitems?.find(s=>s.id===subId);if(!sub)return;
+  const newTitle=prompt('Edit sub-item:',sub.title);
+  if(newTitle===null)return;
+  sub.title=newTitle.trim();
+  SB.update('tasks',t.id,t,'tasks');
+  renderTasks();
+}
+
+// ── Operational Flywheel connector ────────────────────────────────────────
+// Links Sides income tasks → Venture pipeline items
+function linkSidesToVenture(sideTaskId,ventureTaskId){
+  const s=DB.tasks.find(t=>t.id===sideTaskId);
+  const v=DB.tasks.find(t=>t.id===ventureTaskId);
+  if(!s||!v)return showToast('Task not found');
+  s.connBoard='VENTURE';s.connItemId=ventureTaskId;
+  v.connBoard='SIDES';v.connItemId=sideTaskId;
+  SB.update('tasks',s.id,s,'tasks');
+  SB.update('tasks',v.id,v,'tasks');
+  reRenderAll();
+  showToast('✓ Flywheel linked: '+s.title+' ↔ '+v.title);
+}
+// Auto-link on save: if task is SIDES with a Venture client, find or flag
+function autoFlywheelLink(t){
+  if(t.world==='SIDES'&&t.client){
+    const vLink=DB.tasks.find(v=>v.world==='VENTURE'&&v.name===t.client||v.title===t.client);
+    if(vLink&&!t.connBoard){linkSidesToVenture(t.id,vLink.id);}
+  }
+}
+
+// ── Main renderTasks ──────────────────────────────────────────────────────
+function renderTasks(){
+  populateDynamicFilters();
+  const tasks=getFilteredTasks();
+  document.getElementById('taskBadge').textContent=DB.tasks.filter(t=>t.status!=='Done').length;
+  if(boardView==='table')       renderBoardTable(tasks);
+  else if(boardView==='kanban') renderBoardKanban(tasks);
+  else if(boardView==='boards') renderBoardsListView();
+}
+
+// ── Upgraded buildKanban (used by WorkIH, WorkCS, Venture) ───────────────
 function buildKanban(containerId,tasks,world,statusList,statusColors,isOrange){
   const container=document.getElementById(containerId);if(!container)return;
+  const sch={'Todo':'pgr','In Progress':'pt','No Progress':'pam','Done':'pg'};
+  const tgm={'Todo':'todo','In Progress':'prog','No Progress':'noprog','Done':'done'};
   container.innerHTML=statusList.map(s=>{
-    const col=statusColors[s]||'var(--text2)';
     const items=tasks.filter(t=>t.status===s);
+    const b=BOARDS.find(b=>b.id===world);
     return`<div class="kc">
-      <div class="kch ${s.toLowerCase().replace(' ','')}">
+      <div class="kch ${tgm[s]||'todo'}">
         <span class="kch-title">${s.toUpperCase()}</span>
-        <span class="pill ${s==='Done'?'pg':s==='In Progress'?'pt':s==='No Progress'?'pam':'pgr'}" style="font-size:9px">${items.length}</span>
+        <span class="pill ${sch[s]}" style="font-size:9px">${items.length}</span>
       </div>
       <div class="kc-body" id="kc-${containerId}-${s.replace(/ /g,'_')}">
-        ${items.map(t=>`<div class="kcard ${isOrange?'oc':''}" onclick="editTask(${t.id})" oncontextmenu="showCtx(event,${t.id},'task')">
-          <div class="kct">${t.title}</div>
-          ${t.client?`<div class="kcm"><span style="color:${isOrange?'var(--orange)':'var(--teal)'}">◈</span>${t.client}</div>`:''}
-          ${t.platform?`<div class="kcm"><i class="ti ti-device-desktop" style="font-size:10px;line-height:1;display:block"></i>${t.platform}</div>`:''}
-          ${t.due?`<div class="kcp">Due: ${t.due}</div>`:''}
-          <div class="kcm" style="margin-top:3px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</div>
-        </div>`).join('')}
+        ${items.map(t=>{
+          const subs=t.subitems||[];
+          return`<div class="kcard ${isOrange?'oc':''}" onclick="editTask(${t.id})" oncontextmenu="showCtx(event,${t.id},'task')" style="border-top:2px solid ${b?b.stripe:(isOrange?'var(--orange)':'var(--teal)')}">
+            <div class="kct">${t.title}</div>
+            ${t.client?`<div class="kcm"><span style="color:${isOrange?'var(--orange)':'var(--teal)'}">◈</span>${t.client}</div>`:''}
+            ${t.platform?`<div class="kcm"><i class="ti ti-device-desktop" style="font-size:10px;line-height:1;display:block"></i>${t.platform}</div>`:''}
+            ${t.due?`<div class="kcp">Due: ${t.due}</div>`:''}
+            <div class="kcm" style="margin-top:3px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</div>
+            ${(t.timelineS&&t.timelineE)?`<div class="kc-timeline">${timelineBar(t)}</div>`:''}
+            ${t.connBoard?`<div class="kc-conn">${connChip(t)}</div>`:''}
+            ${subs.length?`<div class="kc-subitems"><div style="font-size:9px;color:var(--text3);margin-bottom:3px">↳ ${subs.length} sub-item${subs.length>1?'s':''}</div></div>`:''}
+          </div>`;
+        }).join('')}
       </div>
-      <div class="kc-add" onclick="openTaskForStatus('${world}','${s}')"><i class="ti ti-plus" style="font-size:11px;line-height:1;display:block"></i> Add task</div>
+      <div class="kc-add" onclick="openTaskForStatus('${world}','${s}')"><i class="ti ti-plus" style="font-size:11px;line-height:1;display:block"></i> Add item</div>
     </div>`;
   }).join('');
 }
@@ -2572,12 +3518,7 @@ function renderCSList(tasks,cfg){
 }
 
 // ===== TASKS =====
-function renderTasks(){
-  const wf=document.getElementById('taskFilter')?.value||'all',sf=document.getElementById('taskSF')?.value||'all';
-  const tasks=DB.tasks.filter(t=>(wf==='all'||t.world===wf)&&(sf==='all'||t.status===sf));
-  document.getElementById('tasksTbody').innerHTML=tasks.map(t=>`<tr oncontextmenu="showCtx(event,${t.id},'task')" onclick="editTask(${t.id})"><td style="font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</td><td><span class="pill ${t.world.startsWith('WORK')?'pt':t.world==='VENTURE'?'po':t.world==='BUILD'?'pg':t.world==='FAITH'?'ppu':'pgr'}" style="font-size:9px">${t.world}</span></td><td style="font-size:11px;color:var(--text3)">${t.platform||'—'}</td><td style="font-size:11px;color:var(--text3)">${t.client||'—'}</td><td><span style="display:flex;align-items:center;gap:4px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</span></td><td><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}">${t.status}</span></td><td style="font-size:11px;color:var(--text3)">${t.due||'—'}</td><td style="font-size:11px;color:var(--text3);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.notes||'—'}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');
-  document.getElementById('taskBadge').textContent=DB.tasks.filter(t=>t.status!=='Done').length;
-}
+
 
 // ===== MODALS =====
 function openModal(id){document.getElementById(id).classList.add('open')}
@@ -2589,7 +3530,17 @@ let editingTaskId=null;
 function saveTask(){
   const startTime=document.getElementById('tf-start-time')?.value||'';
   const endTime=document.getElementById('tf-end-time')?.value||'';
-  const t={id:editingTaskId||Date.now(),title:document.getElementById('tf-title').value.trim()||'Untitled Task',world:document.getElementById('tf-world').value,priority:document.getElementById('tf-prio').value,status:document.getElementById('tf-status').value,due:document.getElementById('tf-due').value,platform:document.getElementById('tf-platform').value.trim(),client:document.getElementById('tf-client').value.trim(),notes:document.getElementById('tf-notes').value,startTime,endTime};
+  const existing=editingTaskId?DB.tasks.find(x=>x.id===editingTaskId):{};
+  const t={id:editingTaskId||Date.now(),title:document.getElementById('tf-title').value.trim()||'Untitled Task',world:document.getElementById('tf-world').value,priority:document.getElementById('tf-prio').value,status:document.getElementById('tf-status').value,due:document.getElementById('tf-due').value,platform:document.getElementById('tf-platform').value.trim(),client:document.getElementById('tf-client').value.trim(),notes:document.getElementById('tf-notes').value,startTime,endTime,
+    // Monday.com schema fields (preserved on edit, defaults on create)
+    groupId:    existing.groupId    || null,
+    subitems:   existing.subitems   || [],
+    timelineS:  document.getElementById('tf-timeline-s')?.value || existing.timelineS || '',
+    timelineE:  document.getElementById('tf-timeline-e')?.value || existing.timelineE || '',
+    numValue:   parseFloat(document.getElementById('tf-num')?.value)||existing.numValue||null,
+    connBoard:  existing.connBoard  || null,
+    connItemId: existing.connItemId || null,
+  };
   const isEdit=!!editingTaskId;
   if(editingTaskId){const i=DB.tasks.findIndex(x=>x.id===editingTaskId);if(i>=0)DB.tasks[i]=t;SB.update('tasks',t.id,t,'tasks');}else{DB.tasks.unshift(t);SB.upsert('tasks',t,'tasks');}
   addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' task: '+t.title,{...t,_dbKey:'tasks'});
@@ -2602,6 +3553,8 @@ function saveTask(){
       SB.upsert('cal_events',calEntry,'calEvents');
     }
   }
+  // Operational Flywheel auto-link
+  autoFlywheelLink(t);
   closeModal('taskModal');['tf-title','tf-notes','tf-platform'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   reRenderAll();showToast('✓ Task saved'+(t.due?' + added to calendar':''));
 }
@@ -2618,6 +3571,9 @@ function editTask(id){
   document.getElementById('tf-notes').value=t.notes||'';
   const stEl=document.getElementById('tf-start-time');if(stEl)stEl.value=t.startTime||'';
   const etEl=document.getElementById('tf-end-time');if(etEl)etEl.value=t.endTime||'';
+  const tsEl=document.getElementById('tf-timeline-s');if(tsEl)tsEl.value=t.timelineS||'';
+  const teEl=document.getElementById('tf-timeline-e');if(teEl)teEl.value=t.timelineE||'';
+  const numEl=document.getElementById('tf-num');if(numEl)numEl.value=t.numValue!=null?t.numValue:'';
   updateTaskClientDropdown(t.world);
   openModal('taskModal');
 }
@@ -2875,10 +3831,678 @@ function renderCashCharts(){const months=['Jan','Feb','Mar','Apr','May','Jun','J
 
 // CALENDAR
 let selectedCalDate='';
-function renderCalendar(){const months=['January','February','March','April','May','June','July','August','September','October','November','December'];document.getElementById('calMonthTitle').textContent=months[calMonth]+' '+calYear;const grid=document.getElementById('calGrid');grid.innerHTML='';const firstDay=new Date(calYear,calMonth,1).getDay();const daysInMonth=new Date(calYear,calMonth+1,0).getDate();const prevDays=new Date(calYear,calMonth,0).getDate();const today=new Date();for(let i=firstDay-1;i>=0;i--){const d=document.createElement('div');d.className='cday om';d.innerHTML=`<div class="dn">${prevDays-i}</div>`;grid.appendChild(d);}for(let day=1;day<=daysInMonth;day++){const isToday=today.getDate()===day&&today.getMonth()===calMonth&&today.getFullYear()===calYear;const ds=calYear+'-'+(String(calMonth+1).padStart(2,'0'))+'-'+(String(day).padStart(2,'0'));const evs=DB.calEvents.filter(e=>e.date===ds);const d=document.createElement('div');d.className='cday'+(isToday?' today':'');d.innerHTML=`<div class="dn">${day}</div>`+evs.slice(0,2).map(e=>`<div class="cev ${e.type}" title="${e.notes||''}">${e.time?e.time.substring(0,5)+' ':''} ${e.title}</div>`).join('')+(evs.length>2?`<div style="font-size:8px;color:var(--text3)">+${evs.length-2} more</div>`:'');d.onclick=()=>openCalEventModalOnDate(ds);grid.appendChild(d);}const rem=42-(firstDay+daysInMonth);for(let i=1;i<=rem;i++){const d=document.createElement('div');d.className='cday om';d.innerHTML=`<div class="dn">${i}</div>`;grid.appendChild(d);}}
-function calNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
-function openCalEventModal(){openCalEventModalOnDate(new Date().toISOString().split('T')[0]);}
-function openCalEventModalOnDate(date){selectedCalDate=date;document.getElementById('calModalTitle').textContent='Add Event — '+date;document.getElementById('ce-date').value=date;['ce-title','ce-time','ce-loc','ce-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});openModal('calModal');}
+// ════════════════════════════════════════════════════════════════
+// JELIX CALENDAR ENGINE — GCal-parity functional module
+// ════════════════════════════════════════════════════════════════
+
+// ── World config ─────────────────────────────────────────────────
+const CAL_WORLDS = [
+  {id:'ih',  label:'Ideahub',   color:'var(--teal)',   hex:'#80fffa'},
+  {id:'cs',  label:'Chainsmoker',color:'var(--red)',   hex:'#ff2244'},
+  {id:'ven', label:'Venture',   color:'var(--orange)', hex:'#ff8c00'},
+  {id:'bld', label:'Build',     color:'var(--green)',  hex:'#00ff88'},
+  {id:'sid', label:'Sides',     color:'var(--amber)',  hex:'#ffaa00'},
+  {id:'fth', label:'Faith',     color:'var(--purple)', hex:'#bf5fff'},
+  {id:'lif', label:'Life',      color:'#3b82f6',       hex:'#3b82f6'},
+];
+// Legacy type map (backward compat with old oc/pu/pt etc)
+const CAL_TYPE_MAP = {pt:'ih',oc:'cs',po:'ven',pg:'bld',pam:'sid',pu:'fth',pgr:'lif',task:'task'};
+
+function calWorldById(id){return CAL_WORLDS.find(w=>w.id===id)||CAL_WORLDS[0];}
+function normaliseType(t){return CAL_TYPE_MAP[t]||t||'lif';}
+function evColor(e){
+  if(e._isTask)return 'var(--amber)';
+  const w=calWorldById(normaliseType(e.type));
+  return w.color;
+}
+function evClass(e){
+  if(e._isTask)return 'cev cev-task';
+  return 'cev cev-'+(normaliseType(e.type));
+}
+
+// ── State ──────────────────────────────────────────────────────────
+let calView='month';
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+let calSelectedDate=new Date().toISOString().split('T')[0];
+let calContextFilter=new Set(CAL_WORLDS.map(w=>w.id)); // all on by default
+let calEditingId=null;
+
+// ── Utility: expand recurring events for a date range ─────────────
+function expandRecurring(events,fromDate,toDate){
+  const from=new Date(fromDate);from.setHours(0,0,0,0);
+  const to=new Date(toDate);to.setHours(23,59,59,999);
+  const out=[];
+  events.forEach(e=>{
+    const base=new Date(e.date);base.setHours(0,0,0,0);
+    if(!e.recur||e.recur==='none'){
+      if(base>=from&&base<=to)out.push(e);
+      return;
+    }
+    const until=e.recurEnd?new Date(e.recurEnd):new Date(to);
+    let cur=new Date(base);
+    let safetyMax=0;
+    while(cur<=to&&cur<=until&&safetyMax<500){
+      safetyMax++;
+      if(cur>=from){
+        out.push({...e,_expandedDate:cur.toISOString().split('T')[0],_recurring:true});
+      }
+      // Advance by recurrence type
+      switch(e.recur){
+        case 'daily':     cur.setDate(cur.getDate()+1);break;
+        case 'weekly':    cur.setDate(cur.getDate()+7);break;
+        case 'biweekly':  cur.setDate(cur.getDate()+14);break;
+        case 'monthly':   cur.setMonth(cur.getMonth()+1);break;
+        case 'monthly-nth':{
+          // Nth weekday of month
+          const dow=base.getDay(),nth=Math.ceil(base.getDate()/7);
+          cur.setMonth(cur.getMonth()+1);
+          cur.setDate(1);
+          let count=0;
+          while(cur.getDay()!==dow)cur.setDate(cur.getDate()+1);
+          while(count<nth-1){cur.setDate(cur.getDate()+7);count++;}
+          break;
+        }
+        case 'yearly':    cur.setFullYear(cur.getFullYear()+1);break;
+        case 'weekdays':  do{cur.setDate(cur.getDate()+1);}while(cur.getDay()===0||cur.getDay()===6);break;
+        case 'custom':    cur.setDate(cur.getDate()+(parseInt(e.recurN)||1));break;
+        default:cur=new Date(to.getTime()+1);
+      }
+    }
+  });
+  return out;
+}
+
+function eventsForDate(dateStr){
+  const mon=new Date(dateStr);mon.setDate(1);
+  const expanded=expandRecurring(DB.calEvents,
+    new Date(mon.getFullYear(),mon.getMonth()-1,1).toISOString().split('T')[0],
+    new Date(mon.getFullYear(),mon.getMonth()+2,0).toISOString().split('T')[0]
+  );
+  return expanded
+    .filter(e=>(e._expandedDate||e.date)===dateStr)
+    .filter(e=>calContextFilter.has(normaliseType(e.type))||e._isTask);
+}
+
+// ── Reminder system ───────────────────────────────────────────────
+function checkReminders(){
+  if(!('Notification' in window))return;
+  const now=new Date();
+  const todayStr=now.toISOString().split('T')[0];
+  DB.calEvents.filter(e=>e.date===todayStr&&e.reminder&&e.time).forEach(e=>{
+    const [h,m]=e.time.split(':').map(Number);
+    const evTime=new Date();evTime.setHours(h,m,0,0);
+    const diff=(evTime-now)/60000;
+    if(diff>0&&diff<=30&&!e._reminded){
+      e._reminded=true;
+      showToast(`⏰ Reminder: "${e.title}" in ${Math.round(diff)} min`);
+      if(Notification.permission==='granted'){
+        new Notification('J.E.L.I.X Reminder',{body:e.title+' starts in '+Math.round(diff)+' min',icon:''});
+      }
+    }
+  });
+}
+setInterval(checkReminders,60000);
+
+// ── Conflict detection ─────────────────────────────────────────────
+function detectConflicts(dateStr,startTime,endTime,excludeId){
+  if(!startTime||!endTime)return[];
+  const t2m=t=>{ const[h,m]=t.split(':').map(Number);return h*60+m; };
+  const s=t2m(startTime),en=t2m(endTime);
+  return eventsForDate(dateStr).filter(e=>{
+    if(e.id===excludeId||!e.time||!e.endTime)return false;
+    const es=t2m(e.time),ee=t2m(e.endTime);
+    return s<ee&&en>es;
+  });
+}
+
+// ── View switching ─────────────────────────────────────────────────
+function setCalView(v){
+  calView=v;
+  ['day','week','month','quarter','agenda'].forEach(vv=>{
+    const btn=document.getElementById('cvt-'+vv);
+    if(btn)btn.classList.toggle('active',vv===v);
+  });
+  renderCalendar();
+}
+
+function calNav(dir){
+  if(calView==='day'){
+    const d=new Date(calSelectedDate);d.setDate(d.getDate()+dir);
+    calSelectedDate=d.toISOString().split('T')[0];
+  } else if(calView==='week'){
+    const d=new Date(calSelectedDate);d.setDate(d.getDate()+dir*7);
+    calSelectedDate=d.toISOString().split('T')[0];
+  } else if(calView==='quarter'){
+    calMonth+=dir*3;
+    if(calMonth>11){calMonth-=12;calYear++;}
+    if(calMonth<0){calMonth+=12;calYear--;}
+  } else {
+    calMonth+=dir;
+    if(calMonth>11){calMonth=0;calYear++;}
+    if(calMonth<0){calMonth=11;calYear--;}
+  }
+  renderCalendar();
+}
+
+function calNavToday(){
+  const t=new Date();
+  calSelectedDate=t.toISOString().split('T')[0];
+  calYear=t.getFullYear();calMonth=t.getMonth();
+  renderCalendar();
+}
+
+function calMiniNav(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar();}
+
+// ── Sidebar helpers ───────────────────────────────────────────────
+function renderCalSidebar(){
+  // Mini calendar
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const el=document.getElementById('calMiniMonth');
+  if(el)el.textContent=MONTHS[calMonth]+' '+calYear;
+  const grid=document.getElementById('calMiniGrid');
+  if(!grid)return;
+  const first=new Date(calYear,calMonth,1).getDay();
+  const days=new Date(calYear,calMonth+1,0).getDate();
+  const prev=new Date(calYear,calMonth,0).getDate();
+  const today=new Date().toISOString().split('T')[0];
+  let html='';
+  for(let i=first-1;i>=0;i--){
+    html+=`<div class="cal-mini-day om">${prev-i}</div>`;
+  }
+  for(let d=1;d<=days;d++){
+    const ds=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const isToday=ds===today;
+    const isSel=ds===calSelectedDate;
+    const hasEv=DB.calEvents.some(e=>e.date===ds)||DB.calEvents.some(e=>e._expandedDate===ds);
+    html+=`<div class="cal-mini-day${isToday?' today':isSel?' selected':''}" onclick="calSelectedDate='${ds}';setCalView('day')" title="${ds}">${d}</div>`;
+  }
+  const rem=42-(first+days);
+  for(let i=1;i<=rem;i++) html+=`<div class="cal-mini-day om">${i}</div>`;
+  grid.innerHTML=html;
+
+  // Legend
+  const leg=document.getElementById('calLegend');
+  if(leg)leg.innerHTML=CAL_WORLDS.map(w=>`
+    <div class="cal-legend-item" onclick="toggleCalContext('${w.id}',this)">
+      <div class="cal-legend-dot" style="background:${w.hex};opacity:${calContextFilter.has(w.id)?1:.3}"></div>
+      <span style="opacity:${calContextFilter.has(w.id)?1:.4}">${w.label}</span>
+    </div>`).join('');
+
+  // Context pills in toolbar
+  const pills=document.getElementById('calCtxFilters');
+  if(pills)pills.innerHTML=CAL_WORLDS.map(w=>`
+    <div class="cal-ctx-pill${calContextFilter.has(w.id)?' on':''}" style="background:${calContextFilter.has(w.id)?w.hex+'22':'transparent'};border-color:${calContextFilter.has(w.id)?w.hex:'rgba(255,255,255,.12)'};color:${calContextFilter.has(w.id)?w.hex:'var(--text3)'}" onclick="toggleCalContext('${w.id}',null)">${w.label}</div>`).join('');
+
+  // Upcoming events (next 7 days)
+  const up=document.getElementById('calUpcoming');
+  if(up){
+    const nowD=new Date();const futureD=new Date();futureD.setDate(futureD.getDate()+7);
+    const upcoming=expandRecurring(DB.calEvents,nowD.toISOString().split('T')[0],futureD.toISOString().split('T')[0])
+      .filter(e=>calContextFilter.has(normaliseType(e.type))||e._isTask)
+      .sort((a,b)=>(a._expandedDate||a.date).localeCompare(b._expandedDate||b.date))
+      .slice(0,5);
+    up.innerHTML=upcoming.map(e=>{
+      const w=calWorldById(normaliseType(e.type));
+      return`<div style="display:flex;gap:7px;align-items:flex-start;cursor:pointer" onclick="calSelectedDate='${e._expandedDate||e.date}';setCalView('day')">
+        <div style="width:3px;border-radius:2px;background:${w.color};align-self:stretch;flex-shrink:0"></div>
+        <div style="min-width:0">
+          <div style="font-size:10px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.title}</div>
+          <div style="font-size:9px;color:var(--text3)">${e._expandedDate||e.date}${e.time?' · '+e.time.substring(0,5):''}</div>
+        </div>
+      </div>`;
+    }).join('')||'<div style="font-size:10px;color:var(--text3)">Nothing upcoming.</div>';
+  }
+}
+
+function toggleCalContext(id,el){
+  if(calContextFilter.has(id))calContextFilter.delete(id);
+  else calContextFilter.add(id);
+  renderCalendar();
+}
+
+// ── MONTH view ───────────────────────────────────────────────────
+function renderCalMonth(){
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS=['SUN','MON','TUE','WED','THU','FRI','SAT'];
+  const el=document.getElementById('calMainArea');
+  const today=new Date().toISOString().split('T')[0];
+  const first=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const prevDays=new Date(calYear,calMonth,0).getDate();
+
+  // Range for expansion
+  const fromDate=new Date(calYear,calMonth-1,1).toISOString().split('T')[0];
+  const toDate=new Date(calYear,calMonth+1,0).toISOString().split('T')[0];
+  const allExpanded=expandRecurring(DB.calEvents,fromDate,toDate);
+
+  const getEvs=ds=>allExpanded
+    .filter(e=>(e._expandedDate||e.date)===ds&&(calContextFilter.has(normaliseType(e.type))||e._isTask));
+
+  let html=`<div style="display:flex;flex-direction:column;height:100%;min-height:600px">`;
+  // Day headers
+  html+=`<div class="cal-grid">${DAYS.map(d=>`<div class="cday-label">${d}</div>`).join('')}</div>`;
+  html+=`<div class="cal-grid" style="flex:1;grid-auto-rows:1fr">`;
+
+  // Prev month overflow
+  for(let i=first-1;i>=0;i--){
+    const d=prevDays-i;
+    html+=`<div class="cday om"><div class="dn">${d}</div></div>`;
+  }
+  // Current month
+  for(let day=1;day<=daysInMonth;day++){
+    const ds=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+    const isToday=ds===today;
+    const isSel=ds===calSelectedDate;
+    const evs=getEvs(ds);
+    html+=`<div class="cday${isToday?' today':''}${isSel?' selected':''}" onclick="calSelectedDate='${ds}';renderCalendar()" ondblclick="openCalEventModalOnDate('${ds}')">
+      <div class="dn">${day}</div>
+      ${evs.slice(0,3).map(e=>`<div class="${evClass(e)}" onclick="event.stopPropagation();showCalPopover(event,${e.id||0},'${e._expandedDate||e.date}')" title="${e.title}">${e.time?e.time.substring(0,5)+' ':''}${e.title}</div>`).join('')}
+      ${evs.length>3?`<div style="font-size:8px;color:var(--text3);padding:1px 4px">+${evs.length-3} more</div>`:''}
+    </div>`;
+  }
+  // Next month overflow
+  const rem=42-(first+daysInMonth);
+  for(let i=1;i<=rem;i++){
+    html+=`<div class="cday om"><div class="dn">${i}</div></div>`;
+  }
+  html+='</div></div>';
+  el.innerHTML=html;
+}
+
+// ── WEEK view ────────────────────────────────────────────────────
+function renderCalWeek(){
+  const el=document.getElementById('calMainArea');
+  const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  // Find Mon of week containing calSelectedDate
+  const base=new Date(calSelectedDate);
+  const dow=base.getDay(); // 0=Sun
+  const weekStart=new Date(base);weekStart.setDate(base.getDate()-dow);
+
+  const dates=Array.from({length:7},(_,i)=>{
+    const d=new Date(weekStart);d.setDate(weekStart.getDate()+i);
+    return d.toISOString().split('T')[0];
+  });
+  const today=new Date().toISOString().split('T')[0];
+
+  const fromDate=dates[0],toDate=dates[6];
+  const allExpanded=expandRecurring(DB.calEvents,fromDate,toDate);
+  const getEvs=ds=>allExpanded.filter(e=>(e._expandedDate||e.date)===ds&&(calContextFilter.has(normaliseType(e.type))||e._isTask));
+
+  const hours=Array.from({length:24},(_,i)=>i);
+  const t2px=t=>{const[h,m]=t.split(':').map(Number);return(h+(m/60))*48;}; // 48px per hour
+
+  // Now line
+  const now=new Date();
+  const nowPx=(now.getHours()+(now.getMinutes()/60))*48;
+  const nowDate=today;
+
+  let html=`<div style="display:flex;flex-direction:column;height:100%;min-height:0">`;
+  // Header
+  html+=`<div class="cal-week-header">
+    <div class="cal-week-hcol" style="border-right:1px solid var(--border)"></div>
+    ${dates.map((ds,i)=>{
+      const d=new Date(ds);
+      const isT=ds===today;
+      return`<div class="cal-week-hcol${isT?' today':''}">
+        <div class="wh-day">${DAYS[d.getDay()]}</div>
+        <div class="wh-num" onclick="calSelectedDate='${ds}';setCalView('day')" style="cursor:pointer">${d.getDate()}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+
+  html+=`<div style="flex:1;overflow-y:auto;position:relative">`;
+  html+=`<div class="cal-week-grid" style="position:relative;min-height:${24*48}px">`;
+
+  // Time labels
+  html+=`<div class="cal-time-col">`;
+  hours.forEach(h=>{
+    const label=h===0?'':h<12?h+'am':h===12?'12pm':(h-12)+'pm';
+    html+=`<div class="cal-time-label" style="height:48px">${label}</div>`;
+  });
+  html+='</div>';
+
+  // Day columns
+  dates.forEach((ds,di)=>{
+    const isT=ds===today;
+    html+=`<div class="cal-day-col" onclick="openCalEventModalOnDate('${ds}')">`;
+    // Hour lines
+    hours.forEach(h=>{
+      html+=`<div class="cal-hour-line" style="top:${h*48}px"><div class="cal-half-line"></div></div>`;
+    });
+    // Now line
+    if(isT) html+=`<div class="cal-now-line" style="top:${nowPx}px"></div>`;
+    // Events
+    getEvs(ds).filter(e=>!e.allDay).forEach(e=>{
+      if(!e.time)return;
+      const top=t2px(e.time);
+      const bot=e.endTime?t2px(e.endTime):top+48;
+      const h=Math.max(bot-top,20);
+      const w=calWorldById(normaliseType(e.type));
+      html+=`<div class="cal-event-block" style="top:${top}px;height:${h}px;background:${w.hex}22;border-left:3px solid ${w.hex};color:${w.color}" onclick="event.stopPropagation();showCalPopover(event,${e.id||0},'${e._expandedDate||e.date}')">
+        <div class="ceb-title">${e.title}</div>
+        <div class="ceb-time">${e.time.substring(0,5)}${e.endTime?'–'+e.endTime.substring(0,5):''}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  html+='</div></div></div>';
+  el.innerHTML=html;
+  // Scroll to 8am
+  setTimeout(()=>{const b=el.querySelector('[style*="overflow-y:auto"]');if(b)b.scrollTop=8*48-20;},0);
+}
+
+// ── DAY view ─────────────────────────────────────────────────────
+function renderCalDay(){
+  const el=document.getElementById('calMainArea');
+  const today=new Date().toISOString().split('T')[0];
+  const d=new Date(calSelectedDate);
+  const DAYNAMES=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  const fromDate=calSelectedDate,toDate=calSelectedDate;
+  const allExpanded=expandRecurring(DB.calEvents,fromDate,toDate);
+  const evs=allExpanded.filter(e=>(e._expandedDate||e.date)===calSelectedDate&&(calContextFilter.has(normaliseType(e.type))||e._isTask));
+  const timedEvs=evs.filter(e=>e.time);
+  const allDayEvs=evs.filter(e=>!e.time||e.allDay);
+
+  const t2px=t=>{const[h,m]=t.split(':').map(Number);return(h+(m/60))*60;};
+  const now=new Date();
+  const nowPx=(now.getHours()+(now.getMinutes()/60))*60;
+  const isToday=calSelectedDate===today;
+  const hours=Array.from({length:24},(_,i)=>i);
+
+  let html=`<div class="cal-day-view">`;
+  html+=`<div class="cal-day-header">
+    <div class="cal-day-title">${DAYNAMES[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}</div>
+    ${allDayEvs.length?`<div style="display:flex;gap:5px;margin-top:8px;flex-wrap:wrap">${allDayEvs.map(e=>{const w=calWorldById(normaliseType(e.type));return`<div style="background:${w.hex}22;color:${w.color};border:1px solid ${w.hex}44;border-radius:4px;padding:3px 10px;font-size:11px;font-weight:600;cursor:pointer" onclick="showCalPopover(event,${e.id||0},'${e._expandedDate||e.date}')">${e.title}</div>`;}).join('')}</div>`:''}
+  </div>`;
+
+  html+=`<div style="flex:1;overflow-y:auto;display:flex">`;
+  // Time labels
+  html+=`<div style="width:56px;flex-shrink:0;position:relative;height:${24*60}px">`;
+  hours.forEach(h=>{
+    const label=h===0?'':h<12?h+':00 am':h===12?'12:00 pm':(h-12)+':00 pm';
+    html+=`<div style="position:absolute;top:${h*60}px;right:6px;font-size:8px;color:var(--text3);transform:translateY(-50%)">${label}</div>`;
+  });
+  html+='</div>';
+  // Day column
+  html+=`<div style="flex:1;position:relative;min-height:${24*60}px;border-left:1px solid var(--border)" onclick="openCalEventModalOnDate('${calSelectedDate}')">`;
+  hours.forEach(h=>{
+    html+=`<div style="position:absolute;top:${h*60}px;left:0;right:0;border-top:1px solid var(--border);height:60px">
+      <div style="position:absolute;top:30px;left:0;right:0;border-top:1px dashed rgba(255,255,255,.04)"></div>
+    </div>`;
+  });
+  if(isToday) html+=`<div class="cal-now-line" style="top:${nowPx}px;height:2px"></div>`;
+  // Timed events
+  timedEvs.forEach(e=>{
+    const top=t2px(e.time);
+    const bot=e.endTime?t2px(e.endTime):top+60;
+    const h=Math.max(bot-top,24);
+    const w=calWorldById(normaliseType(e.type));
+    html+=`<div class="cal-event-block" style="top:${top}px;height:${h}px;background:${w.hex}22;border-left:3px solid ${w.hex};color:${w.color}" onclick="event.stopPropagation();showCalPopover(event,${e.id||0},'${e._expandedDate||e.date}')">
+      <div class="ceb-title">${e.title}</div>
+      <div class="ceb-time">${e.time.substring(0,5)}${e.endTime?' – '+e.endTime.substring(0,5):''}</div>
+      ${e.loc?`<div class="ceb-time"><i class="ti ti-map-pin"></i> ${e.loc}</div>`:''}
+    </div>`;
+  });
+  html+='</div></div></div>';
+  el.innerHTML=html;
+  setTimeout(()=>{const b=el.querySelector('[style*="overflow-y:auto"]');if(b)b.scrollTop=8*60-20;},0);
+}
+
+// ── AGENDA view ──────────────────────────────────────────────────
+function renderCalAgenda(){
+  const el=document.getElementById('calMainArea');
+  const today=new Date();
+  const endDate=new Date(today);endDate.setMonth(endDate.getMonth()+3);
+  const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  const allExpanded=expandRecurring(
+    DB.calEvents,
+    today.toISOString().split('T')[0],
+    endDate.toISOString().split('T')[0]
+  ).filter(e=>calContextFilter.has(normaliseType(e.type))||e._isTask)
+   .sort((a,b)=>(a._expandedDate||a.date).localeCompare(b._expandedDate||b.date));
+
+  if(!allExpanded.length){
+    el.innerHTML='<div style="padding:32px;text-align:center;color:var(--text3);font-size:13px">No upcoming events for the next 3 months.</div>';
+    return;
+  }
+
+  // Group by date
+  const byDate={};
+  allExpanded.forEach(e=>{
+    const ds=e._expandedDate||e.date;
+    if(!byDate[ds])byDate[ds]=[];
+    byDate[ds].push(e);
+  });
+
+  const todayStr=today.toISOString().split('T')[0];
+  let html='<div class="cal-agenda">';
+  Object.keys(byDate).sort().forEach(ds=>{
+    const d=new Date(ds);
+    const isT=ds===todayStr;
+    html+=`<div class="cal-agenda-date${isT?' today-hdr':''}">
+      <div class="adn" style="color:${isT?'var(--teal)':'var(--text2)'}">${d.getDate()}</div>
+      <div>
+        <div class="adow">${DAYS[d.getDay()]}</div>
+        <div style="font-size:9px;color:var(--text3)">${MONTHS[d.getMonth()]} ${d.getFullYear()}</div>
+      </div>
+    </div>`;
+    byDate[ds].sort((a,b)=>(a.time||'').localeCompare(b.time||'')).forEach(e=>{
+      const w=calWorldById(normaliseType(e.type));
+      html+=`<div class="cal-agenda-event" onclick="showCalPopover(event,${e.id||0},'${ds}')">
+        <div class="ae-time">${e.time?e.time.substring(0,5)+(e.endTime?' – '+e.endTime.substring(0,5):''):'All day'}</div>
+        <div class="ae-dot" style="background:${w.hex}"></div>
+        <div class="ae-body">
+          <div class="ae-title">${e.title}${e._recurring?'<span style="font-size:8px;color:var(--text3);margin-left:5px">↻</span>':''}</div>
+          <div class="ae-sub">${w.label}${e.loc?' · '+e.loc:''}${e.notes?' · '+e.notes.substring(0,60):''}</div>
+        </div>
+      </div>`;
+    });
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ── QUARTER view ─────────────────────────────────────────────────
+function renderCalQuarter(){
+  const el=document.getElementById('calMainArea');
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  // Start from calMonth, show 3 months
+  const qMonths=[0,1,2].map(i=>{
+    let m=calMonth+i,y=calYear;
+    if(m>11){m-=12;y++;}
+    return{m,y};
+  });
+  const today=new Date().toISOString().split('T')[0];
+
+  let html='<div class="cal-quarter-grid">';
+  qMonths.forEach(({m,y})=>{
+    const first=new Date(y,m,1).getDay();
+    const days=new Date(y,m+1,0).getDate();
+    const prev=new Date(y,m,0).getDate();
+    html+=`<div class="cal-quarter-month">
+      <div class="cal-quarter-mh">${MONTHS[m]} ${y}</div>
+      <div class="cal-quarter-mini">
+        ${'SMTWTFS'.split('').map(d=>`<div style="font-size:8px;text-align:center;color:var(--text3);font-weight:700;padding:2px">${d}</div>`).join('')}
+        ${Array.from({length:first-1},(_,i)=>`<div class="cqd om">${prev-(first-2-i)}</div>`).join('')}
+        ${Array.from({length:days},(_,i)=>{
+          const d=i+1;
+          const ds=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+          const isT=ds===today;
+          const hasEv=DB.calEvents.some(e=>e.date===ds);
+          return`<div class="cqd${isT?' today':''}${hasEv?' has-ev':''}" onclick="calSelectedDate='${ds}';setCalView('day')" title="${ds}">${d}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ── Toolbar title ────────────────────────────────────────────────
+function updateCalTitle(){
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const el=document.getElementById('calToolbarTitle');
+  if(!el)return;
+  if(calView==='day'){
+    const d=new Date(calSelectedDate);
+    el.textContent=MONTHS[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+  } else if(calView==='week'){
+    const d=new Date(calSelectedDate);
+    const dow=d.getDay();
+    const ws=new Date(d);ws.setDate(d.getDate()-dow);
+    const we=new Date(ws);we.setDate(ws.getDate()+6);
+    el.textContent=MONTHS[ws.getMonth()]+' '+ws.getDate()+' – '+MONTHS[we.getMonth()]+' '+we.getDate()+' '+we.getFullYear();
+  } else if(calView==='quarter'){
+    el.textContent='Q'+(Math.floor(calMonth/3)+1)+' '+calYear;
+  } else {
+    el.textContent=MONTHS[calMonth]+' '+calYear;
+  }
+}
+
+// ── Main renderCalendar ──────────────────────────────────────────
+function renderCalendar(){
+  updateCalTitle();
+  renderCalSidebar();
+  if(calView==='month')       renderCalMonth();
+  else if(calView==='week')   renderCalWeek();
+  else if(calView==='day')    renderCalDay();
+  else if(calView==='agenda') renderCalAgenda();
+  else if(calView==='quarter')renderCalQuarter();
+}
+
+// ── Popover ──────────────────────────────────────────────────────
+function showCalPopover(ev,id,dateStr){
+  ev.stopPropagation();
+  const e=DB.calEvents.find(x=>x.id===id);
+  if(!e)return;
+  const pop=document.getElementById('calPopover');
+  const w=calWorldById(normaliseType(e.type));
+  document.getElementById('calPopoverContent').innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <div style="width:12px;height:12px;border-radius:50%;background:${w.hex};flex-shrink:0"></div>
+      <div class="cal-popover-title">${e.title}</div>
+    </div>
+    <div class="cal-popover-row"><i class="ti ti-calendar"></i>${dateStr||e.date}${e.time?' · '+e.time.substring(0,5)+(e.endTime?' – '+e.endTime.substring(0,5):''):''}</div>
+    ${e.loc?`<div class="cal-popover-row"><i class="ti ti-map-pin"></i>${e.loc}</div>`:''}
+    ${e.notes?`<div class="cal-popover-row"><i class="ti ti-notes"></i>${e.notes}</div>`:''}
+    ${e.recur&&e.recur!=='none'?`<div class="cal-popover-row"><i class="ti ti-repeat"></i>Repeats ${e.recur}${e.recurEnd?' until '+e.recurEnd:''}</div>`:''}
+    <div class="cal-popover-row"><i class="ti ti-tag"></i>${w.label}</div>`;
+  document.getElementById('calPopEdit').onclick=()=>{pop.classList.remove('open');editCalEvent(id);};
+  document.getElementById('calPopDelete').onclick=()=>{pop.classList.remove('open');deleteCalEvent(id);};
+  // Position
+  pop.style.left=Math.min(ev.clientX+10,window.innerWidth-340)+'px';
+  pop.style.top=Math.min(ev.clientY-10,window.innerHeight-260)+'px';
+  pop.classList.add('open');
+}
+document.addEventListener('click',()=>document.getElementById('calPopover')?.classList.remove('open'));
+
+// ── Edit / Delete ────────────────────────────────────────────────
+function editCalEvent(id){
+  const e=DB.calEvents.find(x=>x.id===id);if(!e)return;
+  calEditingId=id;
+  document.getElementById('calModalTitle').textContent='Edit Event';
+  document.getElementById('ce-title').value=e.title||'';
+  document.getElementById('ce-date').value=e.date||'';
+  document.getElementById('ce-time').value=e.time||'';
+  const etEl=document.getElementById('ce-end-time');if(etEl)etEl.value=e.endTime||'';
+  document.getElementById('ce-type').value=e.type||'lif';
+  document.getElementById('ce-loc').value=e.loc||'';
+  document.getElementById('ce-notes').value=e.notes||'';
+  const rEl=document.getElementById('ce-recur');if(rEl)rEl.value=e.recur||'none';
+  const reEl=document.getElementById('ce-recur-end');if(reEl)reEl.value=e.recurEnd||'';
+  const alEl=document.getElementById('ce-allday');if(alEl)alEl.checked=!!e.allDay;
+  const rmEl=document.getElementById('ce-reminder');if(rmEl)rmEl.checked=!!e.reminder;
+  const cnEl=document.getElementById('ce-custom-n');if(cnEl)cnEl.value=e.recurN||'';
+  toggleRecurOptions();
+  openModal('calModal');
+}
+function deleteCalEvent(id){
+  if(!confirm('Delete this event?'))return;
+  DB.calEvents=DB.calEvents.filter(e=>e.id!==id);
+  SB.remove('cal_events',id,'calEvents');
+  renderCalendar();showToast('Event deleted');
+}
+
+// ── Modal helpers ─────────────────────────────────────────────────
+function toggleRecurOptions(){
+  const v=document.getElementById('ce-recur')?.value;
+  const endWrap=document.getElementById('ce-recur-end-wrap');
+  const custWrap=document.getElementById('ce-custom-wrap');
+  if(endWrap)endWrap.style.display=(v&&v!=='none')?'':'none';
+  if(custWrap)custWrap.style.display=(v==='custom')?'':'none';
+}
+function toggleAllDay(){
+  const isAllDay=document.getElementById('ce-allday')?.checked;
+  const tf=document.getElementById('ce-time');
+  const te=document.getElementById('ce-end-time');
+  if(tf)tf.disabled=isAllDay;
+  if(te)te.disabled=isAllDay;
+}
+
+// ── saveCalEvent (upgraded) ───────────────────────────────────────
+function saveCalEvent(){
+  const rawDate=document.getElementById('ce-date').value||selectedCalDate;
+  const allDay=document.getElementById('ce-allday')?.checked||false;
+  const e={
+    id:calEditingId||Date.now(),
+    title:document.getElementById('ce-title').value.trim()||'Event',
+    date:rawDate,
+    time:allDay?'':document.getElementById('ce-time').value,
+    endTime:allDay?'':document.getElementById('ce-end-time')?.value||'',
+    type:document.getElementById('ce-type').value||'lif',
+    loc:document.getElementById('ce-loc').value.trim(),
+    notes:document.getElementById('ce-notes')?.value.trim()||'',
+    allDay,
+    reminder:document.getElementById('ce-reminder')?.checked||false,
+    recur:document.getElementById('ce-recur')?.value||'none',
+    recurEnd:document.getElementById('ce-recur-end')?.value||'',
+    recurN:document.getElementById('ce-custom-n')?.value||'',
+  };
+  if(calEditingId){
+    const i=DB.calEvents.findIndex(x=>x.id===calEditingId);
+    if(i>=0)DB.calEvents[i]=e;
+    SB.update('cal_events',e.id,e,'calEvents');
+  } else {
+    DB.calEvents.push(e);
+    SB.upsert('cal_events',e,'calEvents');
+  }
+  // Conflict check
+  const conflicts=detectConflicts(e.date,e.time,e.endTime,e.id);
+  if(conflicts.length){
+    showToast('⚠️ Time conflict with: '+conflicts.map(c=>c.title).join(', '),4000);
+  }
+  // Reminder notification permission
+  if(e.reminder&&'Notification' in window&&Notification.permission==='default'){
+    Notification.requestPermission();
+  }
+  calEditingId=null;
+  ['ce-title','ce-loc','ce-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const recurEl=document.getElementById('ce-recur');if(recurEl)recurEl.value='none';
+  closeModal('calModal');
+  addHistory('add','Added event: '+e.title,{...e,_dbKey:'calEvents'});
+  renderCalendar();renderBrief();
+  showToast('✓ Event saved'+(conflicts.length?' (check conflicts)':''));
+}
+
+function openCalEventModal(){openCalEventModalOnDate(calSelectedDate||new Date().toISOString().split('T')[0]);}
+function openCalEventModalOnDate(date){
+  calEditingId=null;
+  selectedCalDate=date;
+  document.getElementById('calModalTitle').textContent='Add Event';
+  document.getElementById('ce-date').value=date;
+  ['ce-title','ce-time','ce-loc','ce-notes'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const etEl=document.getElementById('ce-end-time');if(etEl)etEl.value='';
+  const rEl=document.getElementById('ce-recur');if(rEl)rEl.value='none';
+  const alEl=document.getElementById('ce-allday');if(alEl)alEl.checked=false;
+  const rmEl=document.getElementById('ce-reminder');if(rmEl)rmEl.checked=false;
+  const reEl=document.getElementById('ce-recur-end');if(reEl)reEl.value='';
+  toggleRecurOptions();
+  openModal('calModal');
+}
 function saveCalEvent(){const rawDate=document.getElementById('ce-date').value||selectedCalDate;const e={id:Date.now(),title:document.getElementById('ce-title').value.trim()||'Event',date:rawDate,time:document.getElementById('ce-time').value,endTime:document.getElementById('ce-end-time')?.value||'',type:document.getElementById('ce-type').value,loc:document.getElementById('ce-loc').value.trim(),notes:document.getElementById('ce-notes')?.value.trim()||''};DB.calEvents.push(e);SB.upsert('cal_events',e,'calEvents');closeModal('calModal');addHistory('add','Added event: '+e.title,{...e,_dbKey:'calEvents'});renderCalendar();renderBrief();showToast('✓ Event saved');}
 
 // NOTES — callout grid
@@ -3487,7 +5111,7 @@ const CMD_ITEMS=[
   {label:'LIFE — Cash Flow',sub:'Debit · Credit · Cashflow',icon:'🌿',action:()=>setView('life'),group:'Navigate'},
   {label:'Calendar',sub:'Schedule · Events',icon:'📅',action:()=>setView('calendar'),group:'Navigate'},
   {label:'Journal',sub:'Personal entries',icon:'📖',action:()=>setView('journal'),group:'Navigate'},
-  {label:'All Tasks',sub:'Cross-world tasks',icon:'✓',action:()=>setView('tasks'),group:'Navigate'},
+  {label:'Tasks',sub:'Cross-world tasks',icon:'✓',action:()=>setView('tasks'),group:'Navigate'},
   {label:'AI Workspace',sub:'J.E.L.I.X agents',icon:'✦',action:()=>setView('ai'),group:'Navigate'},
   {label:'Memory',sub:'Persistent context',icon:'🧠',action:()=>setView('memory'),group:'Navigate'},
   {label:'Activity History',sub:'All actions + restore',icon:'🕐',action:()=>setView('history'),group:'Navigate'},
