@@ -1552,6 +1552,7 @@ select option{background:var(--navy3)}
       <div class="hpill"><span id="topDate" style="font-size:10px"></span></div>
       <div class="hpill"><span id="topClock" style="font-size:11px">--:--</span></div>
       <button class="tb-btn" onclick="toggleVoice()" id="voiceFab" title="Voice (Space)"><i class="ti ti-microphone" id="voiceFabIcon"></i></button>
+      <button class="tb-btn" onclick="toggleWakeWord()" id="wakeToggleBtn" title="Wake word OFF — click to enable" style="color:var(--text3)"><i class="ti ti-ear-off"></i></button>
       <button class="tb-btn" onclick="toggleMute()" id="muteBtn" title="Toggle voice output"><i class="ti ti-volume" id="muteIcon"></i></button>
       <button class="tb-btn" id="onyxBtn" onclick="setOpenAIKey()" title="Set OpenAI key for premium JARVIS voice" style="font-size:9px;letter-spacing:.06em;color:var(--teal2);border-color:var(--teal2)">ONYX</button>
       <button class="tb-btn" id="apiKeyBtn" onclick="setJelixAPIKey()" title="Set Anthropic API key for AI agents" style="font-size:9px;letter-spacing:.06em;color:var(--amber);border-color:var(--amber)" id="apiKeyBtn">JARVIS KEY</button>
@@ -5740,41 +5741,72 @@ function fuzzyFind(query,arr,keyFn,threshold){
 
 // ── Intent registry — ordered most-specific first ──
 const FLUID_VOICE_INTENTS=[
-  // NAVIGATE
-  {re:/^(go\s+to|open|show|navigate\s+to|switch\s+to)\s+(?<dest>.+)/i, action:'navigate'},
-  // DELETE — task
-  {re:/^(delete|remove|trash|drop)\s+(task|todo)[:\-\s]+(?<target>.+)/i, action:'delete_task'},
-  // DELETE — client
-  {re:/^(delete|remove|trash)\s+client[:\-\s]+(?<target>.+)/i, action:'delete_client'},
-  // DELETE — venture item
-  {re:/^(delete|remove|trash)\s+(venture|pipeline|lead)[:\-\s]+(?<target>.+)/i, action:'delete_venture'},
-  // DELETE — faith activity
-  {re:/^(delete|remove|trash)\s+(faith|activity|buklod)[:\-\s]+(?<target>.+)/i, action:'delete_faith'},
-  // MOVE — venture stage
-  {re:/^(move|advance|push|set)\s+(?<target>.+?)\s+to\s+(?<stage>lead|discovery|proposal|negotiation|active|won)/i, action:'move_venture'},
-  // UPDATE — task status (mark X as Y)
-  {re:/^(mark|set|update)\s+(?<target>.+?)\s+as\s+(?<status>done|complete|completed|in\s+progress|no\s+progress|blocked|todo)/i, action:'update_task_status'},
-  // UPDATE — task priority
-  {re:/^(set|make|change)\s+(?<target>.+?)\s+(priority\s+to\s+|to\s+)(high|medium|low)/i, action:'update_task_priority'},
-  // UPDATE — client status
-  {re:/^(set|mark|update)\s+client\s+(?<target>.+?)\s+(status\s+)?(to\s+)?(?<status>active|pending|urgent|paused|done)/i, action:'update_client_status'},
-  // ADD — task (with context extraction)
-  {re:/^(add|create|new)\s+(task|todo)[:\-\s]+(?<title>.+)/i, action:'add_task'},
-  // ADD — client
-  {re:/^(add|new|create)\s+client[:\-\s]+(?<name>.+)/i, action:'add_client'},
-  // ADD — venture item
-  {re:/^(add|new|create)\s+(venture|lead|pipeline)[:\-\s]+(?<name>.+)/i, action:'add_venture'},
-  // ADD — faith activity
-  {re:/^(add|log|record)\s+(faith|activity|buklod)[:\-\s]+(?<activity>.+)/i, action:'add_faith'},
-  // ADD — cashflow credit
-  {re:/^(add\s+)?(credit|income|received|payment\s+in)[:\-\s]+(?<desc>.+?)\s+(?<amount>[\d,]+(?:\.\d+)?)/i, action:'add_credit'},
-  // ADD — cashflow debit
-  {re:/^(add\s+)?(debit|expense|paid|bought|spent)[:\-\s]+(?<desc>.+?)\s+(?<amount>[\d,]+(?:\.\d+)?)/i, action:'add_debit'},
-  // ADD — journal
-  {re:/^(journal|write|log|note)[:\-\s]+(?<content>.+)/i, action:'add_journal'},
-  // MUTE / UNMUTE
-  {re:/\b(mute|silence)\b/i, action:'mute'},
-  {re:/\b(unmute|speak|voice\s+on)\b/i, action:'unmute'},
+
+  // ── NAVIGATE ────────────────────────────────────────────────────────────
+  {re:/^(go\s+to|open|show|navigate\s+to|switch\s+to|go)\s+(?<dest>.+)/i, action:'navigate'},
+
+  // ── TASK — add (very flexible natural speech) ───────────────────────────
+  // "add task reply to RTP" / "create a task for..." / "new task: ..." / "add a to-do..."
+  {re:/\b(add|create|new|mag\-?add|gumawa)\b.{0,12}\b(task|todo|to[\-\s]?do)\b[:\-,\s]*(?<title>.+)/i, action:'add_task'},
+  // "I need to [verb] [thing]" → task
+  {re:/^i\s+need\s+to\s+(?<title>.+)/i, action:'add_task'},
+  // "remind me to [thing]" → task
+  {re:/^remind\s+me\s+to\s+(?<title>.+)/i, action:'add_task'},
+
+  // ── TASK — delete / remove ───────────────────────────────────────────────
+  // "delete task reply to RTP" / "remove task [name]" / "delete the task called..."
+  {re:/\b(delete|remove|trash|drop|cancel|burahin|alisin)\b.{0,10}\b(task|todo)\b[:\-,\s]*(?<target>.+)/i, action:'delete_task'},
+  // "delete [task name]" — bare delete with no keyword (fuzzy fallback)
+  {re:/^(delete|remove|trash)\s+(?<target>.+)/i, action:'delete_task'},
+
+  // ── TASK — mark done ────────────────────────────────────────────────────
+  {re:/\b(mark|set|tapos\s+na|done\s+na)\b.{0,20}\b(?<target>.+?)\b.{0,10}\b(done|complete|completed|finished|tapos)/i, action:'update_task_status_done'},
+  {re:/^(mark|set|update)\s+(?<target>.+?)\s+as\s+(?<status>done|complete|completed|in\s*progress|no\s*progress|blocked|todo)/i, action:'update_task_status'},
+  {re:/^(complete|finish|tapos)\s+(?<target>.+)/i, action:'update_task_status_done'},
+
+  // ── TASK — priority ─────────────────────────────────────────────────────
+  {re:/^(set|make|change|mark)\s+(?<target>.+?)\s+(priority\s+)?(to\s+|as\s+)?(?<prio>high|medium|low)/i, action:'update_task_priority'},
+
+  // ── CASHFLOW — debit (income, received money) ────────────────────────────
+  // "debit salary 25000" / "add debit salary 25000" / "received salary 25000"
+  // "log income salary 25000" / "i received 25000 from ideahub"
+  {re:/\b(debit|income|received|pumasok|natanggap|salary|sweldo)\b[:\-,\s]*(?<desc>[^0-9₱]+?)\s+[₱]?(?<amount>[\d,]+(?:\.\d+)?)/i, action:'add_debit'},
+  // "add debit [desc] [amount]"
+  {re:/\b(add|log)\s+debit[:\-,\s]+(?<desc>.+?)\s+[₱]?(?<amount>[\d,]+(?:\.\d+)?)/i, action:'add_debit'},
+  // "[desc] [amount] debit" — reversed order
+  {re:/(?<desc>.+?)\s+[₱]?(?<amount>[\d,]+(?:\.\d+)?)\s+(debit|income)/i, action:'add_debit'},
+
+  // ── CASHFLOW — credit (expense, paid out) ────────────────────────────────
+  // "credit rent 15000" / "add credit groceries 2000" / "bayad rent 15000"
+  // "paid rent 15000" / "spent 2000 on groceries" / "expense food 500"
+  {re:/\b(credit|expense|expenses|paid|bayad|nagbayad|spent|bought|labas)\b[:\-,\s]*(?<desc>[^0-9₱]+?)\s+[₱]?(?<amount>[\d,]+(?:\.\d+)?)/i, action:'add_credit'},
+  // "add credit [desc] [amount]"
+  {re:/\b(add|log)\s+credit[:\-,\s]+(?<desc>.+?)\s+[₱]?(?<amount>[\d,]+(?:\.\d+)?)/i, action:'add_credit'},
+  // "[desc] [amount] credit/expense" — reversed order
+  {re:/(?<desc>.+?)\s+[₱]?(?<amount>[\d,]+(?:\.\d+)?)\s+(credit|expense)/i, action:'add_credit'},
+
+  // ── CLIENT ──────────────────────────────────────────────────────────────
+  {re:/\b(add|new|create)\b.{0,8}\bclient\b[:\-,\s]*(?<name>.+)/i, action:'add_client'},
+  {re:/\b(delete|remove)\b.{0,8}\bclient\b[:\-,\s]*(?<target>.+)/i, action:'delete_client'},
+
+  // ── VENTURE ─────────────────────────────────────────────────────────────
+  {re:/\b(add|new|create)\b.{0,8}\b(venture|lead|pipeline)\b[:\-,\s]*(?<name>.+)/i, action:'add_venture'},
+  {re:/\b(delete|remove)\b.{0,8}\b(venture|lead)\b[:\-,\s]*(?<target>.+)/i, action:'delete_venture'},
+  {re:/\b(move|advance|push)\b.{0,6}(?<target>.+?)\s+to\s+(?<stage>lead|discovery|proposal|negotiation|active|won)/i, action:'move_venture'},
+
+  // ── FAITH ───────────────────────────────────────────────────────────────
+  {re:/\b(add|log|record)\b.{0,8}\b(faith|activity|buklod|church)\b[:\-,\s]*(?<activity>.+)/i, action:'add_faith'},
+  {re:/\b(delete|remove)\b.{0,8}\b(faith|activity)\b[:\-,\s]*(?<target>.+)/i, action:'delete_faith'},
+
+  // ── UPDATE CLIENT STATUS ────────────────────────────────────────────────
+  {re:/\b(set|mark|update)\b.{0,8}\bclient\b.{0,10}(?<target>.+?)\b(to|as)\b.{0,6}(?<status>active|pending|urgent|paused|done)/i, action:'update_client_status'},
+
+  // ── JOURNAL ─────────────────────────────────────────────────────────────
+  {re:/^(journal|write|log entry|note|diary)[:\-,\s]+(?<content>.+)/i, action:'add_journal'},
+
+  // ── MUTE / UNMUTE ───────────────────────────────────────────────────────
+  {re:/\b(mute|silence|tahimik)\b/i, action:'mute'},
+  {re:/\b(unmute|speak|voice\s+on|magsalita)\b/i, action:'unmute'},
 ];
 
 // Navigation alias table
@@ -5841,6 +5873,9 @@ function parseVoiceCommand(text){
         return{action:'move_venture',target:(g.target||'').trim(),stage:stageMap[(g.stage||'').toLowerCase()]||'Discovery'};
       }
 
+      case 'update_task_status_done':
+        return{action:'update_task_status',target:(g.target||'').trim(),status:'Done'};
+
       case 'update_task_status':{
         const sm={'done':'Done','complete':'Done','completed':'Done','in progress':'In Progress','no progress':'No Progress','blocked':'No Progress','todo':'Todo'};
         const rawStatus=(g.status||'done').toLowerCase().trim();
@@ -5888,10 +5923,16 @@ function parseVoiceCommand(text){
       }
 
       case 'add_credit':
-        return{action:'add_cashflow',type:'Credit',desc:(g.desc||'').trim(),amount:parseFloat((g.amount||'0').replace(/,/g,'')),category:'Income',account:'Cash'};
+        return{action:'add_cashflow',type:'Credit',
+          desc:(g.desc||g.title||'').trim()||'Voice entry',
+          amount:parseFloat((g.amount||'0').replace(/,/g,'').replace(/₱/g,'')),
+          category:'Other',account:'Cash'};
 
       case 'add_debit':
-        return{action:'add_cashflow',type:'Debit',desc:(g.desc||'').trim(),amount:parseFloat((g.amount||'0').replace(/,/g,'')),category:'Other',account:'Cash'};
+        return{action:'add_cashflow',type:'Debit',
+          desc:(g.desc||g.title||'').trim()||'Voice entry',
+          amount:parseFloat((g.amount||'0').replace(/,/g,'').replace(/₱/g,'')),
+          category:'Income',account:'Cash'};
 
       case 'add_journal':{
         const content=(g.content||text.replace(intent.re,'').trim());
@@ -5902,6 +5943,40 @@ function parseVoiceCommand(text){
       case 'unmute':return{action:'unmute'};
     }
   }
+  // ── Smart NLP fallback — infer intent from keywords alone ────────────────
+  const tl = text.toLowerCase();
+
+  // Amount pattern present → likely cashflow
+  const amtMatch = tl.match(/[₱]?([\d,]+(?:\.\d+)?)(?:\s+pesos?)?/);
+  const amt = amtMatch ? parseFloat(amtMatch[1].replace(/,/g,'')) : 0;
+
+  if(amt > 0){
+    // Has debit/income keywords → Debit (income)
+    if(/\b(salary|sweldo|pumasok|received|income|debit|bayad\s+sa\s+akin|natanggap|kita)\b/i.test(tl)){
+      const desc = tl.replace(/[₱\d,\.]+/g,'').replace(/\b(salary|sweldo|income|debit|received|natanggap|pumasok|kita|pesos?)\b/ig,'').trim()||'Voice entry';
+      return{action:'add_cashflow',type:'Debit',desc,amount:amt,category:'Income',account:'Cash'};
+    }
+    // Has credit/expense keywords → Credit (expense)
+    if(/\b(credit|expense|paid|bayad|spent|bought|nagbayad|labas|gastos|ubos)\b/i.test(tl)){
+      const desc = tl.replace(/[₱\d,\.]+/g,'').replace(/\b(credit|expense|paid|bayad|spent|bought|nagbayad|labas|gastos|ubos|pesos?)\b/ig,'').trim()||'Voice entry';
+      return{action:'add_cashflow',type:'Credit',desc,amount:amt,category:'Other',account:'Cash'};
+    }
+  }
+
+  // Has task keywords without amount → add_task
+  if(/\b(task|todo|remind|gawin|gawain|trabaho|dapat|kailangan)\b/i.test(tl)){
+    const title = tl
+      .replace(/\b(add|new|create|task|todo|remind\s+me\s+to|gawin|gawain|dapat|kailangan|a|an|the)\b/ig,'')
+      .trim() || text;
+    if(title.length > 2) return{action:'add_task',title,world:'WORK-IH',priority:'Medium',status:'Todo',due:'',platform:'',client:'',notes:''};
+  }
+
+  // Has delete keywords → try delete_task fuzzy
+  if(/\b(delete|remove|trash|burahin|alisin|tanggalin)\b/i.test(tl)){
+    const target = tl.replace(/\b(delete|remove|trash|burahin|alisin|tanggalin|the|a|an)\b/ig,'').trim();
+    if(target.length > 2) return{action:'delete_task',target};
+  }
+
   return{action:'unknown',message:text};
 }
 
@@ -6647,12 +6722,12 @@ function loadOS(){
   if(app){app.style.opacity='1';app.style.pointerEvents='';}
   // Dim particles for OS dashboard
   setTimeout(()=>setParticleMode('os'), 600);
+  // Restore wake word UI state (mic stays closed until user re-enables)
+  setTimeout(()=>{ if(typeof window._restoreWakeState==='function') window._restoreWakeState(); }, 800);
   try{reRenderAll();}catch(e){console.warn('reRenderAll:',e);}
   loadAllFromSupabase();
-  // Start wake word listener
-  setTimeout(()=>{
-    if(typeof startWakeListenerFn==='function') startWakeListenerFn();
-  },1500);
+  // Wake word listener is OFF by default — user must enable via topbar toggle
+  // Triggered only by: spacebar, voice button, or user-enabled wake word
   // Daily brief spoken summary
   setTimeout(()=>{
     try{speak(buildDailyBriefSummary());}
@@ -9248,65 +9323,72 @@ console.log('[J.E.L.I.X] JARVIS Intelligence Layer loaded — Skills 1–7 + CLA
 // Activates voice mode when "jelix" is detected in any utterance
 // Runs a separate lightweight continuous recogniser at low sensitivity
 // ═══════════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X WAKE WORD — OPT-IN ONLY
+// Microphone is NEVER opened automatically.
+// Three and only three triggers:
+//   1. Spacebar (keyboard shortcut)
+//   2. Voice button (topbar / sidebar)
+//   3. User explicitly enables wake word via the toggle below
+// ═══════════════════════════════════════════════════════════════════════════
 (function initWakeWordListener(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR) return;
 
   const WAKE_TRIGGERS=[
-    /\bjelix\b/i, /\bjalix\b/i, /\bjellix\b/i, /\bhelix\b/i,
-    /\bhey jelix\b/i, /\bhi jelix\b/i, /\bok jelix\b/i
+    /\bjelix\b/i,/\bjalix\b/i,/\bjellix\b/i,/\bhelix\b/i,
+    /\bhey jelix\b/i,/\bhi jelix\b/i,/\bok jelix\b/i
   ];
 
   let wakeRec=null;
   let wakeActive=false;
+  let wakeEnabled=false;     // OFF by default — mic stays closed
   let wakeRestartTimer=null;
 
   function startWakeListener(){
-    if(wakeActive||isRecording) return;
+    if(!wakeEnabled||wakeActive||isRecording) return;  // guard: only when enabled
     try{
       wakeRec=new SR();
       wakeRec.continuous=false;
-      wakeRec.interimResults=true;
+      wakeRec.interimResults=false;   // less processing, no continuous stream
       wakeRec.lang='en-PH';
-      wakeRec.maxAlternatives=3;
+      wakeRec.maxAlternatives=2;
 
       wakeRec.onstart=()=>{ wakeActive=true; };
 
       wakeRec.onresult=(e)=>{
         for(let i=e.resultIndex;i<e.results.length;i++){
-          const alts=e.results[i];
-          for(let j=0;j<alts.length;j++){
-            const txt=alts[j].transcript||'';
-            if(WAKE_TRIGGERS.some(r=>r.test(txt))){
-              // Wake word detected
-              chimeNotify();
-              if(!isRecording){
-                // Strip the wake word, pass remainder as command if any
-                const rest=txt.replace(/\b(hey |hi |ok )?(jelix|jalix|jellix|helix)\b/i,'').trim();
-                toggleVoice();
-                if(rest){
-                  // Pre-fill transcript with what came after wake word
-                  setTimeout(()=>{ document.getElementById('vTranscript').textContent=rest; },200);
-                }
-              }
-              return;
+          const txt=(e.results[i][0]?.transcript||'');
+          if(WAKE_TRIGGERS.some(r=>r.test(txt))){
+            chimeNotify();
+            if(!isRecording){
+              const rest=txt.replace(/\b(hey |hi |ok )?(jelix|jalix|jellix|helix)\b/i,'').trim();
+              toggleVoice();
+              if(rest) setTimeout(()=>{ const el=document.getElementById('vTranscript');if(el)el.textContent=rest; },200);
             }
+            return;
           }
         }
       };
 
       wakeRec.onend=()=>{
         wakeActive=false;
-        // Restart after 500ms unless main voice is active
-        wakeRestartTimer=setTimeout(()=>{
-          if(!isRecording) startWakeListener();
-        },500);
+        // Only restart if still enabled and main voice not active
+        if(wakeEnabled&&!isRecording){
+          wakeRestartTimer=setTimeout(startWakeListener, 800);
+        }
       };
 
       wakeRec.onerror=(e)=>{
         wakeActive=false;
-        // Restart on recoverable errors
-        if(e.error!=='not-allowed'&&e.error!=='service-not-available'){
+        if(e.error==='not-allowed'){
+          // User denied mic — disable wake word
+          wakeEnabled=false;
+          updateWakeToggleUI(false);
+          showToast('⚠ Microphone access denied. Wake word disabled.');
+          return;
+        }
+        if(wakeEnabled&&e.error!=='service-not-available'){
           wakeRestartTimer=setTimeout(startWakeListener, 2000);
         }
       };
@@ -9317,30 +9399,77 @@ console.log('[J.E.L.I.X] JARVIS Intelligence Layer loaded — Skills 1–7 + CLA
     }
   }
 
-  // Stop wake listener when main voice is active (avoid conflict)
-  const _origToggleVoice=window.toggleVoice;
-  window.toggleVoice=function(){
+  function stopWakeListener(){
+    clearTimeout(wakeRestartTimer);
     if(wakeRec&&wakeActive){
       try{ wakeRec.stop(); }catch(e){}
-      wakeActive=false;
-      clearTimeout(wakeRestartTimer);
     }
+    wakeActive=false;
+  }
+
+  // Enable/disable wake word — called by the toggle button
+  window.setWakeWordEnabled=function(enable){
+    wakeEnabled=!!enable;
+    localStorage.setItem('j-wake-enabled', wakeEnabled?'1':'0');
+    updateWakeToggleUI(wakeEnabled);
+    if(wakeEnabled){
+      showToast('✓ Wake word ON — say "Jelix" to activate voice.');
+      // Requires a user gesture to start mic — start immediately since
+      // this function is called from a button click (valid user gesture)
+      startWakeListener();
+    } else {
+      stopWakeListener();
+      showToast('Wake word OFF — mic is closed.');
+    }
+  };
+
+  window.toggleWakeWord=function(){
+    window.setWakeWordEnabled(!wakeEnabled);
+  };
+
+  window.isWakeWordEnabled=function(){ return wakeEnabled; };
+
+  function updateWakeToggleUI(on){
+    const btn=document.getElementById('wakeToggleBtn');
+    if(!btn) return;
+    btn.style.color         = on?'var(--green)':'var(--text3)';
+    btn.style.borderColor   = on?'var(--green)':'var(--border2)';
+    btn.title               = on?'Wake word ON (say Jelix)':'Wake word OFF — click to enable';
+    const icon=btn.querySelector('i');
+    if(icon) icon.className = on?'ti ti-ear':'ti ti-ear-off';
+  }
+
+  // Stop wake listener when main voice activates (avoid conflict)
+  const _origToggleVoice=window.toggleVoice;
+  window.toggleVoice=function(){
+    stopWakeListener();
     if(_origToggleVoice) _origToggleVoice.apply(this,arguments);
   };
 
-  // Resume wake listener when main voice stops
+  // When main voice session ends — resume wake listener only if enabled
   const _origStopRec=window.stopRecording;
   window.stopRecording=function(){
     if(_origStopRec) _origStopRec.apply(this,arguments);
-    // Restart wake listener after main voice closes
-    wakeRestartTimer=setTimeout(()=>{
-      if(!isRecording) startWakeListener();
-    },1500);
+    if(wakeEnabled){
+      wakeRestartTimer=setTimeout(startWakeListener,1000);
+    }
+    // Otherwise mic stays fully closed
   };
 
-  // Expose so loadOS() can call after PIN unlock
-  window.startWakeListenerFn = startWakeListener;
-  console.log('[J.E.L.I.X] Wake word listener ready — will start after PIN unlock.');
+  // Restore wake state from localStorage (user chose to keep it on)
+  // Only restore AFTER a user gesture — so we hook into loadOS
+  window._restoreWakeState=function(){
+    const saved=localStorage.getItem('j-wake-enabled');
+    if(saved==='1'){
+      // Don't auto-start mic — just update UI to show it was enabled
+      // User must click the toggle or press Space to actually open mic
+      wakeEnabled=false;  // keep off until explicit gesture
+      updateWakeToggleUI(false);
+      showToast('Wake word was ON last session — click the ear icon to re-enable.');
+    }
+  };
+
+  console.log('[J.E.L.I.X] Wake word listener ready — OFF by default. Mic closed.');
 })();
 
 // runBootSequence() now called by unlockSystem() after PIN entry
