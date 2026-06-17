@@ -3048,7 +3048,7 @@ function renderOverheadScoreboard(){
     {icon:'ti-list-check',label:'Open Tasks',val:openTasks.length,color:'var(--amber)',bg:'rgba(255,170,0,.07)',onclick:"setView('tasks')"},
     {icon:'ti-device-mobile',label:'Build Queue',val:buildTasks,color:'var(--purple)',bg:'rgba(168,85,247,.08)',onclick:"setView('build')"},
     {icon:'ti-heart',label:'Faith This Week',val:faithEvents,color:'var(--pink)',bg:'rgba(255,40,160,.07)',onclick:"setView('faith')"},
-    {icon:'ti-coin',label:'Balance',val:(balance>0?'-':balance<0?'+':'')+'₱'+Math.abs(balance).toLocaleString('en-PH',{maximumFractionDigits:0}),color:balance>0?'var(--green)':balance<0?'var(--red)':'var(--text2)',bg:balance>0?'rgba(0,255,136,.07)':balance<0?'rgba(255,34,68,.08)':'rgba(0,0,0,.04)',onclick:"setView('life')"},
+    {icon:'ti-coin',label:'Balance',val:(balance>0?'+':balance<0?'-':'')+'₱'+Math.abs(balance).toLocaleString('en-PH',{maximumFractionDigits:0}),color:balance>0?'var(--green)':balance<0?'var(--red)':'var(--text2)',bg:balance>0?'rgba(0,255,136,.07)':balance<0?'rgba(255,34,68,.08)':'rgba(0,0,0,.04)',onclick:"setView('life')"},
   ];
 
   el.innerHTML=tiles.map(t=>`
@@ -7243,7 +7243,7 @@ function runMorningBrief(){
         <div style="font-size:11px;color:var(--text3);margin-top:2px">${todayPH} · ${now} PHT · Las Piñas City</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-        <div style="font-size:20px;font-weight:800;color:${balance>0?'var(--green)':balance<0?'var(--red)':'var(--text2)'}">${balance>0?'-':balance<0?'+':''}₱${Math.abs(balance).toLocaleString('en-PH',{maximumFractionDigits:0})}</div>
+        <div style="font-size:20px;font-weight:800;color:${balance>0?'var(--green)':balance<0?'var(--red)':'var(--text2)'}">${balance>0?'+':balance<0?'-':''}₱${Math.abs(balance).toLocaleString('en-PH',{maximumFractionDigits:0})}</div>
         <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Net Balance</div>
       </div>
     </div>
