@@ -524,7 +524,7 @@ select option{background:var(--navy3)}
 .vlabel{font-size:9px;letter-spacing:.08em;color:var(--teal);margin-bottom:1px;font-weight:700;text-transform:uppercase}
 .vlabel.listening{color:var(--red)}.vlabel.error{color:var(--amber)}
 .vtranscript{font-size:12px;color:var(--text1);min-height:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vresult{background:rgba(4,10,20,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,140,0,.3);border-radius:16px;padding:10px 16px;font-size:12px;color:var(--orange);max-width:460px;width:max-content;display:none;word-break:break-word;box-shadow:0 4px 24px rgba(0,0,0,.5);text-align:center}
+.vresult{background:rgba(4,10,20,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,140,0,.3);border-radius:16px;padding:10px 16px;font-size:12px;color:var(--orange);max-width:460px;width:max-content;display:none;word-break:break-word;box-shadow:0 4px 24px rgba(0,0,0,.5);text-align:center;min-width:0;pointer-events:none}
 
 /* AI */
 .ai-layout{display:grid;grid-template-columns:170px 1fr;height:100%;overflow:hidden}
@@ -1609,40 +1609,13 @@ select option{background:var(--navy3)}
           <button class="btn btn-t" onclick="openModal('taskModal')"><i class="ti ti-plus"></i> Task</button>
         </div>
       </div>
-      <div class="vb" style="padding:10px 14px;display:flex;flex-direction:column;gap:10px">
+      <div class="vb" style="padding:10px 14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;-webkit-overflow-scrolling:touch">
 
         <!-- OVERHEAD SCOREBOARD -->
         <div id="overheadScoreboard" style="display:grid;grid-template-columns:repeat(6,1fr);gap:7px;flex-shrink:0"></div>
 
-        <!-- ROW 1: TO DO NOW (left) + CASH FLOW (right) -->
-        <div style="display:grid;grid-template-columns:1fr 320px;gap:10px;min-height:0">
-
-          <!-- TO DO NOW — HIGH PRIORITY -->
-          <div class="bd-block" style="display:flex;flex-direction:column;min-height:0">
-            <div class="bd-h" style="margin-bottom:8px">
-              <i class="ti ti-player-play" style="color:var(--teal)"></i>
-              <span style="letter-spacing:.12em">TO DO NOW — HIGH PRIORITY</span>
-            </div>
-            <div id="briefToDo" style="display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1"></div>
-          </div>
-
-          <!-- KEY METRICS: CASH FLOW -->
-          <div class="bd-block oc" style="display:flex;flex-direction:column">
-            <div class="bd-h" style="justify-content:space-between;margin-bottom:10px">
-              <span style="display:flex;align-items:center;gap:5px"><i class="ti ti-coin"></i>KEY METRICS: CASH FLOW</span>
-              <button onclick="setView('life')" style="background:transparent;border:1px solid var(--orange2);border-radius:3px;padding:2px 8px;color:var(--orange);font-size:9px;cursor:pointer;letter-spacing:.06em">Cash Flow ↗</button>
-            </div>
-            <div id="briefFinances" style="flex:1"></div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px">
-              <button class="btn" style="font-size:11px;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.35);font-weight:700;justify-content:center" onclick="openCashModal('Debit')"><i class="ti ti-plus"></i> Add Debit</button>
-              <button class="btn btn-d" style="font-size:11px;justify-content:center" onclick="openCashModal('Credit')"><i class="ti ti-minus"></i> Add Credit</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ROW 2: SMART QUICK-ADD BAR -->
-        <div style="background:#050a12;border:1px solid var(--teal2);border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:center;position:relative;flex-shrink:0">
-          <div style="position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--teal),var(--orange),transparent)"></div>
+        <!-- ROW 2: SMART QUICK-ADD BAR (moved above todo/cash for visual priority) -->
+        <div style="background:#050a12;border:1px solid var(--teal2);border-radius:4px;padding:10px 14px;display:flex;gap:10px;align-items:center;flex-shrink:0">
           <i class="ti ti-command" style="color:var(--teal);font-size:15px;flex-shrink:0;line-height:1;display:block"></i>
           <input style="border:none;background:transparent;flex:1;font-size:12px;outline:none;color:var(--text1)" id="captureInput" placeholder="Quick capture — type anything and press Enter..." onkeydown="if(event.key==='Enter')processCapture()">
           <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap">
@@ -1653,6 +1626,32 @@ select option{background:var(--navy3)}
             <button class="btn" style="font-size:10px;padding:4px 9px;background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3)" onclick="quickAddIncome()"><i class="ti ti-cash" style="font-size:10px"></i> Log Income</button>
             <button class="btn" style="font-size:10px;padding:4px 9px;background:rgba(0,255,242,.06);color:var(--teal);border:1px solid var(--teal2)" onclick="quickLogFaith()"><i class="ti ti-heart" style="font-size:10px"></i> Faith Log</button>
             <button class="btn" style="font-size:10px;padding:4px 9px;background:rgba(255,40,160,.08);color:var(--pink);border:1px solid rgba(255,40,160,.3)" onclick="openModal('clientModal')"><i class="ti ti-users" style="font-size:10px"></i> New Client</button>
+          </div>
+        </div>
+
+        <!-- ROW 1: TO DO NOW (left) + CASH FLOW (right) -->
+        <div style="display:grid;grid-template-columns:1fr 320px;gap:10px;flex-shrink:0;min-height:200px">
+
+          <!-- TO DO NOW — HIGH PRIORITY -->
+          <div class="bd-block" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="bd-h" style="margin-bottom:8px;flex-shrink:0">
+              <i class="ti ti-player-play" style="color:var(--teal)"></i>
+              <span style="letter-spacing:.12em">TO DO NOW — HIGH PRIORITY</span>
+            </div>
+            <div id="briefToDo" style="display:flex;flex-direction:column;gap:5px;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch"></div>
+          </div>
+
+          <!-- KEY METRICS: CASH FLOW -->
+          <div class="bd-block oc" style="display:flex;flex-direction:column;overflow:hidden">
+            <div class="bd-h" style="justify-content:space-between;margin-bottom:10px;flex-shrink:0">
+              <span style="display:flex;align-items:center;gap:5px"><i class="ti ti-coin"></i>KEY METRICS: CASH FLOW</span>
+              <button onclick="setView('life')" style="background:transparent;border:1px solid var(--orange2);border-radius:3px;padding:2px 8px;color:var(--orange);font-size:9px;cursor:pointer;letter-spacing:.06em">Cash Flow ↗</button>
+            </div>
+            <div id="briefFinances" style="flex:1;overflow-y:auto"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;flex-shrink:0">
+              <button class="btn" style="font-size:11px;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.35);font-weight:700;justify-content:center" onclick="openCashModal('Debit')"><i class="ti ti-plus"></i> Add Debit</button>
+              <button class="btn btn-d" style="font-size:11px;justify-content:center" onclick="openCashModal('Credit')"><i class="ti ti-minus"></i> Add Credit</button>
+            </div>
           </div>
         </div>
 
@@ -5861,28 +5860,31 @@ async function dispatchVoiceAction(cmd,rawText){
           '"Delete faith: [activity name]"',
           '"Mute" / "Unmute"',
         ];
-        result='Command not recognised, sir. Try: '+suggestions[Math.floor(Math.random()*suggestions.length)]+'.';
+        result=''; // Unrecognised — silent per config
         break;
       }
     }
   }catch(e){
-    result='Error processing command, sir: '+e.message;
+    chimeError(); result=''; // Error — chime only, no voice
   }
 
   setVcState('idle');
-  showVcResult(result);
-  showToast(result.length>60?result.substring(0,57)+'…':result);
-  addHistory('voice','Voice: '+rawText.substring(0,60),{cmd:cmd.action,raw:rawText});
-  if(!isMuted&&result&&cmd.action!=='unmute'){
-    speak(result);
+  // Show result visually only — no voice confirmation per config
+  if(result) showVcResult(result);
+  if(result) showToast(result.length>60?result.substring(0,57)+'…':result);
+  addHistory('voice','Voice: '+rawText.substring(0,60),{cmd:cmd?.action||'unknown',raw:rawText});
+  // Chime only: success vs error vs unrecognised (silent)
+  if(cmd && cmd.action && cmd.action!=='unknown'){
+    chimeSuccess();
   }
+  // Unrecognised = silent (no chime, no toast, no speak)
 }
 
 // VOICE UI
 let vcState='idle';
 function showVBar(){document.getElementById('vBar').classList.add('active');}
 function closeVBar(){document.getElementById('vBar').classList.remove('active');stopRecording();}
-function showVcResult(text){const r=document.getElementById('vResult');r.textContent=text;r.style.display='block';setTimeout(()=>{r.style.display='none';},4000);}
+function showVcResult(text){const r=document.getElementById('vResult');if(!text||!text.trim()){r.style.display='none';return;}r.textContent=text;r.style.display='block';setTimeout(()=>{r.style.display='none';},4000);}
 function setVcState(state){
   vcState=state;
   const pill=document.getElementById('vPill'),orb=document.getElementById('vOrb'),label=document.getElementById('vLabel'),oi=document.getElementById('vOrbIcon'),wave=document.getElementById('siriWave');
@@ -5946,7 +5948,7 @@ function initRecognition(){
         const cmd=_finalBuffer.trim();
         _finalBuffer='';
         if(cmd) executeVoiceCommand(cmd);
-      },2000);
+      },1000);
     } else {
       document.getElementById('vTranscript').textContent=(_finalBuffer+interim).trim();
     }
@@ -8842,6 +8844,106 @@ window.showVcResult=function(text){
 console.log('[J.E.L.I.X] Enhancement Layer v2 loaded — Taglish + Chimes + Biometric + Free-flow');
 console.log('[J.E.L.I.X] JARVIS Intelligence Layer loaded — Skills 1–7 + CLAUDE.md active, sir.');
 
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X WAKE WORD — always-on passive listener
+// Activates voice mode when "jelix" is detected in any utterance
+// Runs a separate lightweight continuous recogniser at low sensitivity
+// ═══════════════════════════════════════════════════════════════════════════
+(function initWakeWordListener(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return;
+
+  const WAKE_TRIGGERS=[
+    /\bjelix\b/i, /\bjalix\b/i, /\bjellix\b/i, /\bhelix\b/i,
+    /\bhey jelix\b/i, /\bhi jelix\b/i, /\bok jelix\b/i
+  ];
+
+  let wakeRec=null;
+  let wakeActive=false;
+  let wakeRestartTimer=null;
+
+  function startWakeListener(){
+    if(wakeActive||isRecording) return;
+    try{
+      wakeRec=new SR();
+      wakeRec.continuous=false;
+      wakeRec.interimResults=true;
+      wakeRec.lang='en-PH';
+      wakeRec.maxAlternatives=3;
+
+      wakeRec.onstart=()=>{ wakeActive=true; };
+
+      wakeRec.onresult=(e)=>{
+        for(let i=e.resultIndex;i<e.results.length;i++){
+          const alts=e.results[i];
+          for(let j=0;j<alts.length;j++){
+            const txt=alts[j].transcript||'';
+            if(WAKE_TRIGGERS.some(r=>r.test(txt))){
+              // Wake word detected
+              chimeNotify();
+              if(!isRecording){
+                // Strip the wake word, pass remainder as command if any
+                const rest=txt.replace(/\b(hey |hi |ok )?(jelix|jalix|jellix|helix)\b/i,'').trim();
+                toggleVoice();
+                if(rest){
+                  // Pre-fill transcript with what came after wake word
+                  setTimeout(()=>{ document.getElementById('vTranscript').textContent=rest; },200);
+                }
+              }
+              return;
+            }
+          }
+        }
+      };
+
+      wakeRec.onend=()=>{
+        wakeActive=false;
+        // Restart after 500ms unless main voice is active
+        wakeRestartTimer=setTimeout(()=>{
+          if(!isRecording) startWakeListener();
+        },500);
+      };
+
+      wakeRec.onerror=(e)=>{
+        wakeActive=false;
+        // Restart on recoverable errors
+        if(e.error!=='not-allowed'&&e.error!=='service-not-available'){
+          wakeRestartTimer=setTimeout(startWakeListener, 2000);
+        }
+      };
+
+      wakeRec.start();
+    }catch(err){
+      wakeActive=false;
+    }
+  }
+
+  // Stop wake listener when main voice is active (avoid conflict)
+  const _origToggleVoice=window.toggleVoice;
+  window.toggleVoice=function(){
+    if(wakeRec&&wakeActive){
+      try{ wakeRec.stop(); }catch(e){}
+      wakeActive=false;
+      clearTimeout(wakeRestartTimer);
+    }
+    if(_origToggleVoice) _origToggleVoice.apply(this,arguments);
+  };
+
+  // Resume wake listener when main voice stops
+  const _origStopRec=window.stopRecording;
+  window.stopRecording=function(){
+    if(_origStopRec) _origStopRec.apply(this,arguments);
+    // Restart wake listener after main voice closes
+    wakeRestartTimer=setTimeout(()=>{
+      if(!isRecording) startWakeListener();
+    },1500);
+  };
+
+  // Start after boot
+  setTimeout(startWakeListener, 4000);
+  console.log('[J.E.L.I.X] Wake word listener initialised — say "Jelix" to activate.');
+})();
+
 runBootSequence();
 </script>
 
@@ -8909,106 +9011,33 @@ runBootSequence();
      Cache name versioned so updates bust old cache automatically
 ════════════════════════════════════════════════════════════════════════ -->
 <script>
+// ── J.E.L.I.X Service Worker — data URL (same-origin compatible) ──────────
 (function registerSW(){
   if(!('serviceWorker' in navigator)){
-    console.log('[J.E.L.I.X] Service Worker not supported in this browser.');
+    console.log('[J.E.L.I.X] SW not supported.');
     return;
   }
+  // SW code is base64-encoded as a data: URL — works without a separate file
+  // and satisfies same-origin requirements in Chrome, Safari, Firefox.
+  const swDataURL = 'data:application/javascript;base64,Y29uc3QgQ0FDSEU9J2plbGl4LXYxLjEnOwpjb25zdCBQUkVfQ0FDSEU9WwogICdodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL0B0YWJsZXIvaWNvbnMtd2ViZm9udEAzLjE5LjAvZGlzdC90YWJsZXItaWNvbnMubWluLmNzcycsCiAgJ2h0dHBzOi8vZm9udHMuZ29vZ2xlYXBpcy5jb20vY3NzMj9mYW1pbHk9UG9wcGluczp3Z2h0QDMwMDs0MDA7NTAwOzYwMDs3MDA7ODAwOzkwMCZkaXNwbGF5PXN3YXAnLAogICdodHRwczovL2Nkbi5qc2RlbGl2ci5uZXQvbnBtL2NoYXJ0LmpzQDQuNC4wL2Rpc3QvY2hhcnQudW1kLm1pbi5qcycKXTsKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdpbnN0YWxsJyxlPT57CiAgc2VsZi5za2lwV2FpdGluZygpOwogIGUud2FpdFVudGlsKGNhY2hlcy5vcGVuKENBQ0hFKS50aGVuKGM9PmMuYWRkQWxsKFBSRV9DQUNIRSkuY2F0Y2goKCk9Pnt9KSkpOwp9KTsKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdhY3RpdmF0ZScsZT0+ewogIGUud2FpdFVudGlsKGNhY2hlcy5rZXlzKCkudGhlbihrcz0+UHJvbWlzZS5hbGwoa3MuZmlsdGVyKGs9PmshPT1DQUNIRSkubWFwKGs9PmNhY2hlcy5kZWxldGUoaykpKSkudGhlbigoKT0+c2VsZi5jbGllbnRzLmNsYWltKCkpKTsKfSk7CnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLGU9PnsKICBjb25zdCB1PW5ldyBVUkwoZS5yZXF1ZXN0LnVybCk7CiAgaWYodS5ob3N0bmFtZS5pbmNsdWRlcygnc3VwYWJhc2UuY28nKXx8dS5ob3N0bmFtZS5pbmNsdWRlcygnYW50aHJvcGljLmNvbScpfHx1Lmhvc3RuYW1lLmluY2x1ZGVzKCdvcGVuLW1ldGVvLmNvbScpKXsKICAgIGUucmVzcG9uZFdpdGgoZmV0Y2goZS5yZXF1ZXN0KS5jYXRjaCgoKT0+bmV3IFJlc3BvbnNlKCd7ImVycm9yIjoib2ZmbGluZSJ9Jyx7aGVhZGVyczp7J0NvbnRlbnQtVHlwZSc6J2FwcGxpY2F0aW9uL2pzb24nfX0pKSk7CiAgICByZXR1cm47CiAgfQogIGlmKHUuaG9zdG5hbWUuaW5jbHVkZXMoJ2ZvbnRzLmdvb2dsZWFwaXMuY29tJyl8fHUuaG9zdG5hbWUuaW5jbHVkZXMoJ2pzZGVsaXZyLm5ldCcpfHx1Lmhvc3RuYW1lLmluY2x1ZGVzKCdmb250cy5nc3RhdGljLmNvbScpKXsKICAgIGUucmVzcG9uZFdpdGgoY2FjaGVzLm1hdGNoKGUucmVxdWVzdCkudGhlbihjYWNoZWQ9PmNhY2hlZHx8ZmV0Y2goZS5yZXF1ZXN0KS50aGVuKHJlcz0+e2NvbnN0IGNsPXJlcy5jbG9uZSgpO2NhY2hlcy5vcGVuKENBQ0hFKS50aGVuKGM9PmMucHV0KGUucmVxdWVzdCxjbCkpO3JldHVybiByZXM7fSkpKTsKICAgIHJldHVybjsKICB9CiAgZS5yZXNwb25kV2l0aChmZXRjaChlLnJlcXVlc3QpLnRoZW4ocmVzPT57Y29uc3QgY2w9cmVzLmNsb25lKCk7Y2FjaGVzLm9wZW4oQ0FDSEUpLnRoZW4oYz0+Yy5wdXQoZS5yZXF1ZXN0LGNsKSk7cmV0dXJuIHJlczt9KS5jYXRjaCgoKT0+Y2FjaGVzLm1hdGNoKGUucmVxdWVzdCkpKTsKfSk7';
 
-  // ── Inline SW as a Blob URL (no separate file needed) ──────────────────
-  const SW_VERSION = 'jelix-v1.0';
-
-  const swCode = `
-const CACHE = '${SW_VERSION}';
-
-// Assets to pre-cache on install
-const PRE_CACHE = [
-  'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css',
-  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap',
-  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
-];
-
-// Install — pre-cache static assets
-self.addEventListener('install', e => {
-  self.skipWaiting();
-  e.waitUntil(
-    caches.open(CACHE).then(cache =>
-      cache.addAll(PRE_CACHE).catch(err => console.warn('[SW] Pre-cache partial fail:', err))
-    )
-  );
-});
-
-// Activate — delete old caches
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
-});
-
-// Fetch — strategy by request type
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-
-  // Supabase API calls → network-first, no cache
-  if(url.hostname.includes('supabase.co') || url.hostname.includes('anthropic.com') || url.hostname.includes('open-meteo.com')){
-    e.respondWith(
-      fetch(e.request).catch(() => new Response(JSON.stringify({error:'offline'}), {headers:{'Content-Type':'application/json'}}))
-    );
-    return;
-  }
-
-  // Google Fonts / CDN assets → cache-first
-  if(url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('jsdelivr.net') || url.hostname.includes('fonts.gstatic.com')){
-    e.respondWith(
-      caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return res;
-      }))
-    );
-    return;
-  }
-
-  // Everything else (the HTML file itself) → network-first, fallback to cache
-  e.respondWith(
-    fetch(e.request)
-      .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
-        return res;
-      })
-      .catch(() => caches.match(e.request))
-  );
-});
-`;
-
-  const blob = new Blob([swCode], {type: 'application/javascript'});
-  const swURL = URL.createObjectURL(blob);
-
-  navigator.serviceWorker.register(swURL, {scope: '/'})
+  navigator.serviceWorker.register(swDataURL)
     .then(reg => {
-      console.log('[J.E.L.I.X] PWA Service Worker registered. Scope:', reg.scope);
-
-      // Check for updates every 60 minutes
+      console.log('[J.E.L.I.X] SW registered ✓ scope:', reg.scope);
       setInterval(() => reg.update(), 60 * 60 * 1000);
-
-      // Notify user when update is available
       reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if(newWorker.state === 'installed' && navigator.serviceWorker.controller){
-            showToast('↻ J.E.L.I.X update available — reload to apply.');
+        const w = reg.installing;
+        w.addEventListener('statechange', () => {
+          if(w.state === 'installed' && navigator.serviceWorker.controller){
+            if(typeof showToast === 'function') showToast('↻ J.E.L.I.X update ready — reload to apply.');
           }
         });
       });
     })
     .catch(err => console.warn('[J.E.L.I.X] SW registration failed:', err));
 
-  // Listen for SW controller change → reload to activate update
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    console.log('[J.E.L.I.X] New SW active.');
+    console.log('[J.E.L.I.X] SW activated.');
   });
 })();
 </script>
