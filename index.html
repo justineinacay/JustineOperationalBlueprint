@@ -1486,6 +1486,15 @@ select option{background:var(--navy3)}
       <div class="ni" onclick="setView('ai')" data-view="ai"><i class="ti ti-sparkles"></i>AI Workspace</div>
       <div class="ni" onclick="setView('memory')" data-view="memory"><i class="ti ti-brain"></i>Memory</div>
       <div class="ni" onclick="setView('history')" data-view="history"><i class="ti ti-history"></i>Activity History</div>
+      <div class="ngl" style="margin-top:4px">Intelligence</div>
+      <div class="ni" onclick="setView('jarvis-brief')" data-view="jarvis-brief"><i class="ti ti-sun" style="color:var(--amber)"></i>Morning Brief</div>
+      <div class="ni" onclick="setView('jarvis-capture')" data-view="jarvis-capture"><i class="ti ti-capture" style="color:var(--teal)"></i>Capture Processor</div>
+      <div class="ni" onclick="setView('jarvis-connect')" data-view="jarvis-connect"><i class="ti ti-link" style="color:var(--purple)"></i>Connection Finder</div>
+      <div class="ni" onclick="setView('jarvis-weekly')" data-view="jarvis-weekly"><i class="ti ti-calendar-week" style="color:var(--green)"></i>Weekly Synthesis</div>
+      <div class="ni" onclick="setView('jarvis-belief')" data-view="jarvis-belief"><i class="ti ti-shield-check" style="color:var(--teal)"></i>Belief Tracker</div>
+      <div class="ni" onclick="setView('jarvis-pattern')" data-view="jarvis-pattern"><i class="ti ti-trending-up" style="color:var(--orange)"></i>Pattern Detector</div>
+      <div class="ni" onclick="setView('jarvis-decision')" data-view="jarvis-decision"><i class="ti ti-scale" style="color:var(--amber)"></i>Decision Intel</div>
+      <div class="ni" onclick="setView('jarvis-claude')" data-view="jarvis-claude"><i class="ti ti-id" style="color:var(--pink)"></i>CLAUDE.md</div>
       <div class="ngl" style="margin-top:4px">Six Worlds</div>
       <div class="ni" onclick="setView('work-ih')" data-view="work-ih"><i class="ti ti-briefcase" style="color:var(--teal)"></i>WORK — Ideahub<div style="width:5px;height:5px;border-radius:50%;background:var(--teal);margin-left:auto"></div></div>
       <div class="ni cs" onclick="setView('work-cs')" data-view="work-cs"><i class="ti ti-flame" style="color:var(--red)"></i>WORK — Chainsmoker</div>
@@ -2314,8 +2323,274 @@ select option{background:var(--navy3)}
       <div class="vb" id="historyBody"><div style="font-size:11px;color:var(--text3);text-align:center;padding:30px">No activity yet.</div></div>
     </div>
 
-  </div><!-- end .main -->
-</div><!-- end .app -->
+    <!-- ===== JARVIS MORNING BRIEF ===== -->
+    <div class="view" id="view-jarvis-brief">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-sun" style="color:var(--amber)"></i>JARVIS — Morning Brief</div><div class="vs">The One Thing · Open Loops · Decision Flags</div></div>
+        <div class="va">
+          <button class="btn btn-o" onclick="runMorningBrief()"><i class="ti ti-refresh"></i> Run Brief</button>
+          <button class="btn btn-g" onclick="speakMorningBrief()"><i class="ti ti-volume"></i> Speak</button>
+        </div>
+      </div>
+      <div class="vb" id="jarvisBriefBody">
+        <div style="text-align:center;padding:40px;color:var(--text3);font-size:13px">
+          <i class="ti ti-sun" style="font-size:32px;display:block;margin-bottom:12px;color:var(--amber)"></i>
+          Click <strong style="color:var(--amber)">Run Brief</strong> to generate your morning intelligence report, sir.
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS CAPTURE PROCESSOR ===== -->
+    <div class="view" id="view-jarvis-capture">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-capture" style="color:var(--teal)"></i>Capture Processor</div><div class="vs">Classify · Route · Process — nothing stays unprocessed</div></div>
+        <div class="va">
+          <button class="btn btn-t" onclick="openCaptureModal()"><i class="ti ti-plus"></i> Capture</button>
+          <button class="btn btn-g" onclick="processCaptureInbox()"><i class="ti ti-filter"></i> Process All</button>
+        </div>
+      </div>
+      <div class="vb">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div class="hc" style="cursor:pointer" onclick="filterCaptures('inbox')">
+            <div class="cl">Inbox</div>
+            <div class="cv" id="captureInboxCount">0</div>
+            <div class="csub">Unprocessed</div>
+          </div>
+          <div class="hc oc" style="cursor:pointer" onclick="filterCaptures('processed')">
+            <div class="cl">Processed</div>
+            <div class="cv oc" id="captureProcessedCount">0</div>
+            <div class="csub">All time</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">
+          <button class="btn btn-g" style="font-size:11px" onclick="filterCaptures('all')">All</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--teal)" onclick="filterCaptures('Idea')">💡 Ideas</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--orange)" onclick="filterCaptures('Task')">✓ Tasks</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--amber)" onclick="filterCaptures('Decision')">⚖ Decisions</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--purple)" onclick="filterCaptures('Reference')">📎 Reference</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--green)" onclick="filterCaptures('Insight')">✦ Insights</button>
+        </div>
+        <div id="captureList"></div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS CONNECTION FINDER ===== -->
+    <div class="view" id="view-jarvis-connect">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-link" style="color:var(--purple)"></i>Connection Finder</div><div class="vs">Scans 48hr journal + tasks · surfaces non-obvious links</div></div>
+        <div class="va">
+          <button class="btn btn-p" onclick="runConnectionFinder()"><i class="ti ti-sparkles"></i> Find Connections</button>
+        </div>
+      </div>
+      <div class="vb">
+        <div style="margin-bottom:14px;padding:12px 14px;background:var(--navy2);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--text3);line-height:1.7">
+          Connection Finder scans your last 48 hours of journal entries, tasks, and captures — then finds non-obvious links between ideas. Results appear as Connection Notes: <span style="color:var(--teal)">Note A ↔ Note B → what it reveals → implication → surprise level.</span>
+        </div>
+        <div id="connectionsList"></div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS WEEKLY SYNTHESIS ===== -->
+    <div class="view" id="view-jarvis-weekly">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-calendar-week" style="color:var(--green)"></i>Weekly Synthesis</div><div class="vs">Sunday 7PM · or manual · full week in one report</div></div>
+        <div class="va">
+          <button class="btn btn-t" style="background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.3);color:var(--green)" onclick="runWeeklySynthesis()"><i class="ti ti-report"></i> Generate</button>
+        </div>
+      </div>
+      <div class="vb">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px" id="weeklySynthStats">
+          <div class="hc"><div class="cl">Tasks Done</div><div class="cv" id="wsStat1">—</div></div>
+          <div class="hc oc"><div class="cl">Cash In</div><div class="cv oc" id="wsStat2">—</div></div>
+          <div class="hc"><div class="cl">Journal Entries</div><div class="cv" id="wsStat3">—</div></div>
+        </div>
+        <div id="weeklySynthResult" style="min-height:200px"></div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Past Syntheses</div>
+          <div id="weeklyArchive"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS BELIEF TRACKER ===== -->
+    <div class="view" id="view-jarvis-belief">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-shield-check" style="color:var(--teal)"></i>Belief Tracker</div><div class="vs">Log beliefs · tag evidence · weekly audit</div></div>
+        <div class="va">
+          <button class="btn btn-t" onclick="openBeliefModal()"><i class="ti ti-plus"></i> Add Belief</button>
+          <button class="btn btn-g" onclick="runBeliefAudit()"><i class="ti ti-clipboard-check"></i> Audit</button>
+        </div>
+      </div>
+      <div class="vb">
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+          <div class="hc" style="cursor:pointer" onclick="filterBeliefs('all')"><div class="cl">Total Beliefs</div><div class="cv" id="beliefTotal">0</div></div>
+          <div class="hc" style="cursor:pointer;border-color:rgba(0,255,136,.3)" onclick="filterBeliefs('Confirms')"><div class="cl">Confirmed</div><div class="cv" style="color:var(--green)" id="beliefConfirmed">0</div></div>
+          <div class="hc oc" style="cursor:pointer" onclick="filterBeliefs('Challenges')"><div class="cl">Challenged</div><div class="cv oc" id="beliefChallenged">0</div></div>
+          <div class="hc" style="cursor:pointer;border-color:rgba(168,85,247,.3)" onclick="filterBeliefs('Complicates')"><div class="cl">Complicated</div><div class="cv" style="color:var(--purple)" id="beliefComplicated">0</div></div>
+        </div>
+        <div id="beliefAuditResult" style="margin-bottom:12px"></div>
+        <div id="beliefList"></div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS PATTERN DETECTOR ===== -->
+    <div class="view" id="view-jarvis-pattern">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-trending-up" style="color:var(--orange)"></i>Pattern Detector</div><div class="vs">Monthly scan · journal + task history · recurring themes</div></div>
+        <div class="va">
+          <button class="btn btn-o" onclick="runPatternDetector()"><i class="ti ti-analyze"></i> Detect Patterns</button>
+        </div>
+      </div>
+      <div class="vb">
+        <div style="margin-bottom:14px;padding:12px 14px;background:var(--navy2);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--text3);line-height:1.7">
+          Pattern Detector scans your journal + task history for recurring themes, emotional signatures, and behavioral loops. Outputs: pattern found · frequency · meaning · recommended action.
+        </div>
+        <div id="patternResult"></div>
+        <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:12px">
+          <div style="font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Pattern Archive</div>
+          <div id="patternArchive"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS DECISION INTELLIGENCE ===== -->
+    <div class="view" id="view-jarvis-decision">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-scale" style="color:var(--amber)"></i>Decision Intelligence</div><div class="vs">Structured decision log · open reviews · outcomes</div></div>
+        <div class="va">
+          <button class="btn btn-t" style="background:rgba(255,170,0,.1);border-color:rgba(255,170,0,.4);color:var(--amber)" onclick="openDecisionModal()"><i class="ti ti-plus"></i> Log Decision</button>
+        </div>
+      </div>
+      <div class="vb">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+          <div class="hc"><div class="cl">Total</div><div class="cv" id="decTotal">0</div></div>
+          <div class="hc oc"><div class="cl">Open / Pending</div><div class="cv oc" id="decOpen">0</div></div>
+          <div class="hc" style="border-color:rgba(0,255,136,.3)"><div class="cl">Resolved</div><div class="cv" style="color:var(--green)" id="decResolved">0</div></div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:12px">
+          <button class="btn btn-g" style="font-size:11px" onclick="filterDecisions('all')">All</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--orange)" onclick="filterDecisions('Open')">Open</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--green)" onclick="filterDecisions('Resolved')">Resolved</button>
+          <button class="btn btn-g" style="font-size:11px;color:var(--amber)" onclick="filterDecisions('Pending Review')">Pending Review</button>
+        </div>
+        <div id="decisionList"></div>
+      </div>
+    </div>
+
+    <!-- ===== JARVIS CLAUDE.md ===== -->
+    <div class="view" id="view-jarvis-claude">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-id" style="color:var(--pink)"></i>CLAUDE.md — Live Doc</div><div class="vs">Your structured intelligence profile · 10 sections · always editable</div></div>
+        <div class="va">
+          <button class="btn btn-g" onclick="saveClaudeMD()"><i class="ti ti-device-floppy"></i> Save</button>
+          <button class="btn btn-g" onclick="exportClaudeMD()"><i class="ti ti-download"></i> Export</button>
+        </div>
+      </div>
+      <div class="vb" id="claudeMDBody" style="padding:0">
+        <!-- rendered by renderClaudeMD() -->
+      </div>
+    </div>
+
+    <!-- CAPTURE MODAL -->
+    <div class="mov" id="captureModal">
+      <div class="modal" style="width:500px">
+        <div class="mh"><span class="mt">CAPTURE</span><button class="mc" onclick="closeModal('captureModal')">×</button></div>
+        <div class="mb">
+          <div class="fg"><label class="fl">Capture</label><textarea id="cap-content" rows="4" placeholder="Write anything — idea, observation, question, task, decision..."></textarea></div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Type (auto-detected)</label>
+              <select id="cap-type">
+                <option value="Idea">💡 Idea → Permanent Knowledge</option>
+                <option value="Task">✓ Task → Task Board</option>
+                <option value="Decision">⚖ Decision → Decision Log</option>
+                <option value="Reference">📎 Reference → Memory</option>
+                <option value="Insight">✦ Insight → Journal</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">World</label>
+              <select id="cap-world">
+                <option value="WORK-IH">WORK-IH</option>
+                <option value="WORK-CS">WORK-CS</option>
+                <option value="VENTURE">VENTURE</option>
+                <option value="BUILD">BUILD</option>
+                <option value="SIDES">SIDES</option>
+                <option value="FAITH">FAITH</option>
+                <option value="LIFE">LIFE</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Context / Notes</label><input type="text" id="cap-notes" placeholder="Optional context..."></div>
+        </div>
+        <div class="mf"><button class="btn btn-g" onclick="closeModal('captureModal')">Cancel</button><button class="btn btn-t" onclick="saveCapture()"><i class="ti ti-check"></i> Capture</button></div>
+      </div>
+    </div>
+
+    <!-- BELIEF MODAL -->
+    <div class="mov" id="beliefModal">
+      <div class="modal" style="width:500px">
+        <div class="mh"><span class="mt">LOG BELIEF</span><button class="mc" onclick="closeModal('beliefModal')">×</button></div>
+        <div class="mb">
+          <div class="fg"><label class="fl">Belief Statement</label><textarea id="bel-statement" rows="3" placeholder="e.g. Consistency beats intensity for creative output"></textarea></div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Evidence Tag</label>
+              <select id="bel-evidence">
+                <option value="Confirms">✅ Confirms</option>
+                <option value="Challenges">⚠ Challenges</option>
+                <option value="Complicates">🔀 Complicates</option>
+                <option value="Irrelevant">— Irrelevant</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">World</label>
+              <select id="bel-world">
+                <option value="WORK-IH">WORK-IH</option>
+                <option value="VENTURE">VENTURE</option>
+                <option value="BUILD">BUILD</option>
+                <option value="SIDES">SIDES</option>
+                <option value="FAITH">FAITH</option>
+                <option value="LIFE">LIFE</option>
+                <option value="ALL">ALL</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Evidence / Observation</label><textarea id="bel-obs" rows="2" placeholder="What happened that informed this belief?"></textarea></div>
+        </div>
+        <div class="mf"><button class="btn btn-g" onclick="closeModal('beliefModal')">Cancel</button><button class="btn btn-t" onclick="saveBelief()"><i class="ti ti-check"></i> Log</button></div>
+      </div>
+    </div>
+
+    <!-- DECISION MODAL -->
+    <div class="mov" id="decisionModal">
+      <div class="modal" style="width:520px">
+        <div class="mh"><span class="mt" id="decModalTitle">LOG DECISION</span><button class="mc" onclick="closeModal('decisionModal')">×</button></div>
+        <div class="mb">
+          <div class="fg"><label class="fl">Situation / Context</label><textarea id="dec-situation" rows="2" placeholder="What is the situation requiring a decision?"></textarea></div>
+          <div class="fg"><label class="fl">Options Considered</label><textarea id="dec-options" rows="2" placeholder="Option A: ... / Option B: ... / Option C: ..."></textarea></div>
+          <div class="fg"><label class="fl">Choice Made</label><input type="text" id="dec-choice" placeholder="What did you decide?"></div>
+          <div class="fg"><label class="fl">Rationale</label><textarea id="dec-rationale" rows="2" placeholder="Why this choice?"></textarea></div>
+          <div class="fr">
+            <div class="fg"><label class="fl">Status</label>
+              <select id="dec-status">
+                <option value="Open">Open</option>
+                <option value="Pending Review">Pending Review</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+            <div class="fg"><label class="fl">World</label>
+              <select id="dec-world">
+                <option value="WORK-IH">WORK-IH</option>
+                <option value="VENTURE">VENTURE</option>
+                <option value="BUILD">BUILD</option>
+                <option value="SIDES">SIDES</option>
+                <option value="LIFE">LIFE</option>
+                <option value="ALL">ALL</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg"><label class="fl">Outcome (fill later)</label><textarea id="dec-outcome" rows="2" placeholder="What actually happened? (fill after the fact)"></textarea></div>
+        </div>
+        <div class="mf"><button class="btn btn-g" onclick="closeModal('decisionModal')">Cancel</button><button class="btn btn-t" style="background:rgba(255,170,0,.1);border-color:rgba(255,170,0,.4);color:var(--amber)" onclick="saveDecision()"><i class="ti ti-check"></i> Log Decision</button></div>
+      </div>
+    </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
@@ -6281,6 +6556,1166 @@ document.body.addEventListener('touchmove', function(e) {
     vb.style.cssText += ';position:fixed!important;bottom:28px!important;z-index:2147483647!important;top:auto!important;';
   }
 })();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X — JARVIS INTELLIGENCE LAYER
+// Skills 1–7 + CLAUDE.md Live Doc
+// Author: JARVIS BUILD ENGINE · June 2026
+// Rules: inherits all CSS vars · uses SB/DB · voice-ready · mobile-responsive
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── Shared localStorage keys ──────────────────────────────────────────────
+const JIL_KEYS={
+  captures:'j-captures',
+  beliefs:'j-beliefs',
+  decisions:'j-decisions',
+  patterns:'j-patterns',
+  weekly:'j-weekly-synth',
+  connections:'j-connections',
+  claudeMD:'j-claude-md'
+};
+
+// ── DB extensions ────────────────────────────────────────────────────────
+if(!DB.captures) DB.captures = JSON.parse(localStorage.getItem(JIL_KEYS.captures)||'[]');
+if(!DB.beliefs)  DB.beliefs  = JSON.parse(localStorage.getItem(JIL_KEYS.beliefs)||'[]');
+if(!DB.decisions)DB.decisions= JSON.parse(localStorage.getItem(JIL_KEYS.decisions)||'[]');
+if(!DB.patterns) DB.patterns = JSON.parse(localStorage.getItem(JIL_KEYS.patterns)||'[]');
+if(!DB.weeklySynth)DB.weeklySynth=JSON.parse(localStorage.getItem(JIL_KEYS.weekly)||'[]');
+if(!DB.connections)DB.connections=JSON.parse(localStorage.getItem(JIL_KEYS.connections)||'[]');
+
+function jilSave(key){localStorage.setItem(JIL_KEYS[key],JSON.stringify(DB[key]||DB[key+'s']||[]));}
+function jilSaveKey(key,data){localStorage.setItem(key,JSON.stringify(data));}
+
+// ── Patch setView to handle JIL views ────────────────────────────────────
+const _origSetViewJIL = window.setView;
+window.setView = function(v){
+  _origSetViewJIL(v);
+  const jilR={
+    'jarvis-brief':renderMorningBrief,
+    'jarvis-capture':renderCaptureView,
+    'jarvis-connect':renderConnectionsView,
+    'jarvis-weekly':renderWeeklyView,
+    'jarvis-belief':renderBeliefView,
+    'jarvis-pattern':renderPatternView,
+    'jarvis-decision':renderDecisionView,
+    'jarvis-claude':renderClaudeMD
+  };
+  if(jilR[v]) jilR[v]();
+};
+
+// Patch NAV_MAP for voice navigation
+if(typeof NAV_MAP!=='undefined'){
+  NAV_MAP['morning brief']='jarvis-brief';
+  NAV_MAP['morning briefing']='jarvis-brief';
+  NAV_MAP['jarvis brief']='jarvis-brief';
+  NAV_MAP['capture']='jarvis-capture';
+  NAV_MAP['capture processor']='jarvis-capture';
+  NAV_MAP['connections']='jarvis-connect';
+  NAV_MAP['connection finder']='jarvis-connect';
+  NAV_MAP['weekly']='jarvis-weekly';
+  NAV_MAP['weekly synthesis']='jarvis-weekly';
+  NAV_MAP['beliefs']='jarvis-belief';
+  NAV_MAP['belief tracker']='jarvis-belief';
+  NAV_MAP['patterns']='jarvis-pattern';
+  NAV_MAP['pattern detector']='jarvis-pattern';
+  NAV_MAP['decisions']='jarvis-decision';
+  NAV_MAP['decision intelligence']='jarvis-decision';
+  NAV_MAP['claude md']='jarvis-claude';
+  NAV_MAP['claude']='jarvis-claude';
+}
+
+// ── Patch reRenderAll ────────────────────────────────────────────────────
+const _origReRenderJIL = window.reRenderAll;
+window.reRenderAll = function(){
+  if(_origReRenderJIL) _origReRenderJIL.apply(this,arguments);
+  // Refresh JIL views only if currently active
+  const jilViews=['jarvis-brief','jarvis-capture','jarvis-connect','jarvis-weekly','jarvis-belief','jarvis-pattern','jarvis-decision','jarvis-claude'];
+  if(jilViews.includes(window.currentView||'')){
+    setView(window.currentView);
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 1 — MORNING BRIEF
+// ═══════════════════════════════════════════════════════════════════════════
+let _lastMorningBrief='';
+
+function runMorningBrief(){
+  const today=new Date().toISOString().split('T')[0];
+  const todayPH=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Manila'});
+  const now=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});
+
+  // Data aggregation
+  const openTasks=(DB.tasks||[]).filter(t=>t.status!=='Done');
+  const overdue=openTasks.filter(t=>t.due&&t.due<today).sort((a,b)=>a.due<b.due?-1:1);
+  const todayTasks=openTasks.filter(t=>t.due===today);
+  const highPrio=openTasks.filter(t=>t.priority==='High');
+  const calToday=(DB.calEvents||[]).filter(e=>e.date===today||e._expandedDate===today);
+  const balance=(()=>{const c=(DB.cashflow||[]).reduce((s,t)=>t.type==='Credit'?s+(t.amount||0):s,0);const d=(DB.cashflow||[]).reduce((s,t)=>t.type==='Debit'?s+(t.amount||0):s,0);return c-d;})();
+  const faithThis=(DB.faith||[]).filter(f=>f.status!=='Done'&&f.status!=='Complete').slice(0,3);
+  const urgentClients=(DB.clients||[]).filter(c=>c.status==='Urgent');
+  const openCaptures=(DB.captures||[]).filter(c=>c.status==='inbox');
+  const openDecisions=(DB.decisions||[]).filter(d=>d.status==='Open'||d.status==='Pending Review');
+
+  // The One Thing — highest priority overdue or today task
+  const oneThing=overdue[0]||todayTasks[0]||highPrio[0]||null;
+
+  // Open Loops — unprocessed captures + overdue tasks
+  const openLoops=[
+    ...overdue.slice(0,4).map(t=>({text:t.title,tag:'OVERDUE',color:'var(--red)'})),
+    ...openCaptures.slice(0,3).map(c=>({text:c.content.substring(0,60),tag:'CAPTURE',color:'var(--teal)'})),
+    ...openDecisions.slice(0,2).map(d=>({text:d.situation.substring(0,60),tag:'DECISION',color:'var(--amber)'}))
+  ];
+
+  // Decision Flags
+  const decFlags=openDecisions.slice(0,4);
+
+  const html=`
+  <div style="padding:14px 18px">
+
+    <!-- HEADER STRIP -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-size:18px;font-weight:900;color:var(--amber);letter-spacing:.04em">MORNING BRIEF</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">${todayPH} · ${now} PHT · Las Piñas City</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div style="font-size:20px;font-weight:800;color:${balance>=0?'var(--green)':'var(--red)'}">${balance>=0?'+':''}₱${Math.abs(balance).toLocaleString('en-PH',{maximumFractionDigits:0})}</div>
+        <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.08em">Net Balance</div>
+      </div>
+    </div>
+
+    <!-- THE ONE THING -->
+    <div style="background:rgba(255,170,0,.07);border:1px solid rgba(255,170,0,.3);border-radius:6px;padding:14px 16px;margin-bottom:12px">
+      <div style="font-size:9px;font-weight:900;color:var(--amber);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px">◈ THE ONE THING</div>
+      ${oneThing?`
+      <div style="font-size:15px;font-weight:700;color:var(--text1);line-height:1.4;margin-bottom:6px">${oneThing.title}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span class="pill po">${oneThing.world}</span>
+        <span class="pill ${oneThing.priority==='High'?'pr':oneThing.priority==='Medium'?'pam':'pgr'}">${oneThing.priority}</span>
+        ${oneThing.due?`<span class="pill pgr">${oneThing.due<today?'⚑ OVERDUE':'Due: '+oneThing.due}</span>`:''}
+        ${oneThing.client?`<span class="pill pt">${oneThing.client}</span>`:''}
+      </div>`
+      :`<div style="font-size:13px;color:var(--green);font-weight:700">✓ Clean slate, sir. No urgent items outstanding.</div>`}
+    </div>
+
+    <!-- 3-COL GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+
+      <!-- TODAY'S SCHEDULE -->
+      <div class="bd-block">
+        <div class="bd-h"><i class="ti ti-calendar-event"></i>Today's Schedule</div>
+        ${calToday.length?calToday.slice(0,5).map(e=>`
+          <div class="brow">
+            <div class="bdot" style="background:${e.type==='pu'?'var(--purple)':e.type==='oc'?'var(--red)':'var(--teal)'}"></div>
+            <div class="btxt">${e.time?e.time.substring(0,5)+' · ':''}${e.title}</div>
+          </div>`).join('')
+        :`<div style="font-size:11px;color:var(--text3);padding:6px 0">No events today.</div>`}
+      </div>
+
+      <!-- HIGH PRIORITY TASKS -->
+      <div class="bd-block">
+        <div class="bd-h"><i class="ti ti-alert-triangle"></i>High Priority (${highPrio.length})</div>
+        ${highPrio.slice(0,5).map(t=>`
+          <div class="brow">
+            <div class="bdot" style="background:var(--red)"></div>
+            <div class="btxt">${t.title}</div>
+            <span class="btag" style="background:rgba(0,0,0,.3);color:var(--text3);border-radius:2px;padding:1px 4px;font-size:9px">${t.world}</span>
+          </div>`).join('')
+        ||'<div style="font-size:11px;color:var(--text3);padding:6px 0">No high priority tasks.</div>'}
+      </div>
+
+      <!-- URGENT CLIENTS + FAITH -->
+      <div class="bd-block">
+        <div class="bd-h"><i class="ti ti-users"></i>Urgent Clients</div>
+        ${urgentClients.length?urgentClients.slice(0,3).map(c=>`
+          <div class="brow">
+            <div class="bdot" style="background:var(--red)"></div>
+            <div class="btxt">${c.name}</div>
+          </div>`).join('')
+        :'<div style="font-size:11px;color:var(--text3);padding:6px 0">No urgent clients.</div>'}
+        ${faithThis.length?`
+        <div class="bd-h" style="margin-top:10px"><i class="ti ti-heart-handshake"></i>Faith</div>
+        ${faithThis.map(f=>`<div class="brow"><div class="bdot" style="background:var(--purple)"></div><div class="btxt">${f.activity}</div></div>`).join('')}`:''}
+      </div>
+    </div>
+
+    <!-- OPEN LOOPS -->
+    ${openLoops.length?`
+    <div class="bd-block" style="margin-bottom:12px">
+      <div class="bd-h"><i class="ti ti-loop"></i>Open Loops (${openLoops.length})</div>
+      <div style="display:flex;flex-direction:column;gap:5px">
+        ${openLoops.map(l=>`
+          <div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+            <span style="font-size:9px;font-weight:700;color:${l.color};border:1px solid ${l.color};border-radius:2px;padding:1px 5px;flex-shrink:0">${l.tag}</span>
+            <span style="font-size:12px;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.text}</span>
+          </div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <!-- DECISION FLAGS -->
+    ${decFlags.length?`
+    <div class="bd-block" style="border-color:rgba(255,170,0,.25)">
+      <div class="bd-h oc"><i class="ti ti-scale"></i>Decision Flags — Pending Review</div>
+      ${decFlags.map(d=>`
+        <div class="brow">
+          <div class="bdot" style="background:var(--amber)"></div>
+          <div class="btxt">${d.situation.substring(0,80)}</div>
+          <span class="btag pam">${d.status}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+  </div>`;
+
+  document.getElementById('jarvisBriefBody').innerHTML=html;
+  _lastMorningBrief=`Morning Brief for ${todayPH}. The One Thing: ${oneThing?oneThing.title:'No urgent items'}. You have ${highPrio.length} high priority tasks and ${calToday.length} events today. Net balance: ${balance>=0?'+':''}₱${Math.abs(balance).toLocaleString()}. Open loops: ${openLoops.length}. Decision flags: ${decFlags.length}. Good morning, sir.`;
+  showToast('✓ Morning Brief generated');
+}
+
+function renderMorningBrief(){
+  if(document.getElementById('jarvisBriefBody').children.length<=1) runMorningBrief();
+}
+
+function speakMorningBrief(){
+  if(_lastMorningBrief) speak(_lastMorningBrief);
+  else{runMorningBrief();setTimeout(()=>speak(_lastMorningBrief),400);}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 2 — CAPTURE PROCESSOR
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Auto-classify capture by keyword patterns
+function autoClassifyCapture(text){
+  const t=text.toLowerCase();
+  if(/\b(should|decide|choice|option|versus|vs|pick|select|either)\b/.test(t))return'Decision';
+  if(/\b(do|task|complete|finish|send|reply|call|review|update|write|create|build|fix|check)\b/.test(t))return'Task';
+  if(/\b(realised|noticed|pattern|learned|insight|discovered|interesting)\b/.test(t))return'Insight';
+  if(/\b(reference|link|resource|source|doc|article|read later|bookmark)\b/.test(t))return'Reference';
+  return'Idea';
+}
+
+function openCaptureModal(){
+  document.getElementById('cap-content').value='';
+  document.getElementById('cap-notes').value='';
+  document.getElementById('cap-type').value='Idea';
+  openModal('captureModal');
+  setTimeout(()=>document.getElementById('cap-content').focus(),80);
+}
+
+// Auto-detect type on content change
+(function(){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const ta=document.getElementById('cap-content');
+    if(ta)ta.addEventListener('input',()=>{
+      const detected=autoClassifyCapture(ta.value);
+      document.getElementById('cap-type').value=detected;
+    });
+  });
+})();
+
+function saveCapture(){
+  const content=document.getElementById('cap-content').value.trim();
+  if(!content){showToast('⚠ Please enter something to capture.');return;}
+  const type=document.getElementById('cap-type').value;
+  const world=document.getElementById('cap-world').value;
+  const notes=document.getElementById('cap-notes').value.trim();
+
+  const c={
+    id:Date.now(),
+    content,
+    type,
+    world,
+    notes,
+    status:'inbox',
+    date:new Date().toISOString().split('T')[0],
+    time:new Date().toISOString()
+  };
+  if(!DB.captures)DB.captures=[];
+  DB.captures.unshift(c);
+  localStorage.setItem(JIL_KEYS.captures,JSON.stringify(DB.captures));
+  closeModal('captureModal');
+  showToast('✓ Captured: '+type);
+  addHistory('add','Capture: '+content.substring(0,40),{...c,_dbKey:'captures'});
+}
+
+function processCapture(id){
+  const c=DB.captures.find(x=>x.id===id);
+  if(!c)return;
+  // Route to appropriate system
+  switch(c.type){
+    case'Task':{
+      const t={id:Date.now(),title:c.content,world:c.world,priority:'Medium',status:'Todo',due:'',notes:c.notes||''};
+      DB.tasks.unshift(t);SB.upsert('tasks',t,'tasks');
+      showToast('✓ Task created from capture');
+      break;}
+    case'Decision':{
+      const d={id:Date.now(),situation:c.content,options:'',choice:'',rationale:'',status:'Open',world:c.world,outcome:'',date:c.date};
+      DB.decisions.unshift(d);localStorage.setItem(JIL_KEYS.decisions,JSON.stringify(DB.decisions));
+      showToast('✓ Decision logged from capture');
+      break;}
+    case'Reference':{
+      const m={id:Date.now(),memory:c.content,category:'Reference',world:c.world,date:c.date};
+      DB.memories.unshift(m);SB.upsert('memories',m,'memories');
+      showToast('✓ Reference saved to Memory');
+      break;}
+    case'Insight':{
+      const j={id:Date.now(),title:'Insight: '+c.content.substring(0,40),content:c.content,world:c.world,mood:'',date:c.date};
+      DB.journal.unshift(j);SB.upsert('journal',j,'journal');
+      showToast('✓ Insight saved to Journal');
+      break;}
+    default:
+      showToast('✓ Idea noted — stays in Knowledge Base');
+  }
+  c.status='processed';
+  localStorage.setItem(JIL_KEYS.captures,JSON.stringify(DB.captures));
+  renderCaptureView();
+}
+
+function processCaptureInbox(){
+  const inbox=(DB.captures||[]).filter(c=>c.status==='inbox');
+  if(!inbox.length){showToast('Inbox clear, sir.');return;}
+  inbox.forEach(c=>processCapture(c.id));
+  showToast('✓ '+inbox.length+' captures processed');
+}
+
+let captureFilter='inbox';
+function filterCaptures(f){captureFilter=f;renderCaptureView();}
+
+function renderCaptureView(){
+  if(!DB.captures)DB.captures=[];
+  const inbox=DB.captures.filter(c=>c.status==='inbox').length;
+  const processed=DB.captures.filter(c=>c.status==='processed').length;
+  const el=document.getElementById('captureInboxCount');if(el)el.textContent=inbox;
+  const pe=document.getElementById('captureProcessedCount');if(pe)pe.textContent=processed;
+
+  const list=document.getElementById('captureList');
+  if(!list)return;
+  let items=captureFilter==='all'?DB.captures:captureFilter==='processed'?DB.captures.filter(c=>c.status==='processed'):captureFilter==='inbox'?DB.captures.filter(c=>c.status==='inbox'):DB.captures.filter(c=>c.type===captureFilter);
+
+  const typeColor={Idea:'var(--teal)',Task:'var(--orange)',Decision:'var(--amber)',Reference:'var(--purple)',Insight:'var(--green)'};
+  const typeIcon={Idea:'ti-bulb',Task:'ti-checkbox',Decision:'ti-scale',Reference:'ti-paperclip',Insight:'ti-sparkles'};
+
+  list.innerHTML=items.length?items.map(c=>`
+    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;bottom:0;width:3px;background:${typeColor[c.type]||'var(--teal)'}"></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;padding-left:8px">
+        <div style="width:28px;height:28px;border-radius:4px;background:rgba(0,0,0,.3);border:1px solid ${typeColor[c.type]};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${typeIcon[c.type]||'ti-bulb'}" style="font-size:13px;color:${typeColor[c.type]};line-height:1;display:block"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;color:var(--text1);line-height:1.5;margin-bottom:5px">${c.content}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:9px;font-weight:700;color:${typeColor[c.type]};border:1px solid ${typeColor[c.type]};border-radius:2px;padding:1px 5px">${c.type.toUpperCase()}</span>
+            <span class="pill pgr">${c.world}</span>
+            <span style="font-size:10px;color:var(--text3)">${c.date}</span>
+            ${c.status==='processed'?'<span class="pill pg">✓ Processed</span>':''}
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          ${c.status==='inbox'?`<button onclick="processCapture(${c.id})" class="btn btn-t" style="padding:4px 9px;font-size:11px"><i class="ti ti-arrow-right" style="font-size:11px;line-height:1;display:block"></i></button>`:''}
+          <button onclick="deleteCapture(${c.id})" class="btn btn-d" style="padding:4px 7px;font-size:11px"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
+        </div>
+      </div>
+    </div>`).join('')
+  :'<div style="text-align:center;padding:30px;color:var(--text3);font-size:13px">No captures in this view, sir.</div>';
+}
+
+function deleteCapture(id){
+  DB.captures=DB.captures.filter(c=>c.id!==id);
+  localStorage.setItem(JIL_KEYS.captures,JSON.stringify(DB.captures));
+  renderCaptureView();showToast('Capture deleted');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 3 — CONNECTION FINDER
+// ═══════════════════════════════════════════════════════════════════════════
+
+function runConnectionFinder(){
+  const now=Date.now();
+  const cutoff=now-(48*3600*1000);
+  const recentJournal=(DB.journal||[]).filter(j=>new Date(j.date||0).getTime()>=cutoff);
+  const recentTasks=(DB.tasks||[]).filter(t=>t.status!=='Done').slice(0,15);
+  const recentCaptures=(DB.captures||[]).filter(c=>new Date(c.time||0).getTime()>=cutoff);
+
+  // Build corpus of text snippets
+  const corpus=[
+    ...recentJournal.map(j=>({id:'j-'+j.id,label:j.title||'Journal',text:(j.content||'').substring(0,200),type:'Journal'})),
+    ...recentTasks.map(t=>({id:'t-'+t.id,label:t.title,text:(t.title+' '+(t.notes||'')).substring(0,200),type:'Task',world:t.world})),
+    ...recentCaptures.map(c=>({id:'c-'+c.id,label:c.content.substring(0,50),text:c.content.substring(0,200),type:'Capture'}))
+  ];
+
+  if(corpus.length<2){
+    document.getElementById('connectionsList').innerHTML='<div style="text-align:center;padding:30px;color:var(--text3)">Not enough recent data. Add journal entries and tasks first, sir.</div>';
+    return;
+  }
+
+  // Keyword extraction — simple tokenise + filter stopwords
+  const STOP=new Set(['the','a','an','is','are','was','and','or','but','in','on','at','to','for','of','with','from','that','this','it','by','be','have','has','do','i','my','we','our','you','your','me','he','she','they','them','their','can','will','would','could','should','not','as','so','if','then','than','when','what','which','how','who','sir']);
+  function keywords(text){
+    return text.toLowerCase().replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w=>w.length>3&&!STOP.has(w));
+  }
+
+  // Find connections via shared keywords
+  const connections=[];
+  for(let i=0;i<corpus.length;i++){
+    for(let j=i+1;j<corpus.length;j++){
+      const kA=new Set(keywords(corpus[i].text));
+      const kB=keywords(corpus[j].text);
+      const shared=kB.filter(k=>kA.has(k));
+      if(shared.length>=2){
+        const surpriseLevel=shared.length>=5?'HIGH':shared.length>=3?'MEDIUM':'LOW';
+        connections.push({
+          id:Date.now()+i*1000+j,
+          nodeA:{label:corpus[i].label,type:corpus[i].type,world:corpus[i].world||''},
+          nodeB:{label:corpus[j].label,type:corpus[j].type,world:corpus[j].world||''},
+          sharedTerms:shared.slice(0,5),
+          surpriseLevel,
+          date:new Date().toISOString().split('T')[0],
+          implication:'These items share context around: '+shared.slice(0,3).join(', ')+'. Worth reviewing together.'
+        });
+      }
+    }
+  }
+
+  if(!DB.connections)DB.connections=[];
+  DB.connections=[...connections,...DB.connections].slice(0,50);
+  localStorage.setItem(JIL_KEYS.connections,JSON.stringify(DB.connections));
+  renderConnectionsView();
+  showToast('✓ Found '+connections.length+' connections');
+}
+
+function renderConnectionsView(){
+  const list=document.getElementById('connectionsList');
+  if(!list)return;
+  if(!DB.connections||!DB.connections.length){
+    list.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3);font-size:13px"><i class="ti ti-link" style="font-size:28px;display:block;margin-bottom:10px;color:var(--purple)"></i>Click <strong style="color:var(--purple)">Find Connections</strong> to scan your 48hr activity, sir.</div>';
+    return;
+  }
+  const surpriseColor={'HIGH':'var(--red)','MEDIUM':'var(--amber)','LOW':'var(--teal)'};
+  list.innerHTML=DB.connections.map(c=>`
+    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;border-left:3px solid ${surpriseColor[c.surpriseLevel]||'var(--teal)'}">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="font-size:9px;font-weight:700;color:${surpriseColor[c.surpriseLevel]};border:1px solid ${surpriseColor[c.surpriseLevel]};border-radius:2px;padding:1px 6px">⚡ ${c.surpriseLevel} SURPRISE</span>
+        <span style="font-size:10px;color:var(--text3)">${c.date}</span>
+        <button onclick="deleteConnection(${c.id})" style="margin-left:auto;background:transparent;border:none;color:var(--text3);cursor:pointer;font-size:14px;padding:0 3px">×</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin-bottom:10px">
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:4px;padding:8px 10px">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">${c.nodeA.type}</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text1)">${c.nodeA.label}</div>
+        </div>
+        <div style="text-align:center;color:var(--purple);font-size:16px;font-weight:900">↔</div>
+        <div style="background:var(--navy3);border:1px solid var(--border);border-radius:4px;padding:8px 10px">
+          <div style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">${c.nodeB.type}</div>
+          <div style="font-size:12px;font-weight:600;color:var(--text1)">${c.nodeB.label}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px">
+        <strong style="color:var(--text2)">Shared terms:</strong> ${c.sharedTerms.map(t=>`<span style="background:rgba(168,85,247,.1);color:var(--purple);border-radius:2px;padding:1px 5px;font-size:10px">${t}</span>`).join(' ')}
+      </div>
+      <div style="font-size:11px;color:var(--text2);line-height:1.5">${c.implication}</div>
+    </div>`).join('');
+}
+
+function deleteConnection(id){
+  DB.connections=DB.connections.filter(c=>c.id!==id);
+  localStorage.setItem(JIL_KEYS.connections,JSON.stringify(DB.connections));
+  renderConnectionsView();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 4 — WEEKLY SYNTHESIS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function runWeeklySynthesis(){
+  const now=new Date();
+  const weekAgo=new Date(now);weekAgo.setDate(now.getDate()-7);
+  const weekAgoStr=weekAgo.toISOString().split('T')[0];
+  const todayStr=now.toISOString().split('T')[0];
+
+  const weekTasks=(DB.tasks||[]).filter(t=>t.due>=weekAgoStr&&t.due<=todayStr);
+  const doneTasks=weekTasks.filter(t=>t.status==='Done');
+  const stalledTasks=weekTasks.filter(t=>t.status==='No Progress'||t.status==='Blocked');
+  const weekJournal=(DB.journal||[]).filter(j=>(j.date||'')>=weekAgoStr);
+  const weekCash=(DB.cashflow||[]).filter(c=>(c.date||'')>=weekAgoStr);
+  const cashIn=weekCash.filter(c=>c.type==='Credit').reduce((s,c)=>s+(c.amount||0),0);
+  const cashOut=weekCash.filter(c=>c.type==='Debit').reduce((s,c)=>s+(c.amount||0),0);
+  const faithEvents=(DB.faith||[]).filter(f=>(f.date||'')>=weekAgoStr);
+
+  // Update stat cards
+  const ws1=document.getElementById('wsStat1');if(ws1)ws1.textContent=doneTasks.length;
+  const ws2=document.getElementById('wsStat2');if(ws2)ws2.textContent='₱'+cashIn.toLocaleString('en-PH',{maximumFractionDigits:0});
+  const ws3=document.getElementById('wsStat3');if(ws3)ws3.textContent=weekJournal.length;
+
+  // Synthesise
+  const worldSummary={};
+  weekTasks.forEach(t=>{
+    if(!worldSummary[t.world])worldSummary[t.world]={done:0,stalled:0,open:0};
+    if(t.status==='Done')worldSummary[t.world].done++;
+    else if(t.status==='No Progress'||t.status==='Blocked')worldSummary[t.world].stalled++;
+    else worldSummary[t.world].open++;
+  });
+
+  const weekLabel=weekAgo.toLocaleDateString('en-PH',{month:'short',day:'numeric'})+' – '+now.toLocaleDateString('en-PH',{month:'short',day:'numeric',year:'numeric'});
+
+  // Detect week pattern (crude heuristic)
+  const patterns=[];
+  if(stalledTasks.length>doneTasks.length)patterns.push('More stalling than doing this week — energy/focus issue?');
+  if(cashIn===0)patterns.push('No income recorded this week — invoicing delayed?');
+  if(weekJournal.length===0)patterns.push('No journal entries — reflection gap this week.');
+  if(doneTasks.filter(t=>t.world==='WORK-IH').length>3)patterns.push('Ideahub had a high-output week.');
+  if(faithEvents.length>2)patterns.push('Faith engagement was strong this week.');
+
+  // Top world by done tasks
+  const topWorld=Object.entries(worldSummary).sort((a,b)=>(b[1].done-a[1].done))[0];
+  const bottomWorld=Object.entries(worldSummary).sort((a,b)=>(a[1].done-b[1].done))[0];
+
+  const synthesis={
+    id:Date.now(),
+    week:weekLabel,
+    weekStart:weekAgoStr,
+    weekEnd:todayStr,
+    oneLine:`${doneTasks.length} tasks done · ${cashIn>0?'₱'+cashIn.toLocaleString()+' in':'no income'} · ${weekJournal.length} journal entries · ${faithEvents.length} faith touchpoints`,
+    advanced:doneTasks.map(t=>t.title).slice(0,5),
+    stalled:stalledTasks.map(t=>t.title).slice(0,4),
+    patterns,
+    topWorld:topWorld?topWorld[0]:'None',
+    bottomWorld:bottomWorld&&bottomWorld[1].done===0?bottomWorld[0]:'None',
+    nextPriority:stalledTasks[0]?.title||doneTasks[0]?.title||'Define next sprint',
+    worldSummary,
+    cashIn,cashOut,
+    date:todayStr
+  };
+
+  if(!DB.weeklySynth)DB.weeklySynth=[];
+  DB.weeklySynth.unshift(synthesis);
+  if(DB.weeklySynth.length>12)DB.weeklySynth=DB.weeklySynth.slice(0,12);
+  localStorage.setItem(JIL_KEYS.weekly,JSON.stringify(DB.weeklySynth));
+
+  renderWeeklyResult(synthesis);
+  renderWeeklyArchive();
+  showToast('✓ Weekly synthesis complete');
+  speak('Weekly synthesis complete, sir. '+synthesis.oneLine);
+}
+
+function renderWeeklyResult(s){
+  if(!s)return;
+  const el=document.getElementById('weeklySynthResult');
+  if(!el)return;
+  el.innerHTML=`
+    <div style="background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.2);border-radius:6px;padding:16px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">◈ WEEK IN ONE LINE</div>
+      <div style="font-size:14px;color:var(--text1);font-weight:600;line-height:1.5">${s.oneLine}</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:4px">${s.week}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+      <div class="bd-block">
+        <div class="bd-h"><i class="ti ti-check"></i>What Advanced</div>
+        ${s.advanced.length?s.advanced.map(a=>`<div class="brow"><div class="bdot" style="background:var(--green)"></div><div class="btxt">${a}</div></div>`).join(''):'<div style="font-size:11px;color:var(--text3)">Nothing completed this week.</div>'}
+      </div>
+      <div class="bd-block">
+        <div class="bd-h"><i class="ti ti-alert-triangle"></i>What Stalled</div>
+        ${s.stalled.length?s.stalled.map(a=>`<div class="brow"><div class="bdot" style="background:var(--amber)"></div><div class="btxt">${a}</div></div>`).join(''):'<div style="font-size:11px;color:var(--text3)">Nothing stalled — good week, sir.</div>'}
+      </div>
+    </div>
+    ${s.patterns.length?`
+    <div class="bd-block" style="margin-bottom:12px">
+      <div class="bd-h"><i class="ti ti-trending-up"></i>Week's Pattern</div>
+      ${s.patterns.map(p=>`<div class="brow"><div class="bdot" style="background:var(--purple)"></div><div class="btxt">${p}</div></div>`).join('')}
+    </div>`:''}
+    <div style="background:rgba(255,170,0,.07);border:1px solid rgba(255,170,0,.3);border-radius:6px;padding:12px 14px">
+      <div style="font-size:10px;font-weight:700;color:var(--amber);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">◈ NEXT WEEK'S SINGLE PRIORITY</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text1)">${s.nextPriority}</div>
+    </div>`;
+}
+
+function renderWeeklyView(){
+  renderWeeklyArchive();
+  if(DB.weeklySynth&&DB.weeklySynth.length>0)renderWeeklyResult(DB.weeklySynth[0]);
+  const ws1=document.getElementById('wsStat1');if(ws1)ws1.textContent=DB.weeklySynth[0]?.advanced?.length||'—';
+  const ws2=document.getElementById('wsStat2');if(ws2)ws2.textContent=DB.weeklySynth[0]?'₱'+DB.weeklySynth[0].cashIn.toLocaleString('en-PH',{maximumFractionDigits:0}):'—';
+  const ws3=document.getElementById('wsStat3');if(ws3)ws3.textContent=DB.weeklySynth[0]?.patterns?.length||'—';
+}
+
+function renderWeeklyArchive(){
+  const el=document.getElementById('weeklyArchive');
+  if(!el)return;
+  if(!DB.weeklySynth||!DB.weeklySynth.length){el.innerHTML='<div style="font-size:11px;color:var(--text3)">No syntheses yet, sir.</div>';return;}
+  el.innerHTML=DB.weeklySynth.map((s,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:${i===0?'rgba(0,255,136,.05)':'var(--navy2)'};border:1px solid ${i===0?'rgba(0,255,136,.2)':'var(--border)'};border-radius:4px;margin-bottom:6px;cursor:pointer" onclick="renderWeeklyResult(DB.weeklySynth[${i}])">
+      <i class="ti ti-calendar-week" style="color:var(--green);font-size:13px;line-height:1;display:block"></i>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:12px;font-weight:600;color:var(--text1)">${s.week}</div>
+        <div style="font-size:10px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.oneLine}</div>
+      </div>
+      ${i===0?'<span class="pill pg" style="font-size:9px">Latest</span>':''}
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 5 — BELIEF TRACKER
+// ═══════════════════════════════════════════════════════════════════════════
+
+function openBeliefModal(id){
+  const existing=id?DB.beliefs.find(b=>b.id===id):null;
+  document.getElementById('bel-statement').value=existing?existing.statement:'';
+  document.getElementById('bel-evidence').value=existing?existing.evidence:'Confirms';
+  document.getElementById('bel-world').value=existing?existing.world:'ALL';
+  document.getElementById('bel-obs').value=existing?existing.obs:'';
+  document.getElementById('beliefModal').dataset.editId=id||'';
+  openModal('beliefModal');
+  setTimeout(()=>document.getElementById('bel-statement').focus(),80);
+}
+
+function saveBelief(){
+  const statement=document.getElementById('bel-statement').value.trim();
+  if(!statement){showToast('⚠ Enter a belief statement, sir.');return;}
+  const editId=document.getElementById('beliefModal').dataset.editId;
+  const b={
+    id:editId?parseInt(editId):Date.now(),
+    statement,
+    evidence:document.getElementById('bel-evidence').value,
+    world:document.getElementById('bel-world').value,
+    obs:document.getElementById('bel-obs').value.trim(),
+    date:new Date().toISOString().split('T')[0],
+    updatedAt:new Date().toISOString()
+  };
+  if(!DB.beliefs)DB.beliefs=[];
+  if(editId){const i=DB.beliefs.findIndex(x=>x.id===parseInt(editId));if(i>=0)DB.beliefs[i]=b;else DB.beliefs.unshift(b);}
+  else DB.beliefs.unshift(b);
+  localStorage.setItem(JIL_KEYS.beliefs,JSON.stringify(DB.beliefs));
+  closeModal('beliefModal');
+  renderBeliefView();
+  showToast('✓ Belief logged');
+  addHistory('add','Belief: '+statement.substring(0,40),{...b});
+}
+
+function runBeliefAudit(){
+  if(!DB.beliefs||!DB.beliefs.length){showToast('No beliefs logged yet, sir.');return;}
+  const confirmed=DB.beliefs.filter(b=>b.evidence==='Confirms').length;
+  const challenged=DB.beliefs.filter(b=>b.evidence==='Challenges').length;
+  const complicated=DB.beliefs.filter(b=>b.evidence==='Complicates').length;
+  const total=DB.beliefs.length;
+
+  const el=document.getElementById('beliefAuditResult');
+  if(!el)return;
+  const recommendations=[];
+  if(challenged>total*0.4)recommendations.push('More than 40% of your beliefs are being challenged — significant worldview pressure. Time to update some priors, sir.');
+  if(confirmed>total*0.7)recommendations.push('Over 70% confirmed — your worldview is coherent. Slight risk of confirmation bias. Seek contradictory evidence.');
+  if(complicated>0)recommendations.push(`${complicated} belief(s) are complicated by new evidence — these need deliberate reassessment.`);
+
+  el.innerHTML=`
+    <div style="background:rgba(0,255,242,.05);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px">
+      <div style="font-size:10px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">◈ BELIEF AUDIT</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px">
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--teal)">${total}</div><div style="font-size:9px;color:var(--text3)">Total</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--green)">${confirmed}</div><div style="font-size:9px;color:var(--text3)">Confirmed</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--orange)">${challenged}</div><div style="font-size:9px;color:var(--text3)">Challenged</div></div>
+        <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--purple)">${complicated}</div><div style="font-size:9px;color:var(--text3)">Complicated</div></div>
+      </div>
+      ${recommendations.map(r=>`<div style="font-size:11px;color:var(--text2);padding:6px 0;border-top:1px solid var(--border);line-height:1.5">→ ${r}</div>`).join('')}
+    </div>`;
+
+  showToast('✓ Belief audit complete');
+}
+
+let beliefFilter='all';
+function filterBeliefs(f){beliefFilter=f;renderBeliefView();}
+
+function renderBeliefView(){
+  if(!DB.beliefs)DB.beliefs=[];
+  const total=DB.beliefs.length;
+  const confirmed=DB.beliefs.filter(b=>b.evidence==='Confirms').length;
+  const challenged=DB.beliefs.filter(b=>b.evidence==='Challenges').length;
+  const complicated=DB.beliefs.filter(b=>b.evidence==='Complicates').length;
+
+  const bt=document.getElementById('beliefTotal');if(bt)bt.textContent=total;
+  const bc=document.getElementById('beliefConfirmed');if(bc)bc.textContent=confirmed;
+  const bch=document.getElementById('beliefChallenged');if(bch)bch.textContent=challenged;
+  const bco=document.getElementById('beliefComplicated');if(bco)bco.textContent=complicated;
+
+  const list=document.getElementById('beliefList');
+  if(!list)return;
+  let items=beliefFilter==='all'?DB.beliefs:DB.beliefs.filter(b=>b.evidence===beliefFilter);
+
+  const evColor={Confirms:'var(--green)',Challenges:'var(--orange)',Complicates:'var(--purple)',Irrelevant:'var(--text3)'};
+  const evIcon={Confirms:'ti-check',Challenges:'ti-alert-triangle',Complicates:'ti-arrows-shuffle',Irrelevant:'ti-minus'};
+
+  list.innerHTML=items.length?items.map(b=>`
+    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px;border-left:3px solid ${evColor[b.evidence]||'var(--teal)'}">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="width:26px;height:26px;border-radius:50%;border:1px solid ${evColor[b.evidence]};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <i class="ti ${evIcon[b.evidence]||'ti-check'}" style="font-size:12px;color:${evColor[b.evidence]};line-height:1;display:block"></i>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600;color:var(--text1);line-height:1.4;margin-bottom:4px">${b.statement}</div>
+          ${b.obs?`<div style="font-size:11px;color:var(--text3);font-style:italic;margin-bottom:4px">"${b.obs}"</div>`:''}
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:9px;color:${evColor[b.evidence]};font-weight:700;border:1px solid ${evColor[b.evidence]};border-radius:2px;padding:1px 5px">${b.evidence}</span>
+            <span class="pill pgr">${b.world}</span>
+            <span style="font-size:10px;color:var(--text3)">${b.date}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button onclick="openBeliefModal(${b.id})" class="btn btn-g" style="padding:3px 7px;font-size:11px"><i class="ti ti-pencil" style="font-size:11px;line-height:1;display:block"></i></button>
+          <button onclick="deleteBelief(${b.id})" class="btn btn-d" style="padding:3px 7px;font-size:11px"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
+        </div>
+      </div>
+    </div>`).join('')
+  :'<div style="text-align:center;padding:30px;color:var(--text3);font-size:13px">No beliefs logged yet, sir.</div>';
+}
+
+function deleteBelief(id){
+  DB.beliefs=DB.beliefs.filter(b=>b.id!==id);
+  localStorage.setItem(JIL_KEYS.beliefs,JSON.stringify(DB.beliefs));
+  renderBeliefView();showToast('Belief deleted');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 6 — PATTERN DETECTOR
+// ═══════════════════════════════════════════════════════════════════════════
+
+function runPatternDetector(){
+  const STOP=new Set(['the','a','an','is','are','was','and','or','but','in','on','at','to','for','of','with','from','that','this','it','by','be','have','has','do','i','my','we','our','you','your','me','he','she','they','them','their','can','will','would','could','should','not','as','so','if','then','than','when','what','which','how','who','sir','done','todo']);
+
+  // Build full text corpus from journal + tasks
+  const corpus=[
+    ...(DB.journal||[]).map(j=>(j.title||'')+' '+(j.content||'')),
+    ...(DB.tasks||[]).map(t=>t.title+' '+(t.notes||'')),
+    ...(DB.captures||[]).map(c=>c.content)
+  ].join(' ').toLowerCase();
+
+  const words=corpus.replace(/[^a-z0-9\s]/g,'').split(/\s+/).filter(w=>w.length>3&&!STOP.has(w));
+
+  // Frequency map
+  const freq={};
+  words.forEach(w=>{freq[w]=(freq[w]||0)+1;});
+
+  // Top patterns (words appearing 3+ times)
+  const patterns=Object.entries(freq)
+    .filter(([w,c])=>c>=3)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,12)
+    .map(([word,count])=>{
+      const meaning=interpretPattern(word,count);
+      return{id:Date.now()+Math.random(),word,count,meaning,action:meaning.action,date:new Date().toISOString().split('T')[0]};
+    });
+
+  if(!DB.patterns)DB.patterns=[];
+  const archive={id:Date.now(),date:new Date().toISOString().split('T')[0],patterns,summary:'Pattern scan: top theme is "'+((patterns[0]||{}).word||'N/A')+'" ('+((patterns[0]||{}).count||0)+' occurrences)'};
+  DB.patterns.unshift(archive);
+  if(DB.patterns.length>6)DB.patterns=DB.patterns.slice(0,6);
+  localStorage.setItem(JIL_KEYS.patterns,JSON.stringify(DB.patterns));
+  renderPatternView();
+  showToast('✓ Patterns detected: '+patterns.length);
+}
+
+function interpretPattern(word,count){
+  const domainMap={
+    'client':  {meaning:'Client management is dominant in your mental bandwidth.',    action:'Delegate more client tasks or automate follow-ups.'},
+    'task':    {meaning:'Task volume thinking — possibly overwhelmed by volume.',       action:'Run a weekly sweep to clear low-priority tasks.'},
+    'meeting': {meaning:'High meeting load detected.',                                  action:'Audit calendar for async replacements.'},
+    'money':   {meaning:'Financial concerns are recurring.',                            action:'Schedule a dedicated cash flow review.'},
+    'tired':   {meaning:'Energy/fatigue is a recurring theme.',                         action:'Review sleep schedule alignment with shifts.'},
+    'tjc':     {meaning:'TJC venture is consistently top-of-mind.',                     action:'Ensure weekly venture progress is tracked.'},
+    'naknak':  {meaning:'NAKNAK BUILD is recurring in thought.',                        action:'Schedule a dedicated BUILD sprint.'},
+    'sleep':   {meaning:'Sleep is a recurring concern.',                                action:'Protect sleep blocks in calendar religiously.'},
+    'faith':   {meaning:'Faith activities are consistently present.',                   action:'Celebrate the consistency. Protect this world.'},
+    'campaign':{meaning:'Campaign work is a dominant theme.',                           action:'Consider systematising campaign workflows.'},
+    'report':  {meaning:'Reporting load is high.',                                      action:'Build reusable report templates.'},
+    'urgent':  {meaning:'Urgency is a recurring state — possible reactive mode.',       action:'Add buffer blocks in schedule for proactive work.'},
+  };
+  return domainMap[word]||{meaning:`"${word}" appears ${count}× — a recurring signal worth examining.`,action:'Journal about what this pattern means for you.'};
+}
+
+function renderPatternView(){
+  const patternResult=document.getElementById('patternResult');
+  const patternArchive=document.getElementById('patternArchive');
+  if(!DB.patterns||!DB.patterns.length){
+    if(patternResult)patternResult.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3)"><i class="ti ti-trending-up" style="font-size:28px;display:block;margin-bottom:10px;color:var(--orange)"></i>Click <strong style="color:var(--orange)">Detect Patterns</strong> to scan your history, sir.</div>';
+    return;
+  }
+
+  const latest=DB.patterns[0];
+  if(patternResult)patternResult.innerHTML=`
+    <div style="font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">◈ LATEST SCAN — ${latest.date}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+    ${latest.patterns.map((p,i)=>`
+      <div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;border-left:3px solid ${i<3?'var(--orange)':'var(--border)'}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="font-size:16px;font-weight:900;color:${i<3?'var(--orange)':'var(--text2)'}">×${p.count}</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1)">"${p.word}"</div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5;margin-bottom:6px">${p.meaning.meaning||p.meaning}</div>
+        <div style="font-size:10px;color:var(--teal);font-style:italic">→ ${p.action||p.meaning.action||''}</div>
+      </div>`).join('')}
+    </div>`;
+
+  if(patternArchive)patternArchive.innerHTML=DB.patterns.map((p,i)=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px;background:var(--navy2);border:1px solid var(--border);border-radius:4px;margin-bottom:5px">
+      <i class="ti ti-calendar" style="font-size:12px;color:var(--text3);line-height:1;display:block"></i>
+      <div style="flex:1"><div style="font-size:11px;font-weight:600;color:var(--text1)">${p.date}</div><div style="font-size:10px;color:var(--text3)">${p.summary||p.patterns.length+' patterns found'}</div></div>
+      <button onclick="renderPatternDetail(${i})" class="btn btn-g" style="padding:3px 8px;font-size:10px">View</button>
+    </div>`).join('');
+}
+
+function renderPatternDetail(i){
+  const p=DB.patterns[i];
+  if(!p)return;
+  const el=document.getElementById('patternResult');
+  if(el)el.innerHTML=`
+    <div style="font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">◈ SCAN — ${p.date}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">
+    ${p.patterns.map((pt,j)=>`
+      <div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:12px 14px;border-left:3px solid ${j<3?'var(--orange)':'var(--border)'}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div style="font-size:16px;font-weight:900;color:${j<3?'var(--orange)':'var(--text2)'}">×${pt.count}</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1)">"${pt.word}"</div>
+        </div>
+        <div style="font-size:11px;color:var(--text2);line-height:1.5">${pt.meaning.meaning||pt.meaning}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SKILL 7 — DECISION INTELLIGENCE
+// ═══════════════════════════════════════════════════════════════════════════
+
+let _editingDecisionId=null;
+
+function openDecisionModal(id){
+  _editingDecisionId=id||null;
+  const existing=id?DB.decisions.find(d=>d.id===id):null;
+  document.getElementById('decModalTitle').textContent=id?'EDIT DECISION':'LOG DECISION';
+  document.getElementById('dec-situation').value=existing?existing.situation:'';
+  document.getElementById('dec-options').value=existing?existing.options:'';
+  document.getElementById('dec-choice').value=existing?existing.choice:'';
+  document.getElementById('dec-rationale').value=existing?existing.rationale:'';
+  document.getElementById('dec-status').value=existing?existing.status:'Open';
+  document.getElementById('dec-world').value=existing?existing.world:'WORK-IH';
+  document.getElementById('dec-outcome').value=existing?existing.outcome:'';
+  openModal('decisionModal');
+  setTimeout(()=>document.getElementById('dec-situation').focus(),80);
+}
+
+function saveDecision(){
+  const situation=document.getElementById('dec-situation').value.trim();
+  if(!situation){showToast('⚠ Enter the situation/context, sir.');return;}
+  const d={
+    id:_editingDecisionId||Date.now(),
+    situation,
+    options:document.getElementById('dec-options').value.trim(),
+    choice:document.getElementById('dec-choice').value.trim(),
+    rationale:document.getElementById('dec-rationale').value.trim(),
+    status:document.getElementById('dec-status').value,
+    world:document.getElementById('dec-world').value,
+    outcome:document.getElementById('dec-outcome').value.trim(),
+    date:new Date().toISOString().split('T')[0],
+    updatedAt:new Date().toISOString()
+  };
+  if(!DB.decisions)DB.decisions=[];
+  if(_editingDecisionId){const i=DB.decisions.findIndex(x=>x.id===_editingDecisionId);if(i>=0)DB.decisions[i]=d;else DB.decisions.unshift(d);}
+  else DB.decisions.unshift(d);
+  localStorage.setItem(JIL_KEYS.decisions,JSON.stringify(DB.decisions));
+  _editingDecisionId=null;
+  closeModal('decisionModal');
+  renderDecisionView();
+  showToast('✓ Decision logged');
+  addHistory('add','Decision: '+situation.substring(0,40),{...d});
+}
+
+let _decFilter='all';
+function filterDecisions(f){_decFilter=f;renderDecisionView();}
+
+function renderDecisionView(){
+  if(!DB.decisions)DB.decisions=[];
+  const total=DB.decisions.length;
+  const open=DB.decisions.filter(d=>d.status==='Open'||d.status==='Pending Review').length;
+  const resolved=DB.decisions.filter(d=>d.status==='Resolved').length;
+
+  const dt=document.getElementById('decTotal');if(dt)dt.textContent=total;
+  const do_=document.getElementById('decOpen');if(do_)do_.textContent=open;
+  const dr=document.getElementById('decResolved');if(dr)dr.textContent=resolved;
+
+  const list=document.getElementById('decisionList');
+  if(!list)return;
+
+  let items=_decFilter==='all'?DB.decisions:DB.decisions.filter(d=>d.status===_decFilter);
+
+  const statusColor={'Open':'var(--orange)','Pending Review':'var(--amber)','Resolved':'var(--green)'};
+
+  list.innerHTML=items.length?items.map(d=>`
+    <div style="background:var(--navy2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:10px;border-left:3px solid ${statusColor[d.status]||'var(--teal)'}">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap">
+            <span style="font-size:9px;font-weight:700;color:${statusColor[d.status]};border:1px solid ${statusColor[d.status]};border-radius:2px;padding:1px 5px">${d.status.toUpperCase()}</span>
+            <span class="pill pgr">${d.world}</span>
+            <span style="font-size:10px;color:var(--text3)">${d.date}</span>
+          </div>
+          <div style="font-size:13px;font-weight:700;color:var(--text1);margin-bottom:6px;line-height:1.4">${d.situation}</div>
+          ${d.choice?`<div style="font-size:11px;color:var(--teal);margin-bottom:4px">→ <strong>Choice:</strong> ${d.choice}</div>`:''}
+          ${d.rationale?`<div style="font-size:11px;color:var(--text2);margin-bottom:4px">${d.rationale}</div>`:''}
+          ${d.options?`<div style="font-size:10px;color:var(--text3);margin-bottom:4px"><strong>Options:</strong> ${d.options}</div>`:''}
+          ${d.outcome?`<div style="font-size:11px;color:var(--green);margin-top:6px;padding:6px 8px;background:rgba(0,255,136,.06);border-radius:3px"><strong>Outcome:</strong> ${d.outcome}</div>`:''}
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0">
+          <button onclick="openDecisionModal(${d.id})" class="btn btn-g" style="padding:4px 8px;font-size:11px"><i class="ti ti-pencil" style="font-size:11px;line-height:1;display:block"></i></button>
+          <button onclick="deleteDecision(${d.id})" class="btn btn-d" style="padding:4px 7px;font-size:11px"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
+        </div>
+      </div>
+    </div>`).join('')
+  :'<div style="text-align:center;padding:30px;color:var(--text3);font-size:13px">No decisions logged yet, sir.</div>';
+}
+
+function deleteDecision(id){
+  DB.decisions=DB.decisions.filter(d=>d.id!==id);
+  localStorage.setItem(JIL_KEYS.decisions,JSON.stringify(DB.decisions));
+  renderDecisionView();showToast('Decision deleted');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// CLAUDE.md — LIVE DOC
+// ═══════════════════════════════════════════════════════════════════════════
+
+const CLAUDE_MD_DEFAULTS={
+  identity:`**Name:** Justine Luis Inacay\n**Role:** Marketing Manager\n**Location:** Las Piñas City, Metro Manila, Philippines\n**Email:** justineluisinacay@gmail.com\n**Timezone:** PHT (UTC+8)\n**Shifts:** Ideahub 2AM–10AM (Tue–Sat) · Chainsmoker 10PM–2AM (Mon–Fri)`,
+  howIWork:`- Operates across six life worlds: WORK-IH, WORK-CS, VENTURE, BUILD, SIDES, FAITH, LIFE\n- Works overnight — peak focus is 2AM–6AM PHT\n- Faith drives decisions. Colossians 3:23 is the operating principle\n- JARVIS MODE preferred: formal British cadence, address as "sir", lead with solution\n- Builds systems before scaling. Documents everything`,
+  focusAreas:`- Ideahub client campaign management (10 clients)\n- Chainsmoker social + UberEats performance\n- TJC agency launch (pre-revenue, targeting North American SMBs)\n- NAKNAK v8 freemium app development\n- DISKARTE POS tracker for Filipino SMBs\n- Digital product shop (RaketPH + Etsy)`,
+  activeProjects:`- TJC Business OS portal (Supabase + role-based portals)\n- Millscope Biotech Webinar 2 campaigns\n- NAKNAK v8 build sprint\n- PASAHERO RPG development\n- INACAY Cash Flow tracking`,
+  currentBeliefs:`- Consistency beats intensity for creative output\n- Systems multiply individual effort\n- Faith-driven work produces better results than fear-driven work\n- Pre-revenue focus is correct — build before billing\n- Sleep protection is non-negotiable for shift-based life`,
+  activeQuestions:`- What is the right TJC pricing structure for US SMBs?\n- How do I grow SIDES to ₱5,000/month passive?\n- When does NAKNAK need external funding?\n- How do I protect FAITH world during high-work periods?`,
+  outputStandards:`- Always address as "sir"\n- Lead with solution, no preamble\n- Markdown, bold headers, bullets for structured output\n- British cadence, analytical, zero fluff\n- Include hook + value + CTA for all marketing content\n- Premium but approachable tone`,
+  permissions:`- Access all six life worlds freely\n- Reference past context from memory\n- Proactively flag conflicts between worlds\n- Surface decisions pending review\n- Run morning brief on request`,
+  memoryRules:`- Always update when location, role, or project status changes\n- Tag all memories with world and date\n- Never store passwords or credentials\n- Prioritise recent context over older memory\n- Flag conflicts between memory and current input`,
+  updateProtocol:`- Update CLAUDE.md when: role changes, project launches/closes, belief updates confirmed, location changes\n- Run weekly synthesis every Sunday 7PM\n- Run morning brief on shift start (2AM)\n- Run pattern detector monthly`
+};
+
+const CLAUDE_MD_SECTIONS=[
+  {key:'identity',    label:'Identity',          icon:'ti-user'},
+  {key:'howIWork',    label:'How I Actually Work',icon:'ti-settings'},
+  {key:'focusAreas',  label:'Focus Areas',        icon:'ti-target'},
+  {key:'activeProjects',label:'Active Projects',  icon:'ti-rocket'},
+  {key:'currentBeliefs',label:'Current Beliefs',  icon:'ti-shield-check'},
+  {key:'activeQuestions',label:'Active Questions', icon:'ti-question-mark'},
+  {key:'outputStandards',label:'Output Standards', icon:'ti-star'},
+  {key:'permissions', label:'Permissions',         icon:'ti-key'},
+  {key:'memoryRules', label:'Memory Rules',        icon:'ti-brain'},
+  {key:'updateProtocol',label:'Update Protocol',   icon:'ti-refresh'}
+];
+
+function loadClaudeMD(){
+  const saved=localStorage.getItem(JIL_KEYS.claudeMD);
+  if(saved){try{return JSON.parse(saved);}catch(e){}}
+  return{...CLAUDE_MD_DEFAULTS};
+}
+
+function saveClaudeMD(){
+  const data={};
+  CLAUDE_MD_SECTIONS.forEach(s=>{
+    const el=document.getElementById('claude-sec-'+s.key);
+    if(el)data[s.key]=el.value;
+  });
+  localStorage.setItem(JIL_KEYS.claudeMD,JSON.stringify(data));
+  showToast('✓ CLAUDE.md saved');
+  addHistory('edit','CLAUDE.md updated',{_dbKey:'claudeMD'});
+}
+
+function exportClaudeMD(){
+  const data=loadClaudeMD();
+  let md='# CLAUDE.md — Justine Luis Inacay\n\nGenerated: '+new Date().toISOString()+'\n\n---\n\n';
+  CLAUDE_MD_SECTIONS.forEach(s=>{
+    md+=`## ${s.label}\n\n${data[s.key]||CLAUDE_MD_DEFAULTS[s.key]||''}\n\n---\n\n`;
+  });
+  const a=document.createElement('a');
+  a.href='data:text/markdown;charset=utf-8,'+encodeURIComponent(md);
+  a.download='CLAUDE.md';
+  a.click();
+  showToast('✓ CLAUDE.md exported');
+}
+
+function renderClaudeMD(){
+  const el=document.getElementById('claudeMDBody');
+  if(!el)return;
+  const data=loadClaudeMD();
+  el.innerHTML=`
+    <div style="display:grid;grid-template-columns:200px 1fr;height:100%;min-height:0">
+      <!-- Left TOC -->
+      <div style="background:var(--navy2);border-right:1px solid var(--border);padding:10px 0;overflow-y:auto">
+        <div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.12em;text-transform:uppercase;padding:8px 14px 4px">Sections</div>
+        ${CLAUDE_MD_SECTIONS.map(s=>`
+          <div onclick="document.getElementById('claude-sec-${s.key}')?.scrollIntoView({behavior:'smooth',block:'start'})" style="display:flex;align-items:center;gap:7px;padding:7px 14px;cursor:pointer;color:var(--text2);font-size:12px;transition:all .15s;border-left:2px solid transparent" onmouseover="this.style.background='var(--teal3)';this.style.color='var(--teal)';this.style.borderLeftColor='var(--teal)'" onmouseout="this.style.background='';this.style.color='var(--text2)';this.style.borderLeftColor='transparent'">
+            <i class="ti ${s.icon}" style="font-size:13px;line-height:1;display:block;color:var(--teal)"></i>
+            ${s.label}
+          </div>`).join('')}
+        <div style="padding:10px 14px;margin-top:8px;border-top:1px solid var(--border)">
+          <button onclick="saveClaudeMD()" class="btn btn-t" style="width:100%;justify-content:center;margin-bottom:6px"><i class="ti ti-device-floppy"></i> Save</button>
+          <button onclick="exportClaudeMD()" class="btn btn-g" style="width:100%;justify-content:center"><i class="ti ti-download"></i> Export</button>
+        </div>
+      </div>
+      <!-- Right editor -->
+      <div style="overflow-y:auto;padding:16px 20px">
+        ${CLAUDE_MD_SECTIONS.map(s=>`
+          <div style="margin-bottom:20px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+              <i class="ti ${s.icon}" style="font-size:15px;color:var(--pink);line-height:1;display:block"></i>
+              <div style="font-size:11px;font-weight:700;color:var(--text1);letter-spacing:.06em;text-transform:uppercase">${s.label}</div>
+            </div>
+            <textarea id="claude-sec-${s.key}" rows="6" style="resize:vertical;font-size:12px;line-height:1.6;font-family:var(--font)">${data[s.key]||CLAUDE_MD_DEFAULTS[s.key]||''}</textarea>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// JIL CMD PALETTE ENTRIES
+// ═══════════════════════════════════════════════════════════════════════════
+(function(){
+  const jilCmds=[
+    {label:'Morning Brief',sub:'JARVIS intelligence daily report',icon:'🌅',action:()=>setView('jarvis-brief'),group:'Intelligence'},
+    {label:'Capture',sub:'Classify and route a new capture',icon:'⚡',action:()=>{setView('jarvis-capture');setTimeout(openCaptureModal,200);},group:'Intelligence'},
+    {label:'Connection Finder',sub:'Scan 48hr activity for links',icon:'🔗',action:()=>setView('jarvis-connect'),group:'Intelligence'},
+    {label:'Weekly Synthesis',sub:'Full week in one report',icon:'📊',action:()=>setView('jarvis-weekly'),group:'Intelligence'},
+    {label:'Belief Tracker',sub:'Log and audit beliefs',icon:'🛡',action:()=>setView('jarvis-belief'),group:'Intelligence'},
+    {label:'Pattern Detector',sub:'Find recurring themes',icon:'📈',action:()=>setView('jarvis-pattern'),group:'Intelligence'},
+    {label:'Decision Intel',sub:'Structured decision log',icon:'⚖',action:()=>setView('jarvis-decision'),group:'Intelligence'},
+    {label:'CLAUDE.md',sub:'Live intelligence profile',icon:'🪪',action:()=>setView('jarvis-claude'),group:'Intelligence'},
+    {label:'Run Morning Brief',sub:'Generate now',icon:'☀',action:()=>{setView('jarvis-brief');setTimeout(runMorningBrief,200);},group:'Intelligence'},
+    {label:'Log Decision',sub:'Open decision modal',icon:'⚖',action:()=>{setView('jarvis-decision');setTimeout(openDecisionModal,200);},group:'Intelligence'},
+    {label:'Log Belief',sub:'Open belief modal',icon:'🛡',action:()=>{setView('jarvis-belief');setTimeout(openBeliefModal,200);},group:'Intelligence'},
+    {label:'Detect Patterns',sub:'Run monthly pattern scan',icon:'📈',action:()=>{setView('jarvis-pattern');setTimeout(runPatternDetector,200);},group:'Intelligence'},
+    {label:'Find Connections',sub:'Scan recent activity',icon:'🔗',action:()=>{setView('jarvis-connect');setTimeout(runConnectionFinder,200);},group:'Intelligence'},
+    {label:'Run Weekly Synthesis',sub:'Generate weekly report',icon:'📊',action:()=>{setView('jarvis-weekly');setTimeout(runWeeklySynthesis,200);},group:'Intelligence'},
+  ];
+  if(Array.isArray(window.CMD_ITEMS)){
+    jilCmds.forEach(c=>window.CMD_ITEMS.push(c));
+  }
+})();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// JIL VOICE COMMANDS
+// ═══════════════════════════════════════════════════════════════════════════
+const JIL_VOICE_INTENTS=[
+  {re:/^(run|generate|show)\s+(morning\s+)?brief/i,    action:'jil_morning_brief'},
+  {re:/^(log|add|record)\s+(a\s+)?(belief|believe)/i,  action:'jil_belief'},
+  {re:/^(log|add|record)\s+(a\s+)?decision/i,          action:'jil_decision'},
+  {re:/^(find|run|scan)\s+(connections?|links?)/i,     action:'jil_connect'},
+  {re:/^(run|generate|detect)\s+patterns?/i,           action:'jil_patterns'},
+  {re:/^(run|generate)\s+(weekly|week).*(synth|report)/i,action:'jil_weekly'},
+  {re:/^(capture|note)[:\-\s]+(?<content>.+)/i,        action:'jil_capture'},
+];
+
+// Patch executeVoiceCommand to handle JIL intents
+const _origExecVC=window.executeVoiceCommand;
+window.executeVoiceCommand=function(rawText){
+  const t=rawText.toLowerCase().trim();
+  for(const intent of JIL_VOICE_INTENTS){
+    const m=t.match(intent.re);
+    if(!m)continue;
+    const g=m.groups||{};
+    switch(intent.action){
+      case'jil_morning_brief':setView('jarvis-brief');setTimeout(runMorningBrief,300);setVcState('idle');showVcResult('Morning Brief running, sir.');speak('Generating your morning brief, sir.');return;
+      case'jil_belief':setView('jarvis-belief');setTimeout(openBeliefModal,300);setVcState('idle');showVcResult('Belief log open, sir.');return;
+      case'jil_decision':setView('jarvis-decision');setTimeout(openDecisionModal,300);setVcState('idle');showVcResult('Decision log open, sir.');return;
+      case'jil_connect':setView('jarvis-connect');setTimeout(runConnectionFinder,300);setVcState('idle');showVcResult('Finding connections, sir.');return;
+      case'jil_patterns':setView('jarvis-pattern');setTimeout(runPatternDetector,300);setVcState('idle');showVcResult('Detecting patterns, sir.');return;
+      case'jil_weekly':setView('jarvis-weekly');setTimeout(runWeeklySynthesis,300);setVcState('idle');showVcResult('Generating weekly synthesis, sir.');return;
+      case'jil_capture':{
+        const content=(g.content||rawText.replace(/^capture[:\-\s]+/i,'').trim());
+        if(content){
+          const type=autoClassifyCapture(content);
+          const c={id:Date.now(),content,type,world:'WORK-IH',notes:'',status:'inbox',date:new Date().toISOString().split('T')[0],time:new Date().toISOString()};
+          if(!DB.captures)DB.captures=[];
+          DB.captures.unshift(c);
+          localStorage.setItem(JIL_KEYS.captures,JSON.stringify(DB.captures));
+          setVcState('idle');
+          showVcResult('Captured as '+type+', sir.');
+          speak('Captured as '+type+', sir.');
+          showToast('✓ Captured: '+type);
+          addHistory('add','Voice Capture: '+content.substring(0,40),{...c});
+          return;
+        }
+      }
+    }
+  }
+  if(_origExecVC)_origExecVC.apply(this,[rawText]);
+};
+
+// ═══════════════════════════════════════════════════════════════════════════
+// BOOT BRIEF — auto-run morning brief on load if it's a new day
+// ═══════════════════════════════════════════════════════════════════════════
+(function scheduleBootBrief(){
+  const lastBrief=localStorage.getItem('j-last-brief-date');
+  const today=new Date().toISOString().split('T')[0];
+  if(lastBrief!==today){
+    localStorage.setItem('j-last-brief-date',today);
+    // Pre-generate brief data silently for the topbar indicator
+    setTimeout(()=>{
+      const openTasks=(DB.tasks||[]).filter(t=>t.status!=='Done').length;
+      const highPrio=(DB.tasks||[]).filter(t=>t.priority==='High'&&t.status!=='Done').length;
+      if(highPrio>0)showToast('⚡ Morning: '+highPrio+' high priority items await, sir.',false);
+    },3500);
+  }
+})();
+
+// Mobile More Menu — add JIL items
+(function(){
+  const moreMenu=document.getElementById('mobileMoreMenu');
+  if(!moreMenu)return;
+  const jilItems=[
+    {view:'jarvis-brief',icon:'ti-sun',label:'Brief'},
+    {view:'jarvis-capture',icon:'ti-capture',label:'Capture'},
+    {view:'jarvis-decision',icon:'ti-scale',label:'Decisions'},
+    {view:'jarvis-belief',icon:'ti-shield-check',label:'Beliefs'},
+  ];
+  jilItems.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='mmm-item';
+    div.onclick=()=>{mobileNav(item.view,null);toggleMobileMore();};
+    div.innerHTML=`<i class="ti ${item.icon}" style="font-size:20px;line-height:1;display:block;color:var(--teal2)"></i>${item.label}`;
+    // Insert before Close button (last item)
+    moreMenu.insertBefore(div,moreMenu.lastElementChild);
+  });
+})();
+
+// ─────────────────────────────────────────────────────────────────────────
+// JIL CSS — injected via style element (inherits all :root CSS vars)
+// ─────────────────────────────────────────────────────────────────────────
+(function injectJILStyles(){
+  const s=document.createElement('style');
+  s.textContent=`
+    /* JIL view transitions */
+    #view-jarvis-brief .vb,#view-jarvis-capture .vb,#view-jarvis-connect .vb,
+    #view-jarvis-weekly .vb,#view-jarvis-belief .vb,#view-jarvis-pattern .vb,
+    #view-jarvis-decision .vb{overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+    /* CLAUDE.md layout */
+    #claudeMDBody{display:flex;flex-direction:column;height:100%;overflow:hidden}
+    #claudeMDBody>div{flex:1;min-height:0;overflow:hidden}
+    #claudeMDBody textarea{width:100%;background:var(--navy3);border:1px solid var(--border);border-radius:4px;color:var(--text1);padding:10px 12px;font-size:12px;line-height:1.6;transition:border .15s}
+    #claudeMDBody textarea:focus{border-color:var(--teal);box-shadow:0 0 8px rgba(0,255,242,.15)}
+
+    /* Intelligence nav group glow */
+    .ngl~.ni[data-view^="jarvis"]:hover{background:rgba(168,85,247,.08);color:var(--purple);border-left-color:var(--purple)}
+    .ngl~.ni[data-view^="jarvis"].active{background:rgba(168,85,247,.1);color:var(--purple);border-left-color:var(--purple);font-weight:700}
+    .ngl~.ni[data-view^="jarvis"].active::after{color:var(--purple)}
+
+    /* Morning brief amber accent */
+    #view-jarvis-brief .vh{border-bottom-color:var(--orange2)}
+
+    /* Mobile responsive */
+    @media(max-width:768px){
+      #claudeMDBody>div{grid-template-columns:1fr;overflow-y:auto}
+      #claudeMDBody>div>div:first-child{display:none}
+      #claudeMDBody>div>div:last-child{padding:12px}
+      #jarvisBriefBody .brief-dash-inner{grid-template-columns:1fr}
+    }
+  `;
+  document.head.appendChild(s);
+})();
+
+console.log('[J.E.L.I.X] JARVIS Intelligence Layer loaded — Skills 1–7 + CLAUDE.md active, sir.');
 
 runBootSequence();
 </script>
