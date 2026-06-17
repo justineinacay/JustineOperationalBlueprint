@@ -4309,10 +4309,10 @@ function renderLife(){
   const elNet = document.getElementById('cf-net');
   const elNetLabel = document.getElementById('cf-net-label');
   if(elNet){
-    elNet.textContent = (net>0?'-':net<0?'+':'')+fmtPHP(net);
+    elNet.textContent = (net>0?'+':net<0?'-':'')+fmtPHP(net);
     elNet.style.color = net>0?'var(--green)':net<0?'var(--red)':'var(--text2)';
   }
-  if(elNetLabel) elNetLabel.textContent = net>0?'Surplus':'net<0'?'Deficit':'Balanced';
+  if(elNetLabel) elNetLabel.textContent = net>0?'Surplus':net<0?'Deficit':'Balanced';
 
   const elCount = document.getElementById('cf-count');
   if(elCount) elCount.textContent = txns.length;
