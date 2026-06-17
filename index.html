@@ -48,18 +48,19 @@
   --amber-glow:0 0 12px rgba(255,170,0,.5);
   --red-glow:0 0 12px rgba(255,34,68,.5);
 }
-[data-theme="light"]{
-  /* Clean professional light — white base, slate accents, no awkward teal-on-white */
-  --navy:#f0f4f8;--navy2:#ffffff;--navy3:#e8eef4;--navy4:#dde6ee;
-  --teal:#0066cc;--teal2:#0052a3;--teal3:rgba(0,102,204,.08);--teal4:rgba(0,102,204,.04);
-  --orange:#e06500;--orange2:#b34f00;--orange3:rgba(224,101,0,.1);--orange4:rgba(224,101,0,.04);
-  --text1:#0d1117;--text2:#24292f;--text3:#57606a;
-  --border:#d0d7de;--border2:#b0bcc8;
-  --green:#1a7f37;--red:#cf222e;--amber:#9a6700;--purple:#6639ba;--pink:#bf3989;
-  --cyan-glow:0 0 8px rgba(0,102,204,.2);
-  --amber-glow:0 0 8px rgba(224,101,0,.2);
-  --red-glow:0 0 8px rgba(207,34,46,.2);
-}
+/* Light theme removed — JARVIS dark locked */
+
+/* ── Lock Screen ─────────────────────────────────────────────── */
+#lockScreen{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:99998;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0}
+.pin-display{display:flex;gap:12px;margin-bottom:30px}
+.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--teal2);transition:all .2s}
+.pin-dot.filled{background:var(--teal);box-shadow:0 0 10px var(--teal)}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.pin-btn{width:64px;height:64px;border-radius:50%;background:var(--navy3);border:1px solid var(--border);color:var(--text1);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .1s;-webkit-tap-highlight-color:transparent;user-select:none}
+.pin-btn:active{background:var(--teal3);border-color:var(--teal);color:var(--teal)}
+.bio-btn{margin-top:30px;background:rgba(0,255,242,.1);border:1px solid var(--teal);border-radius:8px;padding:12px 24px;color:var(--teal);cursor:pointer;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-10px)}75%{transform:translateX(10px)}}
+@keyframes pinpulse{0%,100%{opacity:1}50%{opacity:.4}}
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;height:-webkit-fill-available}
 body{height:100%;height:-webkit-fill-available;font-family:var(--font);background:var(--navy);color:var(--text1);overflow:hidden;font-size:14px;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
@@ -626,8 +627,6 @@ select option{background:var(--navy3)}
 @keyframes hud-ping{0%{box-shadow:0 0 0 0 rgba(0,212,200,.4)}100%{box-shadow:0 0 0 12px rgba(0,212,200,0)}}
 @keyframes neon-pulse{0%,100%{text-shadow:0 0 4px var(--teal)}50%{text-shadow:0 0 16px var(--teal),0 0 32px var(--teal2)}}
 
-[data-theme="light"] 
-.hc{animation:none}
 .hc:hover{border-color:var(--teal2);box-shadow:0 0 12px rgba(0,212,200,.08)}
 .tb-logo{animation:neon-pulse 4s ease-in-out infinite}
 .ni.active{box-shadow:inset 0 0 8px rgba(0,212,200,.06)}
@@ -638,21 +637,6 @@ select option{background:var(--navy3)}
 #dataTicker{font-size:10px;color:var(--teal2);letter-spacing:.08em;opacity:.6;overflow:hidden;white-space:nowrap;font-family:'Poppins',monospace}
 /* Corner HUD brackets on cards */
 .hc::after{content:'';position:absolute;bottom:4px;right:4px;width:8px;height:8px;border-bottom:1px solid rgba(0,212,200,.2);border-right:1px solid rgba(0,212,200,.2);animation:corner-blink 3s infinite}
-[data-theme="light"] .hc::after{border-color:rgba(0,102,204,.12)}
-[data-theme="light"] body::before{background:none}
-[data-theme="light"] body::after{background:none}
-[data-theme="light"] .topbar::after{background:linear-gradient(90deg,transparent,var(--teal),var(--teal2),var(--orange),transparent);box-shadow:none;opacity:.5}
-[data-theme="light"] .hc{background:var(--navy2);border-color:var(--border)}
-[data-theme="light"] .hc.oc{background:#fff8f0;border-color:rgba(224,101,0,.3)}
-[data-theme="light"] .modal{background:var(--navy2);border-color:var(--border)}
-[data-theme="light"] .bd-block{background:var(--navy2);border-color:var(--border)}
-[data-theme="light"] .side-panel{box-shadow:1px 0 0 var(--border)}
-[data-theme="light"] .ni:hover{background:rgba(0,102,204,.07)}
-[data-theme="light"] .ni.active{background:rgba(0,102,204,.1);text-shadow:none}
-[data-theme="light"] .vbar .vpill{background:rgba(255,255,255,.92);border-color:rgba(0,102,204,.3);box-shadow:0 4px 24px rgba(0,0,0,.12),0 0 0 1px rgba(0,102,204,.1)}
-[data-theme="light"] .vlabel{color:var(--teal)}
-[data-theme="light"] select option{background:var(--navy2);color:var(--text1)}
-[data-theme="light"] #mbGlobalSpotlight{opacity:0!important}
 
 /* ═══════════════════════════════════════════════════════════════
    MOBILE — iPhone 14 Pro Max (430×932pt) + Dynamic Island
@@ -970,12 +954,7 @@ select option{background:var(--navy3)}
 
 /* ═══════════════════════════════════════════════════════════════
    JELIX TASK OS — Monday.com structural layer
-   Token inheritance: all vars from :root / [data-theme="light"]
-═══════════════════════════════════════════════════════════════ */
-
-/* ── Board chrome ──────────────────────────────────────────── */
-.board-shell{display:flex;flex-direction:column;height:100%;overflow:hidden}
-.board-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--navy2);flex-wrap:wrap}
+   Token inheritance: all vars from :root / .board-toolbar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--navy2);flex-wrap:wrap}
 .board-view-tabs{display:flex;gap:2px;background:var(--navy3);border:1px solid var(--border);border-radius:5px;padding:2px}
 .bvt{padding:4px 11px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:.06em;cursor:pointer;color:var(--text3);border:none;background:transparent;transition:all .15s;text-transform:uppercase}
 .bvt.active{background:var(--teal3);color:var(--teal);border:1px solid var(--teal2)}
@@ -985,8 +964,6 @@ select option{background:var(--navy3)}
 .filter-chip-sel:focus{color:var(--teal)}
 .filter-chip-sel option{background:var(--navy2);color:var(--text1)}
 .filter-sep{width:1px;height:14px;background:var(--border);flex-shrink:0}
-[data-theme="light"] .filter-chip-sel{color:var(--text2)}
-[data-theme="light"] .filter-chip-sel option{background:#fff}
 
 /* ── Group divider (Monday "Group" = collapsible section) ──── */
 .task-group{margin-bottom:14px;position:relative}
@@ -1068,14 +1045,6 @@ select option{background:var(--navy3)}
 .board-card-stripe{position:absolute;top:0;left:0;right:0;height:3px}
 
 /* ── Light mode passthrough (inherits existing tokens) ─────── */
-[data-theme="light"] .task-group-header:hover{background:rgba(0,102,204,.05)}
-[data-theme="light"] .board-table tr.item-row:hover td{background:rgba(0,102,204,.05)}
-[data-theme="light"] .board-table tr.item-row.selected td{background:rgba(0,102,204,.08)}
-[data-theme="light"] .board-table tr.subitem-row td{background:rgba(0,0,0,.03)}
-[data-theme="light"] .board-table tr.subitem-row:hover td{background:rgba(0,102,204,.04)}
-[data-theme="light"] .kcard{background:#ffffff}
-[data-theme="light"] .conn-chip{background:rgba(0,102,204,.08);border-color:rgba(0,102,204,.2);color:var(--teal)}
-[data-theme="light"] .board-table thead th{background:var(--navy3)}
 </style>
 </head>
 <body>
@@ -1435,7 +1404,7 @@ select option{background:var(--navy3)}
 @keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 @keyframes bootpulse{0%,100%{opacity:.3}50%{opacity:1}}
 </style>
-<div id="bootScreen" style="position:fixed;inset:0;background:#020912;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="loadYTApi()">
+<div id="bootScreen" style="position:fixed;inset:0;background:rgba(2,9,18,.85);z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer" onclick="loadYTApi()">
 
   <!-- SCANLINE EFFECT -->
   <div style="position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden">
@@ -1443,7 +1412,7 @@ select option{background:var(--navy3)}
   </div>
 
   <!-- GRID BACKGROUND -->
-  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,200,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,200,.03) 1px,transparent 1px);background-size:40px 40px"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(0,212,200,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,200,.025) 1px,transparent 1px);background-size:40px 40px"></div>
 
   <!-- CORNER BRACKETS -->
   <div style="position:absolute;top:24px;left:24px;width:40px;height:40px;border-top:2px solid rgba(0,212,200,.5);border-left:2px solid rgba(0,212,200,.5)"></div>
@@ -1528,6 +1497,41 @@ select option{background:var(--navy3)}
 </div>
 
 <!-- APP -->
+<!-- ═══ J.E.L.I.X LOCK SCREEN ═══ -->
+<div id="lockScreen">
+  <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:32px">
+    <div style="width:64px;height:64px;border-radius:50%;background:rgba(128,255,250,.06);border:1px solid var(--teal2);display:flex;align-items:center;justify-content:center;margin-bottom:16px;box-shadow:0 0 30px rgba(128,255,250,.15)">
+      <i class="ti ti-lock" style="font-size:28px;color:var(--teal);line-height:1;display:block"></i>
+    </div>
+    <div style="font-size:14px;font-weight:900;color:var(--teal);letter-spacing:.22em;text-shadow:0 0 12px rgba(128,255,250,.5)">J.E.L.I.X OS</div>
+    <div style="font-size:10px;color:var(--text3);letter-spacing:.2em;margin-top:4px">AUTHORIZATION REQUIRED</div>
+  </div>
+
+  <div class="pin-display" id="pinDisplay">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div id="pinError" style="font-size:11px;color:var(--red);letter-spacing:.1em;height:16px;margin-bottom:10px;opacity:0;transition:opacity .2s"></div>
+
+  <div class="pin-pad" id="pinPad">
+    <div class="pin-btn" onclick="enterPin(1)">1</div>
+    <div class="pin-btn" onclick="enterPin(2)">2</div>
+    <div class="pin-btn" onclick="enterPin(3)">3</div>
+    <div class="pin-btn" onclick="enterPin(4)">4</div>
+    <div class="pin-btn" onclick="enterPin(5)">5</div>
+    <div class="pin-btn" onclick="enterPin(6)">6</div>
+    <div class="pin-btn" onclick="enterPin(7)">7</div>
+    <div class="pin-btn" onclick="enterPin(8)">8</div>
+    <div class="pin-btn" onclick="enterPin(9)">9</div>
+    <div class="pin-btn" onclick="clearPin()" style="font-size:13px;color:var(--text3);border:none;background:transparent;letter-spacing:.05em">CLR</div>
+    <div class="pin-btn" onclick="enterPin(0)">0</div>
+    <div class="pin-btn" onclick="triggerBiometric()" style="border:none;background:transparent;color:var(--teal)"><i class="ti ti-scan" style="font-size:24px;line-height:1;display:block"></i></div>
+  </div>
+
+  <div style="margin-top:28px;font-size:10px;color:var(--text3);letter-spacing:.08em">
+    Default PIN: <span style="color:var(--teal2)">0000</span> &nbsp;·&nbsp; Change in System Settings
+  </div>
+</div>
+
 <div class="app" style="opacity:0;transition:opacity .5s" id="appRoot">
   <!-- TOPBAR -->
   <header class="topbar">
@@ -1542,7 +1546,7 @@ select option{background:var(--navy3)}
     </div>
     <div id="dataTicker">SYS::JELIX-OS &nbsp;|&nbsp; MNL·PHT &nbsp;|&nbsp; <span id="tickerClock">--:--</span> &nbsp;|&nbsp; ALL SYSTEMS NOMINAL</div>
       <div class="tb-r">
-      <button id="themeBtn" onclick="toggleTheme()" class="tb-btn" title="Toggle light/dark mode" style="font-size:11px;padding:5px 8px"><i class="ti ti-sun" id="themeIcon"></i></button>
+      
       <div class="hpill" id="weatherPill"><i class="ti ti-cloud" style="font-size:11px;line-height:1;display:block"></i><span id="weatherText">-- °C</span></div>
       <div class="hpill"><div class="hdot" id="statusDot"></div><span id="statusText" style="font-size:10px">ONLINE</span></div>
       <div class="hpill"><span id="topDate" style="font-size:10px"></span></div>
@@ -1587,6 +1591,7 @@ select option{background:var(--navy3)}
       <div class="ngl" style="margin-top:4px">Quick</div>
       <div class="ni" onclick="openCmd()"><i class="ti ti-command"></i>Command Palette<span style="font-size:9px;color:var(--text3);margin-left:auto">⌘K</span></div>
       <div class="ni" onclick="openModal('taskModal')"><i class="ti ti-plus"></i>New Task</div>
+      <div class="ni" onclick="setView('settings')" data-view="settings"><i class="ti ti-settings"></i>System Settings</div>
     </div>
     <div class="side-bottom">
       <button class="vsbtn" id="vsbtn" onclick="toggleVoice()">
@@ -2650,6 +2655,65 @@ select option{background:var(--navy3)}
       </div>
     </div>
 
+    <!-- ===== SYSTEM SETTINGS ===== -->
+    <div class="view" id="view-settings">
+      <div class="vh">
+        <div><div class="vt"><i class="ti ti-settings"></i>System Settings</div><div class="vs">Security · API Keys · Data Vault</div></div>
+      </div>
+      <div class="vb" style="padding:20px;max-width:760px">
+
+        <!-- SECURITY -->
+        <div class="hc" style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px"><i class="ti ti-shield-lock" style="font-size:14px;line-height:1;display:block"></i>Security & Access</div>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <input type="password" id="set-new-pin" placeholder="New 4-digit PIN" maxlength="4" pattern="[0-9]*" inputmode="numeric" style="flex:1;max-width:220px">
+            <button class="btn btn-t" onclick="updateSystemPin()">Update PIN</button>
+          </div>
+          <div style="font-size:10px;color:var(--text3);margin-bottom:14px" id="pinSetHint">Using default PIN (0000)</div>
+          <div style="padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+            <button class="btn btn-o" onclick="toggleBiometricSetting()" id="bioToggleBtn" style="font-size:12px"><i class="ti ti-scan" style="font-size:13px;line-height:1;display:inline-block;margin-right:5px"></i>Enable FaceID / TouchID</button>
+            <span style="font-size:10px;color:var(--text3)">Requires device biometric hardware (Face ID / Touch ID).</span>
+          </div>
+          <div style="padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-g" onclick="enrollVoiceBiometric()" style="font-size:12px"><i class="ti ti-microphone" style="font-size:12px;line-height:1;display:inline-block;margin-right:4px"></i>Enroll Voice Biometric</button>
+            <button class="btn btn-g" onclick="clearVoiceBiometric()" style="font-size:12px"><i class="ti ti-trash" style="font-size:12px;line-height:1;display:inline-block;margin-right:4px"></i>Clear Voice Profile</button>
+            <span style="font-size:10px;color:var(--text3)">Say "J.E.L.I.X unlock" during enrollment.</span>
+          </div>
+        </div>
+
+        <!-- AI INTEGRATIONS -->
+        <div class="hc" style="margin-bottom:16px">
+          <div style="font-size:11px;font-weight:700;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px"><i class="ti ti-api" style="font-size:14px;line-height:1;display:block"></i>AI Integrations</div>
+          <div class="fg" style="margin-bottom:12px">
+            <label class="fl">Anthropic API Key (Claude · J.E.L.I.X Agents)</label>
+            <div style="display:flex;gap:8px">
+              <input type="password" id="set-anthropic-key" placeholder="sk-ant-..." style="flex:1">
+              <button class="btn btn-t" onclick="saveKey('jelix-api-key','set-anthropic-key')">Save</button>
+            </div>
+          </div>
+          <div class="fg">
+            <label class="fl">OpenAI API Key (JARVIS Onyx Voice TTS)</label>
+            <div style="display:flex;gap:8px">
+              <input type="password" id="set-openai-key" placeholder="sk-proj-..." style="flex:1">
+              <button class="btn btn-t" onclick="saveKey('jelix-openai-key','set-openai-key')">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA VAULT -->
+        <div class="hc" style="border-color:rgba(239,68,68,.3)">
+          <div style="font-size:11px;font-weight:700;color:var(--red);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:6px"><i class="ti ti-database" style="font-size:14px;line-height:1;display:block"></i>Data Vault</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <button class="btn btn-g" onclick="exportLocalDB()"><i class="ti ti-download" style="font-size:12px;line-height:1;display:inline-block;margin-right:4px"></i>Backup Database</button>
+            <label class="btn btn-g" style="margin:0;cursor:pointer"><i class="ti ti-upload" style="font-size:12px;line-height:1;display:inline-block;margin-right:4px"></i>Restore Database<input type="file" style="display:none" accept=".json" onchange="importLocalDB(event)"></label>
+            <button class="btn btn-d" onclick="factoryReset()" style="margin-left:auto"><i class="ti ti-alert-triangle" style="font-size:12px;line-height:1;display:inline-block;margin-right:4px"></i>Factory Reset</button>
+          </div>
+          <div style="font-size:10px;color:var(--text3)">Backup exports your full J.E.L.I.X state. Factory reset permanently wipes all localStorage — irreversible.</div>
+        </div>
+
+      </div>
+    </div>
+
     <!-- CAPTURE MODAL -->
     <div class="mov" id="captureModal">
       <div class="modal" style="width:500px">
@@ -2814,6 +2878,204 @@ function setJelixAPIKey(){
   }
 }
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X SECURITY ENGINE — PIN + WebAuthn Biometric
+// ═══════════════════════════════════════════════════════════════════════════
+let currentPinInput='';
+function getSystemPin(){return localStorage.getItem('j-sys-pin')||'0000';}
+function setSystemPin(p){localStorage.setItem('j-sys-pin',p);}
+
+function enterPin(num){
+  if(currentPinInput.length>=4)return;
+  currentPinInput+=num;
+  updatePinDisplay();
+  chimeNotify();
+  if(currentPinInput.length===4){
+    if(currentPinInput===getSystemPin()){
+      unlockSystem();
+    }else{
+      const display=document.getElementById('pinDisplay');
+      const err=document.getElementById('pinError');
+      display.style.animation='shake 0.4s';
+      if(err){err.textContent='INCORRECT PIN';err.style.opacity='1';}
+      chimeError();
+      setTimeout(()=>{
+        display.style.animation='';
+        if(err){err.style.opacity='0';}
+        clearPin();
+      },800);
+    }
+  }
+}
+
+function clearPin(){
+  currentPinInput='';
+  updatePinDisplay();
+}
+
+function updatePinDisplay(){
+  const dots=document.querySelectorAll('.pin-dot');
+  dots.forEach((dot,i)=>dot.classList.toggle('filled',i<currentPinInput.length));
+}
+
+let _osLoaded=false;
+function unlockSystem(){
+  const ls=document.getElementById('lockScreen');
+  if(ls){
+    ls.style.transition='opacity .4s';
+    ls.style.opacity='0';
+    setTimeout(()=>{ls.style.display='none';},400);
+  }
+  chimeSuccess();
+  if(!_osLoaded){
+    _osLoaded=true;
+    // Show boot screen then run sequence
+    setTimeout(()=>{
+      const bs=document.getElementById('bootScreen');
+      if(bs){
+        bs.style.display='flex';
+        bs.style.opacity='0';
+        bs.style.transition='opacity .5s';
+        requestAnimationFrame(()=>{ bs.style.opacity='1'; });
+      }
+      // Start boot music
+      setTimeout(startBootMusic, 300);
+      // Run the boot sequence
+      setTimeout(runBootSequence, 600);
+    },500);
+  }
+}
+
+// WebAuthn — Face ID / Touch ID
+async function triggerBiometric(){
+  if(!window.PublicKeyCredential){
+    showToast('⚠ Biometrics not supported on this device.');
+    return;
+  }
+  const challenge=new Uint8Array(32);
+  window.crypto.getRandomValues(challenge);
+  try{
+    const assertion=await navigator.credentials.get({
+      publicKey:{
+        challenge,
+        rpId:window.location.hostname||'localhost',
+        userVerification:'required',
+        timeout:60000
+      }
+    });
+    if(assertion){
+      chimeSuccess();
+      unlockSystem();
+    }
+  }catch(err){
+    // Silent fail — user falls back to PIN
+    console.warn('[J.E.L.I.X] Biometric cancelled or failed:',err.message);
+  }
+}
+
+// Auto-trigger biometric on lock screen load
+document.addEventListener('DOMContentLoaded',()=>{
+  // Auto-trigger biometric on lock screen (first thing shown)
+  if(localStorage.getItem('j-bio-enabled')==='true'){
+    setTimeout(triggerBiometric,1000);
+  }
+  // Keyboard PIN entry support
+  document.addEventListener('keydown',e=>{
+    const ls=document.getElementById('lockScreen');
+    if(!ls||ls.style.display==='none')return;
+    if(e.key>='0'&&e.key<='9') enterPin(parseInt(e.key));
+    if(e.key==='Backspace'||e.key==='Delete') clearPin();
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SETTINGS CONTROLLERS
+// ═══════════════════════════════════════════════════════════════════════════
+function updateSystemPin(){
+  const input=document.getElementById('set-new-pin')?.value||'';
+  if(/^\d{4}$/.test(input)){
+    setSystemPin(input);
+    document.getElementById('set-new-pin').value='';
+    showToast('✓ System PIN updated, sir.');
+  }else{
+    showToast('⚠ PIN must be exactly 4 digits.');
+  }
+}
+
+function toggleBiometricSetting(){
+  const enabled=localStorage.getItem('j-bio-enabled')==='true';
+  localStorage.setItem('j-bio-enabled',enabled?'false':'true');
+  const btn=document.getElementById('bioToggleBtn');
+  if(btn)btn.innerHTML='<i class="ti ti-scan" style="font-size:13px;line-height:1;display:inline-block;margin-right:5px"></i>'+(enabled?'Enable FaceID / TouchID':'Disable FaceID / TouchID');
+  showToast(enabled?'Biometrics disabled on boot.':'✓ Biometrics enabled. Will prompt on boot.');
+}
+
+function saveKey(storageKey,inputId){
+  const val=document.getElementById(inputId)?.value.trim()||'';
+  if(val){localStorage.setItem(storageKey,val);showToast('✓ Key saved, sir.');}
+  else{localStorage.removeItem(storageKey);showToast('Key removed.');}
+  // Refresh topbar key indicator
+  const btn=document.getElementById('apiKeyBtn');
+  if(btn&&storageKey==='jelix-api-key'){
+    btn.style.color='var(--green)';btn.style.borderColor='var(--green)';btn.textContent='KEY ✓';
+  }
+}
+
+function exportLocalDB(){
+  const data={};
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);data[k]=localStorage.getItem(k);}
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='JELIX_Backup_'+new Date().toISOString().split('T')[0]+'.json';
+  a.click();
+  showToast('✓ Backup downloaded, sir.');
+}
+
+function importLocalDB(event){
+  const file=event.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const data=JSON.parse(e.target.result);
+      Object.keys(data).forEach(k=>localStorage.setItem(k,data[k]));
+      showToast('✓ Database restored. Rebooting...');
+      setTimeout(()=>location.reload(),1500);
+    }catch(err){showToast('⚠ Invalid backup file.');}
+  };
+  reader.readAsText(file);
+}
+
+function factoryReset(){
+  if(confirm('WARNING: This will wipe all local data, tasks, and settings. This cannot be undone. Proceed?')){
+    localStorage.clear();
+    showToast('Factory reset complete. Rebooting...');
+    setTimeout(()=>location.reload(),1000);
+  }
+}
+
+function renderSettingsView(){
+  // Populate current key status
+  const antKey=localStorage.getItem('jelix-api-key');
+  const oaiKey=localStorage.getItem('jelix-openai-key');
+  const antEl=document.getElementById('set-anthropic-key');
+  const oaiEl=document.getElementById('set-openai-key');
+  if(antEl&&antKey)antEl.placeholder='sk-ant-...'+antKey.slice(-6)+' (set)';
+  if(oaiEl&&oaiKey)oaiEl.placeholder='sk-proj-...'+oaiKey.slice(-6)+' (set)';
+  // Bio toggle button
+  const bioBtn=document.getElementById('bioToggleBtn');
+  if(bioBtn){
+    const enabled=localStorage.getItem('j-bio-enabled')==='true';
+    bioBtn.innerHTML='<i class="ti ti-scan" style="font-size:13px;line-height:1;display:inline-block;margin-right:5px"></i>'+(enabled?'Disable FaceID / TouchID':'Enable FaceID / TouchID');
+  }
+  // PIN setup hint
+  const hasPin=localStorage.getItem('j-sys-pin');
+  const pinHint=document.getElementById('pinSetHint');
+  if(pinHint)pinHint.textContent=hasPin?'PIN configured ✓':'Using default PIN (0000)';
+}
+
 // ===== DB =====
 const DB={
   tasks:JSON.parse(localStorage.getItem('j-tasks')||'null')||[
@@ -2918,7 +3180,7 @@ function setView(v){
   document.querySelectorAll('[data-view]').forEach(el=>el.classList.toggle('active',el.dataset.view===v));
   const el=document.getElementById('view-'+v);if(el)el.classList.add('active');
   currentView=v;addHistory('navigate','Navigated to '+v,{view:v});
-  const r={brief:renderBrief,'work-ih':renderWorkIH,'work-cs':renderWorkCS,venture:renderVenture,build:renderBuild,sides:renderSides,faith:renderFaith,life:renderLife,calendar:renderCalendar,tasks:renderTasks,notes:renderNotesList,journal:renderJournal,memory:renderMemory,history:renderHistory};
+  const r={brief:renderBrief,'work-ih':renderWorkIH,'work-cs':renderWorkCS,venture:renderVenture,build:renderBuild,sides:renderSides,faith:renderFaith,life:renderLife,calendar:renderCalendar,tasks:renderTasks,notes:renderNotesList,journal:renderJournal,memory:renderMemory,history:renderHistory,settings:renderSettingsView};
   if(r[v])r[v]();
 }
 
@@ -5531,6 +5793,9 @@ const NAV_MAP={
   'notes':'notes',
   'ai':'ai','jelix ai':'ai','agents':'ai',
   'memory':'memory',
+  'settings':'settings',
+  'system settings':'settings',
+  'security':'settings',
   'history':'history',
   'health':'health','bio monitor':'health','endurance':'health',
 };
@@ -6149,6 +6414,7 @@ const CMD_ITEMS=[
   {label:'AI Workspace',sub:'J.E.L.I.X agents',icon:'✦',action:()=>setView('ai'),group:'Navigate'},
   {label:'Memory',sub:'Persistent context',icon:'🧠',action:()=>setView('memory'),group:'Navigate'},
   {label:'Activity History',sub:'All actions + restore',icon:'🕐',action:()=>setView('history'),group:'Navigate'},
+  {label:'System Settings',sub:'Security · PIN · API Keys · Data Vault',icon:'⚙',action:()=>setView('settings'),group:'Navigate'},
   {label:'New Task',sub:'Add task',icon:'+',action:()=>openModal('taskModal'),group:'Create'},
   {label:'New Client',sub:'Add Ideahub client',icon:'🤝',action:()=>openModal('clientModal'),group:'Create'},
   {label:'New Journal Entry',sub:'Write in journal',icon:'📝',action:()=>openModal('journalModal'),group:'Create'},
@@ -6295,6 +6561,8 @@ function startBootMusic(){
 function loadYTApi(){startBootMusic();} // called by onclick — redirect to our audio engine
 
 function toggleBootMusic(){
+  // If OS already entered, do nothing
+  if(bootAudioCtx===null&&!bootMusicPlaying)return;
   if(!bootAudioCtx){startBootMusic();return;}
   const btn=document.getElementById('bootMuteBtn');
   const bars=document.getElementById('bootMusicBars');
@@ -6317,12 +6585,18 @@ function toggleBootMusic(){
 function fadeOutBootAudio(){
   if(!bootAudioCtx||!bootMasterGain)return;
   const now=bootAudioCtx.currentTime;
-  bootMasterGain.gain.linearRampToValueAtTime(0,now+1.8);
+  // Fast 0.6s fade so music stops well before lock screen is interacted with
+  bootMasterGain.gain.cancelScheduledValues(now);
+  bootMasterGain.gain.setValueAtTime(bootMasterGain.gain.value,now);
+  bootMasterGain.gain.linearRampToValueAtTime(0,now+0.6);
+  bootMusicPlaying=false;
   setTimeout(()=>{
     bootMusicNodes.forEach(n=>{try{n.stop();}catch(e){}});
     bootMusicNodes=[];
     try{bootAudioCtx.close();}catch(e){}
-  },2000);
+    bootAudioCtx=null;
+    bootMasterGain=null;
+  },700);
 }
 
 // ===== BOOT SEQUENCE =====
@@ -6356,22 +6630,36 @@ function setBootProgress(pct,msg){
   }
 }
 function enterOS(){
+  // Called by runBootSequence after boot completes → fade boot → load OS
   const screen=document.getElementById('bootScreen');
-  const app=document.getElementById('appRoot');
+  if(screen){screen.onclick=null;screen.style.cursor='default';}
   fadeOutBootAudio();
   if(screen){screen.style.animation='bootfadeout .8s ease forwards';}
-  if(app){app.style.opacity='1';}
   setTimeout(()=>{
     if(screen)screen.style.display='none';
-    try{reRenderAll();}catch(e){console.warn('reRenderAll:',e);}
-    loadAllFromSupabase();
-    // ── Daily brief voice summary on boot ──────────────────────────────
-    setTimeout(()=>{
-      try{
-        speak(buildDailyBriefSummary());
-      }catch(e){console.warn('Brief summary error:',e);}
-    },2200);
+    loadOS();
   },900);
+}
+
+function loadOS(){
+  // Step 2: Called by unlockSystem() — load the full OS
+  const app=document.getElementById('appRoot');
+  if(app){app.style.opacity='1';app.style.pointerEvents='';}
+  // Dim particles for OS dashboard
+  setTimeout(()=>setParticleMode('os'), 600);
+  try{reRenderAll();}catch(e){console.warn('reRenderAll:',e);}
+  loadAllFromSupabase();
+  // Start wake word listener
+  setTimeout(()=>{
+    if(typeof startWakeListenerFn==='function') startWakeListenerFn();
+  },1500);
+  // Daily brief spoken summary
+  setTimeout(()=>{
+    try{speak(buildDailyBriefSummary());}
+    catch(e){console.warn('Brief summary error:',e);}
+  },2500);
+  // Auto morning brief (once per day)
+  setTimeout(scheduleAutoBrief, 3500);
 }
 
 async function runBootSequence(){
@@ -6630,28 +6918,7 @@ function deleteHealthEntry(id){
 function renderEndurance(){renderHealth();}  // alias for safety
 
 // ===== DARK/LIGHT THEME =====
-function toggleTheme(){
-  const isDark=!document.documentElement.hasAttribute('data-theme');
-  if(isDark){
-    document.documentElement.setAttribute('data-theme','light');
-    localStorage.setItem('jelix-theme','light');
-    const icon=document.getElementById('themeIcon');
-    if(icon){icon.className='ti ti-moon';}
-  }else{
-    document.documentElement.removeAttribute('data-theme');
-    localStorage.setItem('jelix-theme','dark');
-    const icon=document.getElementById('themeIcon');
-    if(icon){icon.className='ti ti-sun';}
-  }
-}
-(function(){
-  const saved=localStorage.getItem('jelix-theme');
-  if(saved==='light'){
-    document.documentElement.setAttribute('data-theme','light');
-    const icon=document.getElementById('themeIcon');
-    if(icon)icon.className='ti ti-moon';
-  }
-})();
+// Theme toggle removed — JARVIS dark mode locked
 
 // ===== DATA TICKER =====
 function updateTicker(){
@@ -6661,13 +6928,145 @@ function updateTicker(){
 setInterval(updateTicker,1000);
 updateTicker();
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X LOCK/BOOT AMBIENT LAYER — 2D floating orbs + drifting stars
+// Sits at z-index:99996 (below WebGL particles at 99997)
+// ═══════════════════════════════════════════════════════════════════════════
+(function initAmbientLayer(){
+  const cvs=document.createElement('canvas');
+  cvs.id='jelixAmbient';
+  cvs.style.cssText='position:fixed;inset:0;z-index:99996;pointer-events:none;';
+  document.body.insertBefore(cvs,document.body.firstChild);
+
+  const ctx=cvs.getContext('2d');
+  let W=window.innerWidth,H=window.innerHeight;
+
+  function resize(){
+    W=window.innerWidth;H=window.innerHeight;
+    cvs.width=W*devicePixelRatio;cvs.height=H*devicePixelRatio;
+    cvs.style.width=W+'px';cvs.style.height=H+'px';
+    ctx.scale(devicePixelRatio,devicePixelRatio);
+  }
+  window.addEventListener('resize',resize);resize();
+
+  // Floating orbs
+  const ORBS=Array.from({length:7},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:80+Math.random()*160,
+    vx:(Math.random()-.5)*.18,
+    vy:(Math.random()-.5)*.18,
+    hue:Math.random()<.7?'128,255,250':'255,140,0',
+    alpha:0.025+Math.random()*0.04,
+    phase:Math.random()*Math.PI*2
+  }));
+
+  // Drifting star field
+  const STARS=Array.from({length:180},()=>({
+    x:Math.random()*W, y:Math.random()*H,
+    r:Math.random()<.15?1.4:0.6,
+    alpha:0.1+Math.random()*0.5,
+    twinkle:Math.random()*Math.PI*2,
+    speed:0.004+Math.random()*0.008
+  }));
+
+  // Connecting lines between nearby stars
+  const MAX_DIST=120;
+
+  // Auth mode = full brightness; OS mode = subtle
+  let _ambientScale = 1.0;
+  window._setAmbientScale = function(s){ _ambientScale = s; };
+
+  let t=0;
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    t+=0.008;
+    const sc = _ambientScale;
+
+    // Draw orbs
+    ORBS.forEach(o=>{
+      o.x+=o.vx;o.y+=o.vy;o.phase+=0.005;
+      if(o.x<-o.r)o.x=W+o.r;if(o.x>W+o.r)o.x=-o.r;
+      if(o.y<-o.r)o.y=H+o.r;if(o.y>H+o.r)o.y=-o.r;
+      const pulse=o.alpha*sc*(0.7+0.3*Math.sin(o.phase));
+      const g=ctx.createRadialGradient(o.x,o.y,0,o.x,o.y,o.r);
+      g.addColorStop(0,`rgba(${o.hue},${pulse})`);
+      g.addColorStop(1,`rgba(${o.hue},0)`);
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fill();
+    });
+
+    // Draw stars + twinkle
+    STARS.forEach(s=>{
+      s.twinkle+=s.speed;
+      const a=s.alpha*sc*(0.4+0.6*Math.abs(Math.sin(s.twinkle)));
+      ctx.fillStyle=`rgba(128,255,250,${a})`;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();
+    });
+
+    // Connecting lines — hidden in OS mode
+    if(sc > 0.4){
+      for(let i=0;i<STARS.length;i++){
+        for(let j=i+1;j<STARS.length;j++){
+          const dx=STARS[i].x-STARS[j].x,dy=STARS[i].y-STARS[j].y;
+          const dist=Math.sqrt(dx*dx+dy*dy);
+          if(dist<MAX_DIST){
+            const a=0.06*sc*(1-dist/MAX_DIST);
+            ctx.strokeStyle=`rgba(128,255,250,${a})`;
+            ctx.lineWidth=0.5;
+            ctx.beginPath();ctx.moveTo(STARS[i].x,STARS[i].y);ctx.lineTo(STARS[j].x,STARS[j].y);ctx.stroke();
+          }
+        }
+      }
+    }
+
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+
+
+// ── Particle mode switcher — called by loadOS() after unlock ─────────────
+function setParticleMode(mode){
+  // mode: 'auth' = full (lock/boot screens), 'os' = subtle (main dashboard)
+  const webgl = document.getElementById('jelixParticles');
+  const ambient = document.getElementById('jelixAmbient');
+  if(mode === 'os'){
+    // WebGL: fade to very subtle via CSS opacity
+    if(webgl){
+      webgl.style.transition = 'opacity 1.5s ease';
+      webgl.style.opacity = '0.18';
+    }
+    // Ambient: reduce internal scale (orbs/stars much dimmer)
+    if(typeof window._setAmbientScale === 'function'){
+      // Smooth interpolation to subtle scale
+      let cur = 1.0, target = 0.12;
+      const step = () => {
+        cur += (target - cur) * 0.06;
+        window._setAmbientScale(cur);
+        if(Math.abs(cur - target) > 0.002) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+    if(ambient){
+      ambient.style.transition = 'opacity 1.5s ease';
+      ambient.style.opacity = '0.5';
+    }
+  } else {
+    // Auth mode — full brightness
+    if(webgl){webgl.style.transition='opacity 0.8s ease';webgl.style.opacity='1';}
+    if(ambient){ambient.style.transition='opacity 0.8s ease';ambient.style.opacity='1';}
+    if(typeof window._setAmbientScale === 'function') window._setAmbientScale(1.0);
+  }
+}
 // ===== REACT BITS PARTICLES — WebGL port (OGL-equivalent, no CDN) =====
 (function initParticles(){
   // ── Config (mirrors Particles component props) ──────────────────────────
-  const PARTICLE_COUNT      = 220;
-  const PARTICLE_SPREAD     = 10;
-  const SPEED               = 0.08;
-  const PARTICLE_BASE_SIZE  = 90;
+  const PARTICLE_COUNT      = 420;
+  const PARTICLE_SPREAD     = 12;
+  const SPEED               = 0.07;
+  const PARTICLE_BASE_SIZE  = 100;
+  // OS mode opacity controlled dynamically by setParticleMode()
   const SIZE_RANDOMNESS     = 1.0;
   const CAMERA_DISTANCE     = 20;
   const MOVE_ON_HOVER       = true;
@@ -6679,12 +7078,12 @@ updateTicker();
   // ── Mount canvas behind everything ──────────────────────────────────────
   const canvas = document.createElement('canvas');
   canvas.id = 'jelixParticles';
-  canvas.style.cssText = 'position:fixed;inset:0;z-index:0;pointer-events:none;';
+  canvas.style.cssText = 'position:fixed;inset:0;z-index:99997;pointer-events:none;';
   document.body.insertBefore(canvas, document.body.firstChild);
 
   // Make app root sit above canvas
   const appRoot = document.getElementById('appRoot');
-  if(appRoot) appRoot.style.position = 'relative';
+  if(appRoot){appRoot.style.position='relative';appRoot.style.zIndex='1';appRoot.style.pointerEvents='none';}
 
   const gl = canvas.getContext('webgl', { alpha:true, depth:false, antialias:false });
   if(!gl){ canvas.remove(); return; }
@@ -8647,20 +9046,20 @@ window.executeVoiceCommand = function(rawText){
 const _origExecVC2 = window.executeVoiceCommand;
 
 // ── ENHANCEMENT 4b: Auto daily brief on first open of the day ─────────────
-(function scheduleAutoBrief(){
+// scheduleAutoBrief is called inside loadOS() post-unlock
+function scheduleAutoBrief(){
   const lastKey='j-auto-brief-shown';
   const today=new Date().toISOString().split('T')[0];
   if(localStorage.getItem(lastKey)===today) return;
   localStorage.setItem(lastKey,today);
-  // Wait for OS to finish booting, then auto-brief
   setTimeout(()=>{
     try{
       runMorningBrief();
       chimeboot();
       setTimeout(()=>speak(_lastMorningBrief||'Good morning, sir. Daily brief is ready.'),1200);
     }catch(e){}
-  },5000);
-})();
+  },3000);
+}
 
 // ── ENHANCEMENT 5: Voice Biometric Lock ───────────────────────────────────
 const VBL = {
@@ -8939,12 +9338,12 @@ console.log('[J.E.L.I.X] JARVIS Intelligence Layer loaded — Skills 1–7 + CLA
     },1500);
   };
 
-  // Start after boot
-  setTimeout(startWakeListener, 4000);
-  console.log('[J.E.L.I.X] Wake word listener initialised — say "Jelix" to activate.');
+  // Expose so loadOS() can call after PIN unlock
+  window.startWakeListenerFn = startWakeListener;
+  console.log('[J.E.L.I.X] Wake word listener ready — will start after PIN unlock.');
 })();
 
-runBootSequence();
+// runBootSequence() now called by unlockSystem() after PIN entry
 </script>
 
 <!-- MOBILE BOTTOM HUD NAV -->
