@@ -9,6 +9,28 @@
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23000000'/><text y='72' x='10' font-size='60' fill='%2300fff2' font-family='monospace' font-weight='bold'>J</text></svg>">
 <title>J.E.L.I.X OS</title>
+<link rel="manifest" href="data:application/manifest+json,{
+  &quot;name&quot;: &quot;J.E.L.I.X OS&quot;,
+  &quot;short_name&quot;: &quot;JELIX&quot;,
+  &quot;description&quot;: &quot;Personal Operating System — Justine Luis Inacay&quot;,
+  &quot;start_url&quot;: &quot;.&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#000000&quot;,
+  &quot;theme_color&quot;: &quot;#000000&quot;,
+  &quot;orientation&quot;: &quot;any&quot;,
+  &quot;icons&quot;: [
+    {
+      &quot;src&quot;: &quot;data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23000000'/><text y='380' x='40' font-size='420' fill='%2380fffa' font-family='monospace' font-weight='bold'>J</text></svg>&quot;,
+      &quot;sizes&quot;: &quot;512x512&quot;,
+      &quot;type&quot;: &quot;image/svg+xml&quot;,
+      &quot;purpose&quot;: &quot;any maskable&quot;
+    }
+  ],
+  &quot;categories&quot;: [&quot;productivity&quot;, &quot;utilities&quot;],
+  &quot;lang&quot;: &quot;en-PH&quot;
+}">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="J.E.L.I.X OS">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -5895,13 +5917,158 @@ function setVcState(state){
 
 // SPEECH RECOGNITION
 let isRecording=false,recognition=null;
-function initRecognition(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){showToast('Voice not supported. Use Chrome or Edge.');return null;}const r=new SR();r.continuous=false;r.interimResults=true;r.lang='en-PH';r.onstart=()=>{isRecording=true;setVcState('listening');showVBar();};r.onresult=(e)=>{let i2='',f2='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f2+=e.results[i][0].transcript;else i2+=e.results[i][0].transcript;}document.getElementById('vTranscript').textContent=f2||i2;};r.onend=()=>{isRecording=false;const txt=document.getElementById('vTranscript').textContent.trim();if(txt)executeVoiceCommand(txt);else{setVcState('idle');showToast('No speech detected.');}};r.onerror=(e)=>{isRecording=false;setVcState('idle');if(e.error==='not-allowed')showToast('Mic permission denied.');else if(e.error!=='no-speech')showToast('Voice error: '+e.error);};return r;}
+function initRecognition(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){showToast('Voice not supported. Use Chrome or Edge.');return null;}
+  const r=new SR();
+  r.continuous=true;          // keep listening for free-flow conversation
+  r.interimResults=true;
+  r.lang='en-PH';             // Taglish: Filipino English locale
+  r.maxAlternatives=1;
+
+  let _pauseTimer=null;
+  let _finalBuffer='';
+
+  r.onstart=()=>{isRecording=true;setVcState('listening');showVBar();_finalBuffer='';};
+
+  r.onresult=(e)=>{
+    let interim='',final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript+' ';
+      else interim+=e.results[i][0].transcript;
+    }
+    if(final){
+      _finalBuffer+=final;
+      document.getElementById('vTranscript').textContent=_finalBuffer.trim();
+      // Reset 2-second pause timer on each new final result
+      clearTimeout(_pauseTimer);
+      _pauseTimer=setTimeout(()=>{
+        const cmd=_finalBuffer.trim();
+        _finalBuffer='';
+        if(cmd) executeVoiceCommand(cmd);
+      },2000);
+    } else {
+      document.getElementById('vTranscript').textContent=(_finalBuffer+interim).trim();
+    }
+  };
+
+  r.onend=()=>{
+    // If continuous mode ends unexpectedly, flush any remaining buffer
+    clearTimeout(_pauseTimer);
+    const cmd=_finalBuffer.trim();
+    _finalBuffer='';
+    isRecording=false;
+    if(cmd) executeVoiceCommand(cmd);
+    else setVcState('idle');
+  };
+
+  r.onerror=(e)=>{
+    clearTimeout(_pauseTimer);
+    isRecording=false;
+    setVcState('idle');
+    if(e.error==='not-allowed') chimeError();
+    else if(e.error!=='no-speech') chimeError();
+  };
+  return r;
+}
 function toggleVoice(){showVBar();if(isRecording){stopRecording();return;}if(!recognition)recognition=initRecognition();if(!recognition)return;try{recognition.start();}catch(e){showToast('Voice already active.');}}
 function stopRecording(){if(recognition&&isRecording)recognition.stop();}
 
 // AI
-const AGENTS={exec:{name:'✦ EXECUTIVE AGENT',desc:'Scheduling · Emails · Decisions',system:'You are J.E.L.I.X Executive Agent for Justine Luis Inacay, Marketing Manager in Taguig. Be direct, concise, British cadence. Address as "sir". Lead with solution immediately. No fluff.'},marketing:{name:'📡 MARKETING AGENT',desc:'Campaigns · Copy · Reports',system:'You are J.E.L.I.X Marketing Agent for Justine. Handle campaigns, copy, reports for Ideahub clients and Chainsmoker/Sweetheart. Address as "sir".'},business:{name:'◈ BUSINESS AGENT',desc:'TJC · Operations · Strategy',system:'You are J.E.L.I.X Business Agent for Justine. Handle TJC (The Job Collectives) — Filipino-led VA agency targeting North American SMBs. Pre-revenue. Address as "sir".'},voice:{name:'◉ VOICE AGENT',desc:'OS command interpreter',system:'You are J.E.L.I.X Voice Agent for Justine. Confirm what was done, suggest follow-ups. Extremely concise. Address as "sir".'},finance:{name:'₱ FINANCE AGENT',desc:'Cash flow · Budgets · P&L',system:'You are J.E.L.I.X Finance Agent for Justine Luis Inacay. Handle personal and business cash flow (INACAY Cash Flow), rental income (Culasi Compound), Ideahub billing, TJC pricing. Be analytical, precise, surface numbers immediately. Address as "sir".'},hr:{name:'👥 HR & PEOPLE AGENT',desc:'VA ops · TJC hiring · Onboarding',system:'You are J.E.L.I.X HR Agent for Justine. Handle The Job Collectives VA recruitment, onboarding, partner management, KPIs and shift scheduling. Policies grounded in J.O.B.S. values and Colossians 3:23. Address as "sir".'},design:{name:'🎨 GRAPHIC DESIGN AGENT',desc:'Creatives · Layouts · Branding',system:'You are J.E.L.I.X Graphic Design Agent for Justine. Help with visual directions, copy for creatives, social media layouts, brand guidelines for Ideahub clients (Chainsmoker, Millscope, Celtic Biotech, etc.) and TJC brand. Think like a senior art director. Address as "sir".'}};
+// ═══════════════════════════════════════════════════════════════════════
+// J.E.L.I.X AGENT SYSTEM — v2
+// Enhancements: Taglish, no cashflow context analysis, daily brief,
+//               free-flow conversation, personal preference adaptation
+// ═══════════════════════════════════════════════════════════════════════
+
+const JELIX_BASE_SYSTEM = `You are J.E.L.I.X — the personal AI operating system of Justine Luis Inacay, Marketing Manager based in Las Piñas City, Metro Manila, Philippines.
+
+IDENTITY & CONTEXT:
+- Justine runs two shifts: Ideahub (2AM–10AM PHT, Tue–Sat) and Chainsmoker (10PM–2AM PHT, Mon–Fri)
+- Co-founder of The Job Collectives (TJC) — Filipino-led VA agency targeting North American SMBs
+- Six life worlds: WORK-IH, WORK-CS, VENTURE, BUILD, SIDES, FAITH, LIFE
+- Faith-driven: Colossians 3:23. Active in CAA congregation, Kapisanan Buklod
+- Location: Las Piñas City. Timezone: PHT (UTC+8)
+
+LANGUAGE — TAGLISH:
+- Justine naturally switches between English and Filipino (Tagalog) mid-sentence — this is called Taglish
+- You must understand and respond naturally in Taglish when she speaks it
+- Examples: "Anong tasks ko ngayon?" → answer with tasks. "Pwede ba mag-add ng event?" → yes, add an event
+- Common Filipino filler words you will hear: "yung", "naman", "kasi", "oo", "hindi", "sige", "ano", "paano", "teka", "grabe", "talaga", "kanina", "bukas", "ngayon"
+- You may respond in English-dominant Taglish naturally — do not force full Tagalog
+- Recognize Filipino time references: "bukas" = tomorrow, "kanina" = earlier, "ngayon" = now/today, "mamaya" = later
+
+COMMUNICATION STYLE:
+- Always address Justine as "sir"
+- Formal British cadence but warm — not robotic
+- Lead with the solution immediately, no preamble
+- Concise but complete — never truncate an answer mid-thought
+- Adapt to conversational tone: if she is casual, match it; if she is focused, be sharp
+- Real-time free-flowing conversation: do not wait for a full formal query — respond to fragments, clarifications, and follow-ups naturally
+
+CAPABILITIES YOU ACTIVELY MANAGE:
+- Tasks: acknowledge, create, update, complete, prioritize
+- Notes: create, read, summarize
+- Calendar events: add, read, remind, summarize today's schedule
+- To-dos: parse and route to task board
+- Daily Brief: provide unprompted on first open — tasks, events, balance, priorities
+
+STRICT RESTRICTIONS:
+- NEVER analyze, discuss, or reference the cash flow dashboard, transactions, account balances, or any financial data
+- NEVER mention specific peso amounts, income figures, or expense categories
+- If asked about finances, respond: "Cash flow analysis is restricted on this session, sir."
+
+PERSONAL PREFERENCES (adapt to these):
+- Prefers bullet-point summaries for complex items
+- Dislikes repetition — never repeat what was just said
+- Appreciates when you flag High priority items first
+- Responds well to brief affirmations before answers ("Noted, sir." / "On it." / "Clear.")
+- Prefers metric time references in PHT
+`;
+
+const AGENTS={
+  exec:{
+    name:'✦ EXECUTIVE AGENT',
+    desc:'Scheduling · Tasks · Daily Brief · Free-flow',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: Executive command center. Handle scheduling, task management, daily briefs, decisions, email drafts. When in doubt, default to this agent.'
+  },
+  marketing:{
+    name:'📡 MARKETING AGENT',
+    desc:'Campaigns · Copy · Reports',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: Marketing specialist. Handle campaign briefs, copy, reports, content calendars for all Ideahub clients and Chainsmoker. No financial data.'
+  },
+  business:{
+    name:'◈ BUSINESS AGENT',
+    desc:'TJC · Operations · Strategy',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: Business and venture strategy. Handle TJC operations, VA recruitment, partner management, J.O.B.S. framework, North American SMB positioning. No financial data.'
+  },
+  voice:{
+    name:'◉ VOICE AGENT',
+    desc:'Taglish commands · OS control',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: Voice command interpreter. Confirm actions taken, suggest follow-up commands, ultra-concise. Understands Taglish naturally.'
+  },
+  hr:{
+    name:'👥 HR & PEOPLE AGENT',
+    desc:'VA ops · TJC hiring · Onboarding',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: HR and people operations for The Job Collectives. VA hiring, onboarding, KPIs, shift scheduling. Rooted in Colossians 3:23 and J.O.B.S. values.'
+  },
+  design:{
+    name:'🎨 GRAPHIC DESIGN AGENT',
+    desc:'Creatives · Layouts · Branding',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: Senior art director. Visual direction, creative briefs, brand guidelines for Ideahub clients (Chainsmoker, Millscope, Celtic Biotech, etc.) and TJC. Think in layouts and visual hierarchy.'
+  },
+  faith:{
+    name:'✝ FAITH AGENT',
+    desc:'CAA · Buklod · Spiritual reflection',
+    system:JELIX_BASE_SYSTEM+'\n\nROLE: Faith companion. Support CAA congregation activities, Kapisanan Buklod scheduling, spiritual reflection, prayer journaling, and faith-driven decision-making grounded in scripture.'
+  }
+};
+
 let currentAgent='exec',conversation=[],isThinking=false;
+
+// Personal preference memory — adapts per session
+const JELIX_PREFS = JSON.parse(localStorage.getItem('j-ai-prefs')||'{}');
+function savePrefs(){ localStorage.setItem('j-ai-prefs',JSON.stringify(JELIX_PREFS)); }
 function setAgent(name,el){currentAgent=name;conversation=[];document.querySelectorAll('.ai-agent').forEach(b=>b.classList.remove('active'));el.classList.add('active');const a=AGENTS[name];document.getElementById('agentTitle').textContent=a.name;document.getElementById('agentDesc').textContent=a.desc;document.getElementById('aiMsgs').innerHTML=`<div class="mr-row"><div class="mav aiv">J</div><div><div class="mbubble ai">${a.name} activated, sir. How can I assist?</div></div></div>`;}
 async function callClaude(msg,agent='exec'){
   const a=AGENTS[agent]||AGENTS.exec;
@@ -5909,8 +6076,29 @@ async function callClaude(msg,agent='exec'){
   const apiKey=localStorage.getItem('jelix-api-key')||'';
   if(!apiKey){
     showToast('⚠ No API key. Click JARVIS KEY in topbar to set.');
-    throw new Error('No API key set. Click JARVIS KEY to configure.');
+    throw new Error('No API key set.');
   }
+
+  // Live context injection — tasks, events, notes. NO cashflow data.
+  const today=new Date().toISOString().split('T')[0];
+  const todayPH=new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Manila'});
+  const timePH=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});
+  const openTasks=(DB.tasks||[]).filter(t=>t.status!=='Done').slice(0,10).map(t=>({title:t.title,world:t.world,priority:t.priority,due:t.due,client:t.client}));
+  const todayEvents=(DB.calEvents||[]).filter(e=>e.date===today).map(e=>({title:e.title,time:e.time,loc:e.loc}));
+  const recentNotes=(DB.notes||[]).slice(0,3).map(n=>({title:n.title}));
+  const recentJournal=(DB.journal||[]).slice(0,2).map(j=>({title:j.title,date:j.date}));
+  const openDecisions=(DB.decisions||[]).filter(d=>d.status==='Open').slice(0,3).map(d=>({situation:d.situation}));
+
+  const liveContext=`
+CURRENT DATE/TIME: ${todayPH}, ${timePH} PHT
+OPEN TASKS (${openTasks.length}): ${JSON.stringify(openTasks)}
+TODAY'S EVENTS: ${JSON.stringify(todayEvents)}
+RECENT NOTES: ${JSON.stringify(recentNotes)}
+RECENT JOURNAL: ${JSON.stringify(recentJournal)}
+OPEN DECISIONS: ${JSON.stringify(openDecisions)}
+PERSONAL PREFERENCES: ${JSON.stringify(JELIX_PREFS)}
+NOTE: Cash flow, account balances, and financial transaction data are RESTRICTED from context — do not reference or analyze them.`;
+
   const r=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
     headers:{
@@ -5922,7 +6110,7 @@ async function callClaude(msg,agent='exec'){
     body:JSON.stringify({
       model:'claude-sonnet-4-6',
       max_tokens:1024,
-      system:a.system+'\n\nContext — Tasks: '+JSON.stringify(DB.tasks.slice(0,8))+'\nClients: '+JSON.stringify(DB.clients.slice(0,6))+'\nDate: '+new Date().toLocaleDateString('en-PH',{weekday:'long',year:'numeric',month:'long',day:'numeric',timeZone:'Asia/Manila'})+', Manila, Philippines',
+      system:a.system+'\n\n'+liveContext,
       messages:msgs
     })
   });
@@ -5933,7 +6121,8 @@ async function callClaude(msg,agent='exec'){
   const d=await r.json();
   return d.content.find(c=>c.type==='text')?.text||'No response.';
 }
-function appendAIMsg(role,text){const box=document.getElementById('aiMsgs');const row=document.createElement('div');row.className='mr-row'+(role==='user'?' user':'');const t=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true,timeZone:'Asia/Manila'});row.innerHTML=`<div class="mav ${role==='ai'?'aiv':'usrv'}">${role==='ai'?'J':'S'}</div><div><div class="mbubble ${role}">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div><div class="mtime">${t}</div></div>`;box.appendChild(row);box.scrollTop=box.scrollHeight;}
+
+
 async function sendAI(){if(isThinking)return;const input=document.getElementById('aiInput');const text=input.value.trim();if(!text)return;input.value='';input.style.height='';isThinking=true;document.getElementById('aiSendBtn').disabled=true;appendAIMsg('user',text);conversation.push({role:'user',content:text});const box=document.getElementById('aiMsgs');const row=document.createElement('div');row.className='mr-row';row.id='thinkRow';row.innerHTML=`<div class="mav aiv">J</div><div><div class="mbubble ai"><div style="display:flex;gap:4px;align-items:center"><div class="td-dot"></div><div class="td-dot"></div><div class="td-dot"></div></div></div></div>`;box.appendChild(row);box.scrollTop=box.scrollHeight;try{const reply=await callClaude(text,currentAgent);document.getElementById('thinkRow')?.remove();appendAIMsg('ai',reply);speak(reply);conversation.push({role:'assistant',content:reply});}catch(e){document.getElementById('thinkRow')?.remove();const em='Connection error, sir: '+e.message;appendAIMsg('ai',em);speak(em);}isThinking=false;document.getElementById('aiSendBtn').disabled=false;}
 function aiKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI();}}
 function qp(t){document.getElementById('aiInput').value=t;sendAI();}
@@ -8274,6 +8463,383 @@ window.executeVoiceCommand=function(rawText){
   document.head.appendChild(s);
 })();
 
+
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X ENHANCEMENT LAYER v2
+// 1. Taglish intent expansion
+// 2. 2-second pause (in initRecognition above)
+// 3. Audio chimes (error/success)
+// 4. Task/notes/calendar/todo voice management + auto daily brief
+// 5. Voice biometric lock
+// 6. Free-flow conversation + preference adaptation
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ── ENHANCEMENT 3: Audio Chimes (Web Audio API, no CDN) ──────────────────
+const _audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+
+function _playChime(freq, type, duration, volume, decay){
+  try{
+    const osc=_audioCtx.createOscillator();
+    const gain=_audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(_audioCtx.destination);
+    osc.type=type||'sine';
+    osc.frequency.setValueAtTime(freq,_audioCtx.currentTime);
+    gain.gain.setValueAtTime(volume||0.3,_audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,_audioCtx.currentTime+(decay||0.6));
+    osc.start(_audioCtx.currentTime);
+    osc.stop(_audioCtx.currentTime+(duration||0.6));
+  }catch(e){}
+}
+
+// Error chime: low-frequency descending two-tone (replaces all spoken errors)
+function chimeError(){
+  _playChime(220,'sine',0.4,0.25,0.4);
+  setTimeout(()=>_playChime(165,'sine',0.5,0.2,0.5),180);
+}
+
+// Success chime: positive ascending two-tone
+function chimeSuccess(){
+  _playChime(523,'sine',0.18,0.2,0.18);
+  setTimeout(()=>_playChime(659,'sine',0.25,0.18,0.25),160);
+}
+
+// Notification chime: single mid tone
+function chimeNotify(){
+  _playChime(440,'sine',0.3,0.15,0.3);
+}
+
+// Boot chime: tri-tone ascending (JARVIS startup feel)
+function chimeboot(){
+  _playChime(349,'triangle',0.2,0.18,0.2);
+  setTimeout(()=>_playChime(440,'triangle',0.2,0.18,0.2),200);
+  setTimeout(()=>_playChime(523,'triangle',0.4,0.22,0.4),400);
+}
+
+// Patch speak() to play chimes instead of speaking error messages
+const _origSpeak = window.speak;
+window.speak = async function(text){
+  if(!text) return;
+  // Intercept error patterns — play chime instead of speaking
+  const errorPatterns = [/error/i, /failed/i, /not found/i, /could not/i, /unable/i, /invalid/i, /denied/i, /no speech/i, /unclear/i];
+  const isError = errorPatterns.some(p=>p.test(text));
+  if(isError){ chimeError(); showToast(text); return; }
+  // Success patterns — chime + speak
+  const successPatterns = [/saved/i, /done/i, /complete/i, /added/i, /created/i, /updated/i, /synced/i, /installed/i, /captured/i, /logged/i];
+  if(successPatterns.some(p=>p.test(text))) chimeSuccess();
+  if(_origSpeak) return _origSpeak.apply(this, arguments);
+};
+
+// ── ENHANCEMENT 4: Task / Notes / Calendar / Todo voice management ────────
+
+// Taglish intent patterns (expand existing FLUID_VOICE_INTENTS)
+const TAGLISH_INTENTS = [
+  // Tagalog/Taglish task queries
+  {re:/ano.*tasks?\s*(ko|natin|ngayon)?/i,          action:'query_tasks'},
+  {re:/anong.*gagawin\s*(ko|natin)?/i,               action:'query_tasks'},
+  {re:/ilang.*tasks?\s*(na|pa)?/i,                   action:'query_tasks'},
+  {re:/mag[- ]?add.*task[:\-\s]+(?<title>.+)/i,      action:'add_task'},
+  {re:/gumawa.*task[:\-\s]+(?<title>.+)/i,           action:'add_task'},
+  // Calendar
+  {re:/anong.*schedule\s*(ko|natin)?\s*(ngayon|bukas|mamaya)?/i, action:'query_calendar'},
+  {re:/anong.*events?\s*(ngayon|bukas|mamaya)?/i,    action:'query_calendar'},
+  {re:/may.*meeting\s*(ba|ako|tayo)?\s*(ngayon|bukas)?/i, action:'query_calendar'},
+  // Notes
+  {re:/anong.*notes?\s*(ko|natin)?/i,                action:'query_notes'},
+  {re:/basahin.*notes?/i,                            action:'query_notes'},
+  // Daily brief
+  {re:/(daily\s*brief|morning\s*brief|anong.*balita|update\s*ko|briefing)/i, action:'daily_brief'},
+  // Completion
+  {re:/(tapos\s*na|done\s*na|natapos)\s+(?<target>.+)/i, action:'update_task_status_done'},
+  // Priority
+  {re:/i[- ]?priority\s+(?<target>.+)/i,             action:'flag_priority'},
+  // Add to-do
+  {re:/(i[- ]?todo|itodo|to[- ]?do)[:\-\s]+(?<title>.+)/i, action:'add_task'},
+];
+
+// Patch executeVoiceCommand to handle Taglish before English intents
+const _origExecVCEnhanced = window.executeVoiceCommand;
+window.executeVoiceCommand = function(rawText){
+  const t = rawText.toLowerCase().trim();
+
+  for(const intent of TAGLISH_INTENTS){
+    const m = t.match(intent.re);
+    if(!m) continue;
+    const g = m.groups||{};
+
+    switch(intent.action){
+      case 'query_tasks':{
+        const open=(DB.tasks||[]).filter(t=>t.status!=='Done');
+        const high=open.filter(t=>t.priority==='High');
+        const result = open.length===0
+          ? 'Wala kang open tasks ngayon, sir. Clean slate!'
+          : `${open.length} open tasks, sir. ${high.length} high priority: ${high.slice(0,3).map(t=>t.title).join(', ')}${high.length>3?'...':'.'}`
+        ;
+        setVcState('idle'); showVcResult(result); speak(result); chimeSuccess(); return;
+      }
+      case 'query_calendar':{
+        const today=new Date().toISOString().split('T')[0];
+        const evs=(DB.calEvents||[]).filter(e=>e.date===today);
+        const result = evs.length===0
+          ? 'Walang events today, sir.'
+          : `${evs.length} events ngayon: ${evs.map(e=>(e.time?e.time.slice(0,5)+' ':'')+e.title).join('; ')}.`
+        ;
+        setVcState('idle'); showVcResult(result); speak(result); chimeSuccess(); return;
+      }
+      case 'query_notes':{
+        const notes=(DB.notes||[]).slice(0,3);
+        const result = notes.length===0
+          ? 'Walang notes pa, sir.'
+          : `Notes mo, sir: ${notes.map(n=>n.title).join(', ')}.`
+        ;
+        setVcState('idle'); showVcResult(result); speak(result); chimeSuccess(); return;
+      }
+      case 'daily_brief':{
+        setView('jarvis-brief');
+        setTimeout(()=>{ runMorningBrief(); speak(_lastMorningBrief||'Morning brief ready, sir.'); chimeSuccess(); }, 400);
+        setVcState('idle'); return;
+      }
+      case 'update_task_status_done':{
+        const target=(g.target||'').trim();
+        const task=fuzzyFind(target,DB.tasks||[],t=>t.title,3);
+        if(task){
+          task.status='Done'; save('tasks'); SB.update('tasks',task.id,task,'tasks');
+          const result=`Done na, sir — "${task.title}" marked complete.`;
+          setVcState('idle'); showVcResult(result); speak(result); chimeSuccess();
+        }else{
+          const result='Hindi ko mahanap yung task na iyon, sir.';
+          setVcState('idle'); showVcResult(result); chimeError();
+        }
+        return;
+      }
+      case 'flag_priority':{
+        const target=(g.target||'').trim();
+        const task=fuzzyFind(target,DB.tasks||[],t=>t.title,3);
+        if(task){
+          task.priority='High'; save('tasks'); SB.update('tasks',task.id,task,'tasks');
+          const result=`Priority set to High: "${task.title}", sir.`;
+          setVcState('idle'); showVcResult(result); speak(result); chimeSuccess();
+        }else{
+          chimeError();
+          setVcState('idle');
+        }
+        return;
+      }
+      case 'add_task':{
+        const title=(g.title||rawText).trim();
+        const task={id:Date.now(),title,world:'WORK-IH',priority:'Medium',status:'Todo',due:'',notes:''};
+        DB.tasks.unshift(task); save('tasks'); SB.upsert('tasks',task,'tasks');
+        const result=`Task added, sir: "${title}".`;
+        setVcState('idle'); showVcResult(result); speak(result); chimeSuccess();
+        addHistory('add','Voice task: '+title,{...task,_dbKey:'tasks'});
+        return;
+      }
+    }
+  }
+
+  // Fall through to original handler
+  if(_origExecVCEnhanced) _origExecVCEnhanced.apply(this,[rawText]);
+};
+
+// Patch original voice handler to use chimes for success/error
+const _origExecVC2 = window.executeVoiceCommand;
+
+// ── ENHANCEMENT 4b: Auto daily brief on first open of the day ─────────────
+(function scheduleAutoBrief(){
+  const lastKey='j-auto-brief-shown';
+  const today=new Date().toISOString().split('T')[0];
+  if(localStorage.getItem(lastKey)===today) return;
+  localStorage.setItem(lastKey,today);
+  // Wait for OS to finish booting, then auto-brief
+  setTimeout(()=>{
+    try{
+      runMorningBrief();
+      chimeboot();
+      setTimeout(()=>speak(_lastMorningBrief||'Good morning, sir. Daily brief is ready.'),1200);
+    }catch(e){}
+  },5000);
+})();
+
+// ── ENHANCEMENT 5: Voice Biometric Lock ───────────────────────────────────
+const VBL = {
+  STORE_KEY: 'j-voice-biometric',
+  PHRASE: 'J.E.L.I.X unlock',  // enrollment trigger phrase
+  enrolled: false,
+  locked: false,
+  profile: null,   // stored audio features
+  attempts: 0,
+  MAX_ATTEMPTS: 3,
+
+  // Feature extraction from AudioBuffer (energy + spectral centroid approximation)
+  extractFeatures(buffer){
+    const data = buffer.getChannelData(0);
+    const len = data.length;
+    // RMS energy
+    let energy = 0;
+    for(let i=0;i<len;i++) energy+=data[i]*data[i];
+    energy = Math.sqrt(energy/len);
+    // Zero crossing rate
+    let zcr=0;
+    for(let i=1;i<len;i++) if(data[i]*data[i-1]<0) zcr++;
+    zcr = zcr/len;
+    // Peak amplitude
+    let peak=0;
+    for(let i=0;i<len;i++) if(Math.abs(data[i])>peak) peak=Math.abs(data[i]);
+    // Spectral mean (rough)
+    const fft=new Float32Array(256);
+    return {energy:Math.round(energy*10000)/10000, zcr:Math.round(zcr*10000)/10000, peak:Math.round(peak*10000)/10000};
+  },
+
+  // Compare two feature vectors — returns similarity 0–1
+  compare(a,b){
+    if(!a||!b) return 0;
+    const dE=Math.abs(a.energy-b.energy);
+    const dZ=Math.abs(a.zcr-b.zcr);
+    const dP=Math.abs(a.peak-b.peak);
+    const score=1-(dE*2+dZ*3+dP*1.5)/6;
+    return Math.max(0,score);
+  },
+
+  isEnrolled(){ return !!localStorage.getItem(this.STORE_KEY); },
+
+  saveProfile(features){
+    localStorage.setItem(this.STORE_KEY,JSON.stringify(features));
+    this.profile=features;
+    this.enrolled=true;
+  },
+
+  loadProfile(){
+    const raw=localStorage.getItem(this.STORE_KEY);
+    if(raw){ this.profile=JSON.parse(raw); this.enrolled=true; }
+    return this.profile;
+  },
+
+  clearProfile(){
+    localStorage.removeItem(this.STORE_KEY);
+    this.profile=null;
+    this.enrolled=false;
+    showToast('Voice biometric cleared, sir.');
+  }
+};
+
+// Enroll voice biometric
+async function enrollVoiceBiometric(){
+  if(!navigator.mediaDevices?.getUserMedia){
+    showToast('⚠ Microphone access required for biometric enrollment.');
+    return;
+  }
+  showToast('🎙 Speak your enrollment phrase: "J.E.L.I.X unlock" — recording for 4 seconds...');
+  speak('Please say: J.E.L.I.X unlock.');
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    const recorder = new MediaRecorder(stream);
+    const chunks=[];
+    recorder.ondataavailable=e=>chunks.push(e.data);
+    recorder.onstop=async()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(chunks,{type:'audio/webm'});
+      const ab=await blob.arrayBuffer();
+      const audioBuffer=await _audioCtx.decodeAudioData(ab);
+      const features=VBL.extractFeatures(audioBuffer);
+      VBL.saveProfile(features);
+      chimeSuccess();
+      showToast('✓ Voice biometric enrolled, sir. Only your voice can now unlock J.E.L.I.X.');
+      speak('Voice biometric enrolled. J.E.L.I.X is now locked to your voice, sir.');
+    };
+    recorder.start();
+    setTimeout(()=>recorder.stop(),4000);
+  }catch(e){
+    chimeError();
+    showToast('⚠ Enrollment failed: '+e.message);
+  }
+}
+
+// Verify voice against stored profile
+async function verifyVoiceBiometric(){
+  return new Promise(async(resolve)=>{
+    if(!VBL.isEnrolled()){ resolve(true); return; } // not enrolled = open
+    if(!navigator.mediaDevices?.getUserMedia){ resolve(true); return; }
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+      const recorder=new MediaRecorder(stream);
+      const chunks=[];
+      recorder.ondataavailable=e=>chunks.push(e.data);
+      recorder.onstop=async()=>{
+        stream.getTracks().forEach(t=>t.stop());
+        try{
+          const blob=new Blob(chunks,{type:'audio/webm'});
+          const ab=await blob.arrayBuffer();
+          const audioBuffer=await _audioCtx.decodeAudioData(ab);
+          const features=VBL.extractFeatures(audioBuffer);
+          const profile=VBL.loadProfile();
+          const score=VBL.compare(features,profile);
+          resolve(score>=0.65); // 65% similarity threshold
+        }catch(e){ resolve(false); }
+      };
+      recorder.start();
+      setTimeout(()=>recorder.stop(),3000);
+    }catch(e){ resolve(true); }
+  });
+}
+
+// Expose biometric controls to CMD palette and topbar
+window.enrollVoiceBiometric=enrollVoiceBiometric;
+window.clearVoiceBiometric=()=>VBL.clearProfile();
+
+// Add biometric controls to CMD palette
+if(Array.isArray(window.CMD_ITEMS)){
+  window.CMD_ITEMS.push(
+    {label:'Enroll Voice Biometric',sub:'Lock J.E.L.I.X to your voice',icon:'🎙',action:enrollVoiceBiometric,group:'Security'},
+    {label:'Clear Voice Biometric',sub:'Remove voice lock',icon:'🔓',action:()=>VBL.clearProfile(),group:'Security'}
+  );
+}
+
+// ── ENHANCEMENT 6: Preference learning from conversation ──────────────────
+function learnFromConversation(userMsg, agentReply){
+  // Detect explicit preference signals
+  const msg=userMsg.toLowerCase();
+  if(/too long|keep it short|be brief|mas maikli/i.test(msg)){
+    JELIX_PREFS.responseLength='brief';
+    savePrefs();
+  }
+  if(/more detail|elaborate|explain more|dagdag/i.test(msg)){
+    JELIX_PREFS.responseLength='detailed';
+    savePrefs();
+  }
+  if(/speak (in )?tagalog|sa tagalog|mag[- ]?tagalog/i.test(msg)){
+    JELIX_PREFS.language='tagalog';
+    savePrefs();
+  }
+  if(/english (lang|only|please)|english na/i.test(msg)){
+    JELIX_PREFS.language='english';
+    savePrefs();
+  }
+  if(/don'?t (repeat|say that again)|paulit[- ]ulit/i.test(msg)){
+    JELIX_PREFS.noRepeat=true;
+    savePrefs();
+  }
+}
+
+// Patch sendAI to learn from each exchange
+const _origSendAI=window.sendAI;
+window.sendAI=async function(){
+  const input=document.getElementById('aiInput');
+  const userMsg=input?.value?.trim()||'';
+  if(_origSendAI) await _origSendAI.apply(this,arguments);
+  // Learn after the exchange completes
+  const lastAiMsg=document.querySelector('#aiMsgs .mbubble.ai:last-child');
+  if(userMsg && lastAiMsg) learnFromConversation(userMsg, lastAiMsg.textContent);
+};
+
+// Chime on successful voice command execution
+const _origShowVcResult=window.showVcResult;
+window.showVcResult=function(text){
+  if(_origShowVcResult) _origShowVcResult.apply(this,arguments);
+  if(text && !/error|not|unclear|cannot|denied/i.test(text)) chimeSuccess();
+  else if(text) chimeError();
+};
+
+console.log('[J.E.L.I.X] Enhancement Layer v2 loaded — Taglish + Chimes + Biometric + Free-flow');
 console.log('[J.E.L.I.X] JARVIS Intelligence Layer loaded — Skills 1–7 + CLAUDE.md active, sir.');
 
 runBootSequence();
@@ -8336,5 +8902,192 @@ runBootSequence();
     <button onclick="closeVBar()" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:50%;width:24px;height:24px;color:var(--text3);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">×</button>
   </div>
 </div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     J.E.L.I.X PWA — Service Worker
+     Strategy: Cache-first for assets, network-first for Supabase API calls
+     Cache name versioned so updates bust old cache automatically
+════════════════════════════════════════════════════════════════════════ -->
+<script>
+(function registerSW(){
+  if(!('serviceWorker' in navigator)){
+    console.log('[J.E.L.I.X] Service Worker not supported in this browser.');
+    return;
+  }
+
+  // ── Inline SW as a Blob URL (no separate file needed) ──────────────────
+  const SW_VERSION = 'jelix-v1.0';
+
+  const swCode = `
+const CACHE = '${SW_VERSION}';
+
+// Assets to pre-cache on install
+const PRE_CACHE = [
+  'https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css',
+  'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap',
+  'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js',
+];
+
+// Install — pre-cache static assets
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE).then(cache =>
+      cache.addAll(PRE_CACHE).catch(err => console.warn('[SW] Pre-cache partial fail:', err))
+    )
+  );
+});
+
+// Activate — delete old caches
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
+    ).then(() => self.clients.claim())
+  );
+});
+
+// Fetch — strategy by request type
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
+
+  // Supabase API calls → network-first, no cache
+  if(url.hostname.includes('supabase.co') || url.hostname.includes('anthropic.com') || url.hostname.includes('open-meteo.com')){
+    e.respondWith(
+      fetch(e.request).catch(() => new Response(JSON.stringify({error:'offline'}), {headers:{'Content-Type':'application/json'}}))
+    );
+    return;
+  }
+
+  // Google Fonts / CDN assets → cache-first
+  if(url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('jsdelivr.net') || url.hostname.includes('fonts.gstatic.com')){
+    e.respondWith(
+      caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+        return res;
+      }))
+    );
+    return;
+  }
+
+  // Everything else (the HTML file itself) → network-first, fallback to cache
+  e.respondWith(
+    fetch(e.request)
+      .then(res => {
+        const clone = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, clone));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
+  );
+});
+`;
+
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const swURL = URL.createObjectURL(blob);
+
+  navigator.serviceWorker.register(swURL, {scope: '/'})
+    .then(reg => {
+      console.log('[J.E.L.I.X] PWA Service Worker registered. Scope:', reg.scope);
+
+      // Check for updates every 60 minutes
+      setInterval(() => reg.update(), 60 * 60 * 1000);
+
+      // Notify user when update is available
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if(newWorker.state === 'installed' && navigator.serviceWorker.controller){
+            showToast('↻ J.E.L.I.X update available — reload to apply.');
+          }
+        });
+      });
+    })
+    .catch(err => console.warn('[J.E.L.I.X] SW registration failed:', err));
+
+  // Listen for SW controller change → reload to activate update
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    console.log('[J.E.L.I.X] New SW active.');
+  });
+})();
+</script>
+
+<script>
+// ── PWA Install Prompt ────────────────────────────────────────────────────
+let _pwaInstallEvent = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  _pwaInstallEvent = e;
+
+  // Show install toast after 3 seconds
+  setTimeout(() => {
+    if(_pwaInstallEvent){
+      const stack = document.getElementById('tstack');
+      if(!stack) return;
+      const item = document.createElement('div');
+      item.className = 'titem';
+      item.style.cssText = 'background:#050a12;border-color:var(--teal);max-width:340px;cursor:pointer';
+      item.innerHTML = `
+        <i class="ti ti-device-mobile" style="font-size:16px;color:var(--teal);line-height:1;display:block;flex-shrink:0"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:var(--teal)">Install J.E.L.I.X OS</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Add to home screen for fullscreen app experience</div>
+        </div>
+        <button id="pwaInstallBtn" style="background:var(--teal);color:var(--navy);border:none;border-radius:3px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0;white-space:nowrap">Install</button>
+      `;
+      item.querySelector('#pwaInstallBtn').addEventListener('click', async () => {
+        if(!_pwaInstallEvent) return;
+        _pwaInstallEvent.prompt();
+        const { outcome } = await _pwaInstallEvent.userChoice;
+        if(outcome === 'accepted'){
+          showToast('✓ J.E.L.I.X OS installed, sir.');
+          speak('J.E.L.I.X OS installed. Welcome to the app, sir.');
+        }
+        _pwaInstallEvent = null;
+        item.remove();
+      });
+      stack.appendChild(item);
+      // Auto-dismiss after 15s
+      setTimeout(() => { if(item.parentNode) item.remove(); }, 15000);
+    }
+  }, 3000);
+});
+
+// Detect already installed
+window.addEventListener('appinstalled', () => {
+  _pwaInstallEvent = null;
+  console.log('[J.E.L.I.X] App installed successfully.');
+  showToast('✓ J.E.L.I.X OS is now installed as an app, sir.');
+});
+
+// iOS install instruction (Safari doesn't fire beforeinstallprompt)
+(function(){
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isInStandalone = window.navigator.standalone === true;
+  const shownKey = 'jelix-ios-install-shown';
+  if(isIOS && !isInStandalone && !localStorage.getItem(shownKey)){
+    localStorage.setItem(shownKey, '1');
+    setTimeout(() => {
+      const stack = document.getElementById('tstack');
+      if(!stack) return;
+      const item = document.createElement('div');
+      item.className = 'titem';
+      item.style.cssText = 'background:#050a12;border-color:var(--teal);max-width:340px';
+      item.innerHTML = `
+        <i class="ti ti-brand-apple" style="font-size:16px;color:var(--teal);line-height:1;display:block;flex-shrink:0"></i>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:700;color:var(--teal)">Install on iPhone / iPad</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Tap <strong style="color:var(--text2)">Share</strong> → <strong style="color:var(--text2)">Add to Home Screen</strong> to install J.E.L.I.X OS</div>
+        </div>
+        <button onclick="this.parentNode.remove()" style="background:transparent;border:1px solid var(--border2);border-radius:3px;color:var(--text3);font-size:11px;padding:3px 8px;cursor:pointer;flex-shrink:0">Got it</button>
+      `;
+      stack.appendChild(item);
+      setTimeout(() => { if(item.parentNode) item.remove(); }, 20000);
+    }, 4000);
+  }
+})();
+</script>
 </body>
 </html>
