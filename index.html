@@ -3107,15 +3107,63 @@ async function sbFetch(table,method='GET',body=null,match=null){
   const opts={method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
   if(body)opts.body=JSON.stringify(body);
   const res=await fetch(url,opts);
-  if(!res.ok||res.status===204)return method==='GET'?[]:true;
+  if(!res.ok){
+    let errMsg=res.status+' '+res.statusText;
+    try{const errBody=await res.clone().json();errMsg=errBody.message||errBody.error||errMsg;}catch(e){}
+    throw new Error(errMsg);
+  }
+  if(res.status===204)return method==='GET'?[]:true;
   return res.json();
 }
 const SB={
-  async load(table,key){const rows=await sbFetch(table);if(rows&&rows.length){if(table==='cashflow')DB[key]=rows.map(r=>({...r,desc:r.description||r.desc||''}));else DB[key]=rows;save(key);}},
-  async upsert(table,row,key){const r={...row};if(table==='cashflow'){r.description=row.desc;delete r.desc;}delete r._dbKey;await sbFetch(table,'POST',r);save(key);},
-  async update(table,id,changes,key){const c={...changes};if(table==='cashflow'&&c.desc){c.description=c.desc;delete c.desc;}await sbFetch(table,'PATCH',c,`id=eq.${id}`);save(key);},
-  async remove(table,id,key){await sbFetch(table,'DELETE',null,`id=eq.${id}`);save(key);},
-  async addHistory(e){await sbFetch('history','POST',e);}
+  async load(table,key){
+    try{
+      const rows=await sbFetch(table);
+      if(rows&&rows.length){
+        if(table==='cashflow')DB[key]=rows.map(r=>({...r,desc:r.description||r.desc||''}));
+        else DB[key]=rows;
+        save(key);
+      }
+    }catch(err){
+      showToast('\u26a0 Load failed ('+table+'): '+err.message);
+      console.error('SB.load error',table,err);
+    }
+  },
+  async upsert(table,row,key){
+    const r={...row};
+    if(table==='cashflow'){r.description=row.desc;delete r.desc;}
+    delete r._dbKey;
+    try{
+      await sbFetch(table,'POST',r);
+      save(key);
+    }catch(err){
+      showToast('\u26a0 Save failed ('+table+'): '+err.message);
+      console.error('SB.upsert error',table,err);
+    }
+  },
+  async update(table,id,changes,key){
+    const c={...changes};
+    if(table==='cashflow'&&c.desc){c.description=c.desc;delete c.desc;}
+    try{
+      await sbFetch(table,'PATCH',c,`id=eq.${id}`);
+      save(key);
+    }catch(err){
+      showToast('\u26a0 Update failed ('+table+'): '+err.message);
+      console.error('SB.update error',table,err);
+    }
+  },
+  async remove(table,id,key){
+    try{
+      await sbFetch(table,'DELETE',null,`id=eq.${id}`);
+      save(key);
+    }catch(err){
+      showToast('\u26a0 Delete failed ('+table+'): '+err.message);
+      console.error('SB.remove error',table,err);
+    }
+  },
+  async addHistory(e){
+    try{await sbFetch('history','POST',e);}catch(err){console.warn('SB.addHistory error',err);}
+  }
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
