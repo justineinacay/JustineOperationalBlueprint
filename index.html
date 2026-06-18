@@ -3117,6 +3117,83 @@ const SB={
   async remove(table,id,key){await sbFetch(table,'DELETE',null,`id=eq.${id}`);save(key);},
   async addHistory(e){await sbFetch('history','POST',e);}
 };
+
+// ═══════════════════════════════════════════════════════════════════════════
+// J.E.L.I.X REALTIME — Cross-Device Sync Engine
+// WebSocket listener: pushes Supabase INSERT/UPDATE/DELETE to all open tabs
+// ═══════════════════════════════════════════════════════════════════════════
+let realtimeSocket=null;
+const REALTIME_TABLES=[
+  {name:'tasks',      key:'tasks'},
+  {name:'clients',    key:'clients'},
+  {name:'cashflow',   key:'cashflow'},
+  {name:'cal_events', key:'calEvents'},
+  {name:'journal',    key:'journal'},
+  {name:'notes',      key:'notes'},
+  {name:'venture',    key:'venture'},
+  {name:'faith',      key:'faith'},
+  {name:'sides',      key:'sides'},
+  {name:'memories',   key:'memories'}
+];
+
+function initRealtime(){
+  if(realtimeSocket&&realtimeSocket.readyState<2)return; // already open or connecting
+  realtimeSocket=new WebSocket(
+    `wss://ddxkmidantqgnxfxsrrz.supabase.co/realtime/v1/websocket?apikey=${SB_KEY}&vsn=1.0.0`
+  );
+  realtimeSocket.onopen=function(){
+    REALTIME_TABLES.forEach(function(t){
+      realtimeSocket.send(JSON.stringify({
+        topic:`realtime:public:${t.name}`,
+        event:'phx_join',
+        payload:{},
+        ref:t.name
+      }));
+    });
+    showToast('⚡ Realtime sync active');
+  };
+  realtimeSocket.onmessage=function(ev){
+    var msg;try{msg=JSON.parse(ev.data);}catch(e){return;}
+    if(msg.event!=='INSERT'&&msg.event!=='UPDATE'&&msg.event!=='DELETE')return;
+    var tableName=msg.topic.replace('realtime:public:','');
+    var tableMap=REALTIME_TABLES.find(function(t){return t.name===tableName;});
+    if(!tableMap)return;
+    var record=msg.payload.record;
+    var oldRecord=msg.payload.old_record;
+    var type=msg.payload.type;
+    var key=tableMap.key;
+    if(!DB[key])DB[key]=[];
+    if(type==='INSERT'){
+      if(!DB[key].find(function(r){return r.id===record.id;})){
+        if(tableName==='cashflow')record.desc=record.description||record.desc||'';
+        DB[key].unshift(record);
+        save(key);
+        reRenderAll();
+        showToast('\u21BB '+tableName+' synced from another device');
+      }
+    }else if(type==='UPDATE'){
+      var idx=DB[key].findIndex(function(r){return r.id===record.id;});
+      if(idx>-1){
+        if(tableName==='cashflow')record.desc=record.description||record.desc||'';
+        DB[key][idx]=record;
+        save(key);
+        reRenderAll();
+      }
+    }else if(type==='DELETE'&&oldRecord){
+      DB[key]=DB[key].filter(function(r){return r.id!==oldRecord.id;});
+      save(key);
+      reRenderAll();
+    }
+  };
+  realtimeSocket.onclose=function(){
+    realtimeSocket=null;
+    if(_osLoaded)setTimeout(initRealtime,5000); // auto-reconnect
+  };
+  realtimeSocket.onerror=function(err){
+    console.warn('JELIX Realtime error:',err);
+  };
+}
+
 async function loadAllFromSupabase(){
   showToast('↻ Syncing with Supabase...');
   await Promise.all([SB.load('tasks','tasks'),SB.load('clients','clients'),SB.load('venture','venture'),SB.load('faith','faith'),SB.load('cashflow','cashflow'),SB.load('cal_events','calEvents'),SB.load('journal','journal'),SB.load('notes','notes'),SB.load('memories','memories'),SB.load('sides','sides'),SB.load('history','history')]);
@@ -3223,6 +3300,8 @@ function unlockSystem(){
       setTimeout(startBootMusic, 300);
       // Run the boot sequence
       setTimeout(runBootSequence, 600);
+      // Start cross-device realtime sync after boot settles
+      setTimeout(initRealtime, 3000);
     },500);
   }
 }
