@@ -2525,9 +2525,9 @@ select option{background:var(--navy3)}
       </svg>
       <!-- CENTER LOGO -->
       <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">
-        <div style="font-size:clamp(24px,8vw,42px);font-weight:900;color:#00d4c8;letter-spacing:.15em;line-height:1;animation:jelixglow 3s ease-in-out infinite,letterflicker 7s infinite;font-family:Arial Black,Arial,sans-serif">J.O.B.</div>
+        <div style="font-size:clamp(32px,11vw,56px);font-weight:900;color:#00d4c8;letter-spacing:.12em;line-height:1;animation:jelixglow 3s ease-in-out infinite,letterflicker 7s infinite;font-family:Arial Black,Arial,sans-serif">J.O.B.</div>
         <div style="width:80px;height:1px;background:linear-gradient(90deg,transparent,#00d4c8,transparent)"></div>
-        <div style="font-size:11px;color:rgba(0,168,158,.7);letter-spacing:.35em;font-family:monospace">OS</div>
+        <div style="font-size:clamp(14px,4vw,20px);color:rgba(0,168,158,.85);letter-spacing:.5em;font-family:monospace;font-weight:700">OS</div>
       </div>
       <!-- corner ticks on orbit -->
       <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#00d4c8;border-radius:50%;box-shadow:0 0 8px #00d4c8;animation:bootpulse 2s infinite"></div>
@@ -2689,6 +2689,7 @@ select option{background:var(--navy3)}
       <div class="ni" onclick="openCmd()"><i class="ti ti-command"></i>Command Palette<span style="font-size:9px;color:var(--text3);margin-left:auto">⌘K</span></div>
       <div class="ni" onclick="openModal('taskModal')"><i class="ti ti-plus"></i>New Task</div>
       <div class="ni" onclick="setView('settings')" data-view="settings"><i class="ti ti-settings"></i>System Settings</div>
+      <div class="ni" onclick="lockOS()" style="margin-top:2px;border-top:1px solid var(--border);padding-top:6px;color:var(--text3)" onmouseover="this.style.color='var(--red)';this.style.background='rgba(239,68,68,.06)'" onmouseout="this.style.color='var(--text3)';this.style.background=''"><i class="ti ti-lock" style="color:inherit"></i>Lock · Log Off</div>
     </div>
     <div class="side-bottom">
       <button class="vsbtn" id="vsbtn" onclick="toggleVoice()">
@@ -2881,8 +2882,10 @@ select option{background:var(--navy3)}
           <button class="btn btn-o" onclick="openVentureModal()"><i class="ti ti-plus"></i> Add</button>
         </div>
       </div>
-      <div class="vb" style="display:flex;flex-direction:column;overflow:hidden;padding:14px 18px;gap:10px">
-        <div class="mr" style="grid-template-columns:repeat(4,1fr);flex-shrink:0">
+      <div class="vb" style="display:flex;flex-direction:column;overflow:hidden;padding:0;gap:0">
+
+        <!-- METRICS STRIP -->
+        <div class="mr" style="grid-template-columns:repeat(4,1fr);flex-shrink:0;border-radius:0;border-left:none;border-right:none;border-top:none">
           <div class="hc oc"><div class="cl">Stage</div><div class="cv oc" style="font-size:11px;margin-top:2px">DISCOVERY</div></div>
           <div class="hc"><div class="cl">Clients</div><div class="cv" id="vtClientCount">0</div></div>
           <div class="hc"><div class="cl">Partners/VAs</div><div class="cv" id="vtPartnerCount">0</div></div>
@@ -2893,40 +2896,51 @@ select option{background:var(--navy3)}
           </div>
         </div>
 
-        <!-- Pipeline (vertical 1-col) + Tasks row -->
-        <div style="display:grid;grid-template-columns:220px 1fr;gap:10px;flex:1;min-height:0;overflow:hidden">
-
-          <!-- Left: single-column pipeline (5 stages stacked) -->
-          <div style="display:flex;flex-direction:column;min-height:0;overflow:hidden">
-            <div id="vt-clients-view" style="flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden">
-              <div style="font-size:9px;font-weight:700;color:var(--teal);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Pipeline</div>
-              <div id="vtcKanban" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch"></div>
-            </div>
-            <div id="vt-partners-view" style="display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden">
-              <div style="font-size:9px;font-weight:700;color:var(--orange);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Partner Pipeline</div>
-              <div id="vtpKanban" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch"></div>
-            </div>
+        <!-- PIPELINE — full width horizontal kanban -->
+        <div style="flex-shrink:0;padding:12px 16px 0;border-bottom:1px solid var(--border)">
+          <div id="vt-clients-view" style="display:flex;flex-direction:column;gap:6px">
+            <div style="font-size:9px;font-weight:700;color:var(--teal);letter-spacing:.12em;text-transform:uppercase">Client Acquisition Pipeline</div>
+            <div id="vtcKanban" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding-bottom:12px"></div>
           </div>
-
-          <!-- Right: VENTURE tasks as horizontal scrollable chips + card list -->
-          <div style="display:flex;flex-direction:column;min-height:0;overflow:hidden;gap:8px">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-              <div style="font-size:9px;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px"><i class="ti ti-checklist" style="font-size:12px;color:var(--orange);line-height:1;display:block"></i>VENTURE TASKS</div>
-              <button class="btn btn-o" style="font-size:10px;padding:3px 8px" onclick="openTaskFor('VENTURE')"><i class="ti ti-plus"></i> Add</button>
-            </div>
-            <!-- Horizontal status filter chips -->
-            <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap" id="vtTaskFilters">
-              <button onclick="vtFilterTasks('all',this)" class="vtf active" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--orange2);background:var(--orange3);color:var(--orange);cursor:pointer;font-weight:700">All</button>
-              <button onclick="vtFilterTasks('Todo',this)" class="vtf" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">Todo</button>
-              <button onclick="vtFilterTasks('In Progress',this)" class="vtf" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">In Progress</button>
-              <button onclick="vtFilterTasks('Done',this)" class="vtf" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">Done</button>
-            </div>
-            <!-- Task cards grid — horizontal wrap -->
-            <div id="vtTaskList" style="flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;align-content:start;-webkit-overflow-scrolling:touch">
-              <div style="font-size:11px;color:var(--text3);padding:8px;text-align:center;grid-column:1/-1">No VENTURE tasks yet.</div>
-            </div>
+          <div id="vt-partners-view" style="display:none;flex-direction:column;gap:6px">
+            <div style="font-size:9px;font-weight:700;color:var(--orange);letter-spacing:.12em;text-transform:uppercase">Partner / VA Pipeline</div>
+            <div id="vtpKanban" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding-bottom:12px"></div>
           </div>
         </div>
+
+        <!-- VENTURE TASKS — list / kanban view -->
+        <div style="flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden">
+          <!-- Tasks toolbar -->
+          <div style="display:flex;align-items:center;gap:8px;padding:8px 16px;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap">
+            <div style="font-size:9px;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:5px">
+              <i class="ti ti-checklist" style="font-size:12px;color:var(--orange);line-height:1;display:block"></i>VENTURE TASKS
+            </div>
+            <!-- View toggle -->
+            <div class="board-view-tabs" style="margin-left:4px">
+              <button class="bvt active" id="vtt-list" onclick="setVTView('list',this)">List</button>
+              <button class="bvt" id="vtt-kanban" onclick="setVTView('kanban',this)">Kanban</button>
+            </div>
+            <!-- Filters -->
+            <select id="vtPrioFilter" onchange="_renderVTasks()" class="filter-chip-sel" style="font-size:10px">
+              <option value="all">Priority</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+            <select id="vtStatFilter" onchange="_renderVTasks()" class="filter-chip-sel" style="font-size:10px">
+              <option value="all">Status</option>
+              <option>Todo</option>
+              <option>In Progress</option>
+              <option>No Progress</option>
+              <option>Done</option>
+            </select>
+            <div style="flex:1"></div>
+            <button class="btn btn-o" style="font-size:10px;padding:3px 10px" onclick="openTaskFor('VENTURE')"><i class="ti ti-plus"></i> Add Task</button>
+          </div>
+          <!-- Task content -->
+          <div id="vtTaskList" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
+        </div>
+
       </div>
     </div>
 
@@ -4258,8 +4272,34 @@ async function speak(text){
   if(isMuted||!text)return;speechSynthesis.cancel();
   const clean=text.replace(/```[\s\S]*?```/g,'code block').replace(/[*_`#>\[\]]/g,'').replace(/https?:\/\/\S+/g,'link').replace(/\n{2,}/g,'. ').replace(/\n/g,' ').trim().substring(0,500);
   const key=localStorage.getItem('jelix-openai-key');
-  if(key){try{const res=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:'tts-1',voice:'onyx',input:clean,speed:0.92})});if(res.ok){const blob=await res.blob();new Audio(URL.createObjectURL(blob)).play();return;}}catch(e){}}
-  const utt=new SpeechSynthesisUtterance(clean);utt.lang='en-GB';utt.rate=1.15;utt.pitch=0.82;utt.volume=1;if(ttsVoice)utt.voice=ttsVoice;speechSynthesis.speak(utt);
+  if(key){try{const res=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:'tts-1',voice:'onyx',input:clean,speed:0.82})});if(res.ok){const blob=await res.blob();new Audio(URL.createObjectURL(blob)).play();return;}}catch(e){}}
+  const utt=new SpeechSynthesisUtterance(clean);utt.lang='en-GB';utt.rate=0.85;utt.pitch=0.80;utt.volume=1;if(ttsVoice)utt.voice=ttsVoice;speechSynthesis.speak(utt);
+}
+async function speakSlow(text){
+  // Morning brief — deliberate, word-by-word delivery
+  if(isMuted||!text)return;speechSynthesis.cancel();
+  const clean=text.replace(/```[\s\S]*?```/g,'').replace(/[*_`#>\[\]]/g,'').replace(/https?:\/\/\S+/g,'').replace(/₱/g,'PHP ').replace(/\n{2,}/g,'. ').replace(/\n/g,' ').replace(/\s+/g,' ').trim();
+  const key=localStorage.getItem('jelix-openai-key');
+  if(key){try{const res=await fetch('https://api.openai.com/v1/audio/speech',{method:'POST',headers:{'Authorization':'Bearer '+key,'Content-Type':'application/json'},body:JSON.stringify({model:'tts-1',voice:'onyx',input:clean,speed:0.72})});if(res.ok){const blob=await res.blob();new Audio(URL.createObjectURL(blob)).play();return;}}catch(e){}}
+  const utt=new SpeechSynthesisUtterance(clean);utt.lang='en-GB';utt.rate=0.72;utt.pitch=0.78;utt.volume=1;if(ttsVoice)utt.voice=ttsVoice;speechSynthesis.speak(utt);
+}
+function lockOS(){
+  speechSynthesis.cancel();
+  // Clear pin state
+  currentPin='';
+  const dots=document.querySelectorAll('.pin-dot');
+  dots.forEach(d=>d.classList.remove('filled'));
+  const err=document.getElementById('pinError');
+  if(err){err.style.opacity='0';err.textContent='';}
+  // Show lock screen
+  const ls=document.getElementById('lockScreen');
+  const app=document.getElementById('appRoot');
+  if(ls&&app){
+    app.style.display='none';
+    ls.style.display='flex';
+    showToast('System locked, sir.');
+    speak('J.O.B. OS locked. Enter PIN to continue.');
+  }
 }
 function toggleMute(){isMuted=!isMuted;const btn=document.getElementById('muteBtn'),icon=document.getElementById('muteIcon');if(isMuted){speechSynthesis.cancel();icon.className='ti ti-volume-off';btn.style.borderColor='var(--red)';btn.style.color='var(--red)';showToast('Voice muted');}else{icon.className='ti ti-volume';btn.style.borderColor='var(--border2)';btn.style.color='var(--text2)';speak('Voice activated. J.O.B. OS online, sir.');}}
 function setOpenAIKey(){const e=localStorage.getItem('jelix-openai-key')||'';const k=prompt('Enter your OpenAI API key for ONYX voice:\n\nLeave blank to remove.',e);if(k===null)return;if(k.trim()){localStorage.setItem('jelix-openai-key',k.trim());showToast('ONYX key saved. Premium voice enabled.');speak('Premium voice activated. Good evening, sir.');}else{localStorage.removeItem('jelix-openai-key');showToast('Key removed. Using browser voice.');}}
@@ -5983,47 +6023,86 @@ function renderWorkIH(){
   if(!DB.clients.length){grid.innerHTML='<div style="font-size:11px;color:var(--text3);padding:10px">No clients yet.</div>';return;}
   grid.innerHTML=DB.clients.map((c,idx)=>{
     const tasks=DB.tasks.filter(t=>t.world==='WORK-IH'&&t.client===c.name);
+    const open=tasks.filter(t=>t.status!=='Done');
+    const done=tasks.filter(t=>t.status==='Done').length;
+    const high=open.filter(t=>t.priority==='High').length;
     const col=getClientColor(idx);
-    const statusCl=c.status==='Active'?'pt':c.status==='Urgent'?'pr':c.status==='Done'?'pg':'po';
     const urgentOverride=c.status==='Urgent';
     const accentColor=urgentOverride?'var(--red)':col.accent;
-    const accentBg=urgentOverride?'rgba(239,68,68,.08)':col.bg;
-    const accentBorder=urgentOverride?'rgba(239,68,68,.25)':col.border;
-    return`<div class="hc" style="border-left:3px solid ${accentColor};padding:0;overflow:hidden">
-      <div style="padding:11px 13px;border-bottom:1px solid ${accentBorder};background:${accentBg}">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
-          <div style="font-size:11px;font-weight:700;color:${accentColor};line-height:1.3;flex:1">${c.name}</div>
+    const accentBg=urgentOverride?'rgba(239,68,68,.06)':col.bg;
+    const accentBorder=urgentOverride?'rgba(239,68,68,.2)':col.border;
+    const statusCl=c.status==='Active'?'pt':c.status==='Urgent'?'pr':c.status==='Done'?'pg':'po';
+    return`<div style="background:#05090f;border:1px solid ${accentBorder};border-radius:6px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .2s" onmouseover="this.style.boxShadow='0 0 0 1px ${accentColor}40'" onmouseout="this.style.boxShadow='none'">
+
+      <!-- CARD HEADER -->
+      <div style="padding:11px 13px 9px;border-bottom:1px solid ${accentBorder};background:${accentBg};border-left:3px solid ${accentColor}">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:5px">
+          <div style="font-size:12px;font-weight:800;color:${accentColor};line-height:1.2;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.name}</div>
           <span class="pill ${statusCl}" style="font-size:9px;flex-shrink:0">${c.status}</span>
         </div>
-        ${c.next?`<div style="font-size:10px;color:var(--text2);margin-bottom:5px"><i class="ti ti-arrow-right" style="font-size:10px;line-height:1;display:inline-block;color:${accentColor}"></i> ${c.next}</div>`:''}
+        <!-- Next action -->
+        ${c.next?`<div style="font-size:10px;color:var(--text2);display:flex;align-items:flex-start;gap:5px;margin-bottom:5px">
+          <i class="ti ti-arrow-right" style="font-size:10px;color:${accentColor};flex-shrink:0;margin-top:1px;line-height:1;display:block"></i>
+          <span style="line-height:1.4">${c.next}</span>
+        </div>`:''}
+        <!-- Meta row -->
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          ${c.contact?`<span style="font-size:9px;color:var(--text3)"><i class="ti ti-mail" style="font-size:10px;line-height:1;display:inline-block"></i> ${c.contact}</span>`:''}
-          ${c.drive?`<a href="${c.drive}" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:${accentColor};display:inline-flex;align-items:center;gap:3px"><i class="ti ti-brand-google-drive" style="font-size:11px;line-height:1;display:block"></i> Drive</a>`:''}
+          ${c.contact?`<span style="font-size:9px;color:var(--text3);display:flex;align-items:center;gap:3px"><i class="ti ti-mail" style="font-size:10px;line-height:1;display:block"></i>${c.contact}</span>`:''}
+          ${c.drive?`<a href="${c.drive}" target="_blank" onclick="event.stopPropagation()" style="font-size:9px;color:${accentColor};display:inline-flex;align-items:center;gap:3px;text-decoration:none"><i class="ti ti-brand-google-drive" style="font-size:11px;line-height:1;display:block"></i>Drive</a>`:''}
         </div>
       </div>
-      <div style="padding:8px 13px">
-        <div style="font-size:8px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
-          <span>Tasks (${tasks.length})</span>
-          <button style="background:${accentBg};border:1px solid ${accentBorder};border-radius:3px;color:${accentColor};font-size:9px;padding:1px 7px;cursor:pointer" onclick="openTaskForClient(event,${JSON.stringify(c.name).replace(/"/g,'&quot;')})"><i class="ti ti-plus" style="font-size:10px;line-height:1;display:inline-block"></i> Add</button>
-        </div>
-        ${tasks.slice(0,4).map(t=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:11px" onclick="editTask(${t.id})">
-          <div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>
-          <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text1)">${t.title}</span>
-          <span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}" style="font-size:9px">${t.status}</span>
-        </div>`).join('')}
-        ${tasks.length>4?`<div style="font-size:10px;color:var(--text3);margin-top:4px">+${tasks.length-4} more</div>`:''}
-        ${!tasks.length?'<div style="font-size:10px;color:var(--text3)">No tasks yet.</div>':''}
+
+      <!-- TASK SUMMARY STRIP -->
+      <div style="padding:6px 13px;background:#040812;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <span style="font-size:10px;font-weight:700;color:${accentColor}">${open.length}</span><span style="font-size:9px;color:var(--text3)">open</span>
+        ${high?`<span style="font-size:10px;font-weight:700;color:var(--red)">${high}</span><span style="font-size:9px;color:var(--text3)">high</span>`:''}
+        ${done?`<span style="font-size:10px;font-weight:700;color:var(--green)">${done}</span><span style="font-size:9px;color:var(--text3)">done</span>`:''}
+        <div style="flex:1"></div>
+        <button style="background:${accentBg};border:1px solid ${accentBorder};border-radius:3px;color:${accentColor};font-size:9px;padding:2px 8px;cursor:pointer;font-weight:700;display:flex;align-items:center;gap:3px" onclick="openTaskForClient(event,${JSON.stringify(c.name).replace(/"/g,'&quot;')})"><i class="ti ti-plus" style="font-size:10px;line-height:1;display:block"></i>Add Task</button>
       </div>
-      <div style="padding:6px 13px;border-top:1px solid var(--border);display:flex;gap:5px">
+
+      <!-- TASK LIST -->
+      <div style="padding:7px 13px;flex:1;min-height:60px">
+        ${open.slice(0,4).map(t=>{
+          const pDot=t.priority==='High'?'#ef4444':t.priority==='Medium'?'#f59e0b':'#4ade80';
+          const sCl=t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr';
+          return`<div style="display:flex;align-items:center;gap:7px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer" onclick="editTask(${t.id})" onmouseover="this.style.background='rgba(255,255,255,.02)'" onmouseout="this.style.background='none'">
+            <div style="width:6px;height:6px;border-radius:50%;background:${pDot};flex-shrink:0"></div>
+            <span style="flex:1;font-size:11px;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3">${t.title}</span>
+            <span class="pill ${sCl}" style="font-size:9px;flex-shrink:0">${t.status}</span>
+          </div>`;
+        }).join('')}
+        ${open.length>4?`<div style="font-size:10px;color:var(--text3);padding:4px 0;font-style:italic">+${open.length-4} more tasks</div>`:''}
+        ${!open.length?`<div style="font-size:10px;color:var(--text3);padding:6px 0;text-align:center;font-style:italic">${tasks.length?'All tasks completed ✓':'No tasks yet — add one above.'}</div>`:''}
+      </div>
+
+      <!-- CARD FOOTER ACTIONS -->
+      <div style="padding:6px 13px;border-top:1px solid var(--border);display:flex;gap:5px;background:#040812">
         <button class="btn btn-t" style="flex:1;font-size:10px" onclick="event.stopPropagation();editClient(${c.id})"><i class="ti ti-pencil" style="font-size:11px;line-height:1;display:inline-block"></i> Edit</button>
-        <button class="btn btn-g" style="flex:1;font-size:10px" onclick="askClientTasks(event,${c.id})"><i class="ti ti-sparkles" style="font-size:11px;line-height:1;display:inline-block"></i> AI Tasks</button>
+        <button class="btn btn-g" style="flex:1;font-size:10px;color:var(--teal);border-color:var(--teal2)" onclick="askClientTasks(event,${c.id})"><i class="ti ti-sparkles" style="font-size:11px;line-height:1;display:inline-block"></i> AI Tasks</button>
         <button class="btn btn-d" style="padding:2px 8px" onclick="deleteClientBtn(event,${c.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
       </div>
     </div>`;
   }).join('');
 }
 function openTaskForClient(e,clientName){e.stopPropagation();document.getElementById('taskModalTitle').textContent='New Task';editingTaskId=null;['title','platform','notes'].forEach(id=>{const el=document.getElementById('tf-'+id);if(el)el.value='';});document.getElementById('tf-world').value='WORK-IH';document.getElementById('tf-prio').value='Medium';document.getElementById('tf-status').value='Todo';document.getElementById('tf-due').value='';document.getElementById('tf-client').value=clientName;openModal('taskModal');}
-function askClientTasks(e,id){e.stopPropagation();const c=DB.clients.find(x=>x.id===id);if(!c)return;setView('ai');setTimeout(()=>qp(`What tasks should be created or prioritized for client "${c.name}"? Next action: "${c.next}". Status: ${c.status}.`),300);}
+function askClientTasks(e,id){
+  e.stopPropagation();
+  const c=DB.clients.find(x=>x.id===id);if(!c)return;
+  // Switch to Job Agents, set Axis as active agent
+  setView('ai');
+  setTimeout(()=>{
+    // Force Axis agent
+    const axisEl=document.querySelector('.ai-agent[onclick*="axis"]');
+    setAgent('axis',axisEl);
+    // Send a focused WORK-IH task generation prompt
+    const today=new Date().toISOString().split('T')[0];
+    const existingTasks=DB.tasks.filter(t=>t.world==='WORK-IH'&&t.client===c.name&&t.status!=='Done').map(t=>`• ${t.title} (${t.status})`).join('\n')||'None';
+    const prompt=`Generate 3–5 specific, actionable marketing tasks for **${c.name}** (WORK-IH · World: Ideahub).\n\nClient status: ${c.status}\nNext action on file: ${c.next||'None'}\nExisting open tasks:\n${existingTasks}\n\nFormat each task clearly: TITLE · Priority (High/Medium/Low) · Brief description.\nAll tasks must be for WORK-IH world only. Focus on what's most impactful right now, sir.`;
+    const input=document.getElementById('aiInput');
+    if(input){input.value=prompt;sendAI();}
+  },350);
+}
 function populateIHClientFilter(){const sel=document.getElementById('ihCF');if(!sel)return;const clients=[...new Set(DB.tasks.filter(t=>t.world==='WORK-IH'&&t.client).map(t=>t.client))];sel.innerHTML='<option value="all">All Clients</option>'+clients.map(c=>`<option value="${c}">${c}</option>`).join('');}
 function renderIHClientTasks(){const cf=document.getElementById('ihCF')?.value||'all';const tasks=DB.tasks.filter(t=>t.world==='WORK-IH'&&(cf==='all'||t.client===cf));document.getElementById('ihCTbody').innerHTML=tasks.map(t=>`<tr onclick="editTask(${t.id})"><td style="font-weight:500">${t.title}</td><td>${t.client||'—'}</td><td style="font-size:11px;color:var(--text3)">${t.platform||'—'}</td><td><span style="display:flex;align-items:center;gap:4px"><div class="pdot ${t.priority==='High'?'ph':t.priority==='Medium'?'pm':'pl'}"></div>${t.priority}</span></td><td><span class="pill ${t.status==='Done'?'pg':t.status==='In Progress'?'pt':t.status==='No Progress'?'pam':'pgr'}">${t.status}</span></td><td style="font-size:11px;color:var(--text3)">${t.due||'—'}</td><td style="font-size:11px;color:var(--text3);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.notes||'—'}</td><td><button class="btn btn-d" style="padding:2px 7px" onclick="deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');}
 
@@ -6207,74 +6286,117 @@ let editingVentureId=null;
 function openVentureModal(id){editingVentureId=id||null;const v=id?DB.venture.find(x=>x.id===id):null;document.getElementById('ventureModalTitle').textContent=v?'Edit Item':'New Item';['name','type','stage','notes'].forEach(f=>{const el=document.getElementById('vm-'+f);if(el)el.value=v?(v[f]||''):'';});openModal('ventureModal');}
 function saveVentureItem(){const v={id:editingVentureId||Date.now(),name:document.getElementById('vm-name').value.trim()||'Unnamed',type:document.getElementById('vm-type').value,stage:document.getElementById('vm-stage').value,notes:document.getElementById('vm-notes').value.trim()};const isEdit=!!editingVentureId;if(editingVentureId){const i=DB.venture.findIndex(x=>x.id===editingVentureId);if(i>=0)DB.venture[i]=v;SB.update('venture',v.id,v,'venture');}else{DB.venture.unshift(v);SB.upsert('venture',v,'venture');}addHistory(isEdit?'edit':'add',(isEdit?'Edited':'Added')+' venture: '+v.name,{...v,_dbKey:'venture'});closeModal('ventureModal');renderVenture();showToast('✓ Saved');}
 function renderVenture(){
-  const clients=DB.venture.filter(v=>v.type==='Client');const partners=DB.venture.filter(v=>v.type==='Partner/VA');
+  const clients=DB.venture.filter(v=>v.type==='Client');
+  const partners=DB.venture.filter(v=>v.type==='Partner/VA');
   document.getElementById('vtClientCount').textContent=clients.length;
   document.getElementById('vtPartnerCount').textContent=partners.length;
   const revEl=document.getElementById('vtRevenue');
-  if(revEl){const tjcRevenue=DB.cashflow.filter(t=>t.type==='Credit'&&t.desc&&/tjc|job collectives/i.test(t.desc)).reduce((s,t)=>s+(t.amount||0),0);revEl.textContent=tjcRevenue>0?'$'+tjcRevenue.toLocaleString():'$0';}
+  if(revEl){const r=DB.cashflow.filter(t=>t.type==='Credit'&&t.desc&&/tjc|job collectives/i.test(t.desc)).reduce((s,t)=>s+(t.amount||0),0);revEl.textContent=r>0?'$'+r.toLocaleString():'$0';}
 
   const cStages=['Lead','Discovery','Proposal','Negotiation','Active'];
   const pStages=['Lead','Discovery','Proposal','Active'];
   const pColor=s=>s==='Active'?'var(--green)':s==='Negotiation'?'var(--amber)':s==='Proposal'?'var(--teal)':s==='Discovery'?'#1A73E8':'var(--text3)';
 
-  // Render vertical stacked pipeline (1-column, each stage = a section)
+  // Full-width horizontal kanban pipeline
   const renderVPipeline=(containerId,items,stages,isOrange)=>{
     const el=document.getElementById(containerId);if(!el)return;
     el.innerHTML=stages.map(s=>{
-      const stageItems=items.filter(v=>v.stage===s);
-      return `<div style="border:1px solid var(--border);border-radius:4px;overflow:hidden;flex-shrink:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:#050a12;border-bottom:1px solid var(--border);border-left:3px solid ${pColor(s)}">
-          <span style="font-size:10px;font-weight:700;color:${pColor(s)};letter-spacing:.06em">${s.toUpperCase()}</span>
-          <span class="pill ${isOrange?'po':'pt'}" style="font-size:9px">${stageItems.length}</span>
+      const si=items.filter(v=>v.stage===s);
+      const accent=pColor(s);
+      return`<div style="background:#050a12;border:1px solid var(--border);border-top:2px solid ${accent};border-radius:4px;display:flex;flex-direction:column;min-height:120px">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 10px;border-bottom:1px solid var(--border)">
+          <span style="font-size:10px;font-weight:800;color:${accent};letter-spacing:.08em;text-transform:uppercase">${s}</span>
+          <span style="font-size:10px;font-weight:700;color:${accent};background:${accent}18;border:1px solid ${accent}40;border-radius:10px;padding:0 7px;line-height:18px">${si.length}</span>
         </div>
-        <div style="padding:4px 6px;display:flex;flex-direction:column;gap:4px;min-height:28px">
-          ${stageItems.map(v=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:#0a1220;border-radius:3px;cursor:pointer;font-size:11px;color:var(--text1)" onclick="openVentureModal(${v.id})">
-            <div style="width:6px;height:6px;border-radius:50%;background:${pColor(v.stage)};flex-shrink:0"></div>
-            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.name}</span>
-            ${v.notes?`<span style="font-size:9px;color:var(--text3);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70px">${v.notes}</span>`:''}
-          </div>`).join('')||`<div style="font-size:9px;color:var(--text3);padding:3px 6px">Empty</div>`}
+        <div style="flex:1;padding:6px;display:flex;flex-direction:column;gap:5px">
+          ${si.map(v=>`<div style="background:#0a1220;border:1px solid var(--border);border-radius:3px;padding:7px 9px;cursor:pointer;transition:all .15s" onclick="openVentureModal(${v.id})" onmouseover="this.style.borderColor='${accent}';this.style.background='${accent}0d'" onmouseout="this.style.borderColor='var(--border)';this.style.background='#0a1220'">
+            <div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.3;margin-bottom:3px">${v.name}</div>
+            ${v.notes?`<div style="font-size:9px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.notes}</div>`:''}
+          </div>`).join('')||`<div style="font-size:10px;color:var(--text3);padding:6px;text-align:center;font-style:italic">Empty</div>`}
+          <div onclick="openVentureModal()" style="margin-top:auto;padding:5px;text-align:center;font-size:10px;color:${accent};opacity:.5;cursor:pointer;border:1px dashed ${accent}40;border-radius:3px;transition:opacity .15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.5'">+ Add</div>
         </div>
       </div>`;
     }).join('');
   };
   renderVPipeline('vtcKanban',clients,cStages,false);
   renderVPipeline('vtpKanban',partners,pStages,true);
+  _renderVTasks();
+}
 
-  // Venture tasks — render as cards
-  _renderVTasks('all');
+let _vtView='list';
+function setVTView(v,btn){
+  _vtView=v;
+  document.querySelectorAll('#vtt-list,#vtt-kanban').forEach(b=>{b.classList.remove('active');});
+  if(btn) btn.classList.add('active');
+  _renderVTasks();
+}
+
+function _renderVTasks(){
+  const el=document.getElementById('vtTaskList');if(!el)return;
+  const pf=document.getElementById('vtPrioFilter')?.value||'all';
+  const sf=document.getElementById('vtStatFilter')?.value||'all';
+  let tasks=(DB.tasks||[]).filter(t=>t.world==='VENTURE');
+  if(pf!=='all') tasks=tasks.filter(t=>t.priority===pf);
+  if(sf!=='all') tasks=tasks.filter(t=>t.status===sf);
+
+  const pDot=p=>p==='High'?'#ef4444':p==='Medium'?'#f59e0b':'#4ade80';
+  const sCl=s=>s==='Done'?'pg':s==='In Progress'?'pt':s==='No Progress'?'pam':'pgr';
+  const pCl=p=>p==='High'?'pr':p==='Medium'?'pam':'pgr';
+
+  if(!tasks.length){
+    el.innerHTML=`<div style="padding:24px;text-align:center;color:var(--text3);font-size:12px">No VENTURE tasks yet. Click + Add Task to begin.</div>`;
+    return;
+  }
+
+  if(_vtView==='list'){
+    el.innerHTML=`<table class="ht" style="width:100%">
+      <thead><tr>
+        <th>Title</th><th>Priority</th><th>Status</th><th>Due</th><th>Notes</th><th></th>
+      </tr></thead>
+      <tbody>${tasks.map(t=>`<tr onclick="editTask(${t.id})" style="cursor:pointer">
+        <td style="font-weight:600;color:var(--text1)">${t.title}</td>
+        <td><span style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:${pDot(t.priority)};flex-shrink:0"></div><span class="pill ${pCl(t.priority)}" style="font-size:9px">${t.priority}</span></span></td>
+        <td><span class="pill ${sCl(t.status)}" style="font-size:9px">${t.status||'Todo'}</span></td>
+        <td style="font-size:11px;color:${t.due&&t.due<new Date().toISOString().split('T')[0]?'var(--red)':'var(--text3)'}">${t.due||'—'}</td>
+        <td style="font-size:11px;color:var(--text3);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.notes||'—'}</td>
+        <td><button class="btn btn-d" style="padding:2px 7px" onclick="event.stopPropagation();deleteTask(event,${t.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td>
+      </tr>`).join('')}</tbody>
+    </table>`;
+  } else {
+    // Kanban view — columns by status
+    const statuses=['Todo','In Progress','No Progress','Done'];
+    const stColor=s=>s==='Done'?'var(--green)':s==='In Progress'?'var(--teal)':s==='No Progress'?'var(--red)':'var(--text3)';
+    el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 16px;height:100%;align-content:start">
+      ${statuses.map(s=>{
+        const col=tasks.filter(t=>(t.status||'Todo')===s);
+        const ac=stColor(s);
+        return`<div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 0">
+            <span style="font-size:10px;font-weight:700;color:${ac};text-transform:uppercase;letter-spacing:.07em">${s}</span>
+            <span style="font-size:10px;color:${ac};background:${ac}18;border:1px solid ${ac}35;border-radius:10px;padding:0 7px;line-height:17px;font-weight:700">${col.length}</span>
+          </div>
+          ${col.map(t=>`<div style="background:#050a12;border:1px solid var(--border);border-left:3px solid ${pDot(t.priority)};border-radius:3px;padding:8px 10px;cursor:pointer;transition:all .15s" onclick="editTask(${t.id})" onmouseover="this.style.borderColor='${ac}'" onmouseout="this.style.borderColor='var(--border)'">
+            <div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.4;margin-bottom:4px">${t.title}</div>
+            <div style="display:flex;gap:5px;align-items:center">
+              <span class="pill ${pCl(t.priority)}" style="font-size:9px">${t.priority}</span>
+              ${t.due?`<span style="font-size:9px;color:var(--text3)">${t.due}</span>`:''}
+            </div>
+          </div>`).join('')}
+          ${!col.length?`<div style="font-size:10px;color:var(--text3);padding:8px;text-align:center;font-style:italic;border:1px dashed var(--border);border-radius:3px">Empty</div>`:''}
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
 }
 
 let _vtCurrentFilter='all';
-function vtFilterTasks(filter,btn){
-  _vtCurrentFilter=filter;
-  document.querySelectorAll('.vtf').forEach(b=>{
-    b.style.background='transparent';b.style.color='var(--text3)';b.style.borderColor='var(--border2)';b.classList.remove('active');
-  });
-  if(btn){btn.style.background='var(--orange3)';btn.style.color='var(--orange)';btn.style.borderColor='var(--orange2)';btn.classList.add('active');}
-  _renderVTasks(filter);
-}
-function _renderVTasks(filter){
-  const vtTaskEl=document.getElementById('vtTaskList');if(!vtTaskEl)return;
-  const all=(DB.tasks||[]).filter(t=>t.world==='VENTURE');
-  const shown=filter==='all'?all:all.filter(t=>t.status===filter);
-  const pColor=p=>p==='High'?'var(--red)':p==='Medium'?'var(--amber)':'var(--text3)';
-  const sColor=s=>s==='Done'?'var(--green)':s==='In Progress'?'var(--teal)':s==='No Progress'?'var(--red)':'var(--text3)';
-  vtTaskEl.innerHTML=shown.length?shown.map(t=>`
-    <div style="background:#0a1220;border:1px solid var(--border);border-top:2px solid ${pColor(t.priority)};border-radius:4px;padding:8px 10px;cursor:pointer;transition:all .15s" onclick="editTask(${t.id})" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderTopColor='${pColor(t.priority)}'">
-      <div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.3;margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</div>
-      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
-        <span style="font-size:9px;font-weight:700;color:${pColor(t.priority)}">${t.priority}</span>
-        <span style="font-size:9px;color:var(--text3)">·</span>
-        <span style="font-size:9px;color:${sColor(t.status)}">${t.status||'Todo'}</span>
-        ${t.due?`<span style="font-size:9px;color:var(--text3)">· ${t.due}</span>`:''}
-      </div>
-      ${t.client?`<div style="font-size:9px;color:var(--text3);margin-top:3px">${t.client}</div>`:''}
-    </div>`).join('')
-  :`<div style="font-size:11px;color:var(--text3);padding:12px;text-align:center;grid-column:1/-1">${filter==='all'?'No VENTURE tasks yet. Click + Add.':'No '+filter+' tasks.'}</div>`;
-}
+function vtFilterTasks(filter,btn){ _vtCurrentFilter=filter; _renderVTasks(); }
+
 function setVentureTab(tab,el){
-  document.getElementById('vt-clients-view').style.display=tab==='clients'?'':'none';
-  document.getElementById('vt-partners-view').style.display=tab==='partners'?'':'none';
+  const cv=document.getElementById('vt-clients-view');
+  const pv=document.getElementById('vt-partners-view');
+  if(cv) cv.style.display=tab==='clients'?'flex':'none';
+  if(pv) pv.style.display=tab==='partners'?'flex':'none';
   ['vt-c','vt-p'].forEach(id=>{const b=document.getElementById(id);if(b){b.style.background='transparent';b.style.borderColor='var(--border2)';b.style.color='var(--text2)';}});
   el.style.background='var(--orange3)';el.style.borderColor='var(--orange2)';el.style.color='var(--orange)';
   renderVenture();
@@ -10571,8 +10693,8 @@ function renderMorningBrief(){
 }
 
 function speakMorningBrief(){
-  if(_lastMorningBrief) speak(_lastMorningBrief);
-  else{runMorningBrief();setTimeout(()=>speak(_lastMorningBrief),400);}
+  if(_lastMorningBrief) speakSlow(_lastMorningBrief);
+  else{runMorningBrief();setTimeout(()=>speakSlow(_lastMorningBrief),400);}
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -11638,7 +11760,7 @@ window.executeVoiceCommand = function(rawText){
       }
       case 'daily_brief':{
         setView('jarvis-brief');
-        setTimeout(()=>{ runMorningBrief(); speak(_lastMorningBrief||'Morning brief ready, sir.'); _safeChime('chimeSuccess'); }, 400);
+        setTimeout(()=>{ runMorningBrief(); speakSlow(_lastMorningBrief||'Morning brief ready, sir.'); _safeChime('chimeSuccess'); }, 400);
         setVcState('idle'); return;
       }
       case 'update_task_status_done':{
