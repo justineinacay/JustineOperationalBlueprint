@@ -2881,7 +2881,7 @@ select option{background:var(--navy3)}
           <button class="btn btn-o" onclick="openVentureModal()"><i class="ti ti-plus"></i> Add</button>
         </div>
       </div>
-      <div class="vb" style="display:flex;flex-direction:column;overflow:hidden;padding:14px 18px">
+      <div class="vb" style="display:flex;flex-direction:column;overflow:hidden;padding:14px 18px;gap:10px">
         <div class="mr" style="grid-template-columns:repeat(4,1fr);flex-shrink:0">
           <div class="hc oc"><div class="cl">Stage</div><div class="cv oc" style="font-size:11px;margin-top:2px">DISCOVERY</div></div>
           <div class="hc"><div class="cl">Clients</div><div class="cv" id="vtClientCount">0</div></div>
@@ -2892,27 +2892,38 @@ select option{background:var(--navy3)}
             <div class="csub">Pre-revenue · <span style="color:var(--teal);text-decoration:underline">Open Portal ↗</span></div>
           </div>
         </div>
-        <!-- Kanban + Tasks side-by-side -->
-        <div style="display:grid;grid-template-columns:1fr 300px;gap:10px;flex:1;min-height:0;overflow:hidden">
-          <!-- Left: kanban pipeline -->
+
+        <!-- Pipeline (vertical 1-col) + Tasks row -->
+        <div style="display:grid;grid-template-columns:220px 1fr;gap:10px;flex:1;min-height:0;overflow:hidden">
+
+          <!-- Left: single-column pipeline (5 stages stacked) -->
           <div style="display:flex;flex-direction:column;min-height:0;overflow:hidden">
-            <div id="vt-clients-view" style="flex:1;display:flex;flex-direction:column;min-height:0">
-              <div style="font-size:9px;font-weight:700;color:var(--teal);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Client Acquisition Pipeline</div>
-              <div class="kb-cols" id="vtcKanban" style="flex:1;overflow:hidden"></div>
+            <div id="vt-clients-view" style="flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden">
+              <div style="font-size:9px;font-weight:700;color:var(--teal);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Pipeline</div>
+              <div id="vtcKanban" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch"></div>
             </div>
-            <div id="vt-partners-view" style="display:none;flex:1;flex-direction:column;min-height:0">
-              <div style="font-size:9px;font-weight:700;color:var(--orange);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Partner / VA Pipeline</div>
-              <div class="kb-cols" id="vtpKanban" style="flex:1;overflow:hidden"></div>
+            <div id="vt-partners-view" style="display:none;flex:1;flex-direction:column;min-height:0;overflow:hidden">
+              <div style="font-size:9px;font-weight:700;color:var(--orange);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase;flex-shrink:0">Partner Pipeline</div>
+              <div id="vtpKanban" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;-webkit-overflow-scrolling:touch"></div>
             </div>
           </div>
-          <!-- Right: VENTURE tasks panel -->
-          <div class="bd-block" style="display:flex;flex-direction:column;min-height:0;overflow:hidden">
-            <div class="bd-h" style="justify-content:space-between;flex-shrink:0">
-              <span style="display:flex;align-items:center;gap:5px"><i class="ti ti-checklist" style="color:var(--orange)"></i>VENTURE TASKS</span>
+
+          <!-- Right: VENTURE tasks as horizontal scrollable chips + card list -->
+          <div style="display:flex;flex-direction:column;min-height:0;overflow:hidden;gap:8px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+              <div style="font-size:9px;font-weight:700;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:6px"><i class="ti ti-checklist" style="font-size:12px;color:var(--orange);line-height:1;display:block"></i>VENTURE TASKS</div>
               <button class="btn btn-o" style="font-size:10px;padding:3px 8px" onclick="openTaskFor('VENTURE')"><i class="ti ti-plus"></i> Add</button>
             </div>
-            <div id="vtTaskList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:5px;-webkit-overflow-scrolling:touch">
-              <div style="font-size:11px;color:var(--text3);padding:8px;text-align:center">No VENTURE tasks yet.</div>
+            <!-- Horizontal status filter chips -->
+            <div style="display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap" id="vtTaskFilters">
+              <button onclick="vtFilterTasks('all',this)" class="vtf active" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--orange2);background:var(--orange3);color:var(--orange);cursor:pointer;font-weight:700">All</button>
+              <button onclick="vtFilterTasks('Todo',this)" class="vtf" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">Todo</button>
+              <button onclick="vtFilterTasks('In Progress',this)" class="vtf" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">In Progress</button>
+              <button onclick="vtFilterTasks('Done',this)" class="vtf" style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer">Done</button>
+            </div>
+            <!-- Task cards grid — horizontal wrap -->
+            <div id="vtTaskList" style="flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:7px;align-content:start;-webkit-overflow-scrolling:touch">
+              <div style="font-size:11px;color:var(--text3);padding:8px;text-align:center;grid-column:1/-1">No VENTURE tasks yet.</div>
             </div>
           </div>
         </div>
@@ -2936,16 +2947,126 @@ select option{background:var(--navy3)}
 
     <!-- ===== FAITH ===== -->
     <div class="view" id="view-faith">
-      <div class="vh"><div><div class="vt" style="color:var(--purple)"><i class="ti ti-heart-handshake"></i>FAITH — Buklod</div><div class="vs">CAA · District of Metro Manila South · Kapisanan Buklod</div></div><div class="va"><button class="btn btn-g"><i class="ti ti-download"></i> Export</button><button class="btn btn-o" onclick="openFaithModal()"><i class="ti ti-plus"></i> Activity</button></div></div>
-      <div class="vb">
-        <div class="mr" style="grid-template-columns:repeat(4,1fr)">
-          <div class="hc"><div class="cl">Total</div><div class="cv" id="faithTotal">0</div></div>
-          <div class="hc"><div class="cl">Approved</div><div class="cv" id="faithApproved" style="color:var(--green)">0</div></div>
-          <div class="hc"><div class="cl">Submitted</div><div class="cv" id="faithSubmitted" style="color:var(--teal)">0</div></div>
-          <div class="hc"><div class="cl">Pending</div><div class="cv" id="faithPending" style="color:var(--amber)">0</div></div>
+      <div class="vh">
+        <div><div class="vt" style="color:var(--purple)"><i class="ti ti-heart-handshake"></i>FAITH — Buklod</div><div class="vs">CAA · District of Metro Manila South · Kapisanan Buklod</div></div>
+        <div class="va" id="faithHeaderBtns">
+          <button class="btn btn-g" onclick="exportFaithData()"><i class="ti ti-download"></i> Export</button>
+          <button class="btn btn-o" onclick="openFaithModal()" id="faithAddBtn"><i class="ti ti-plus"></i> Activity</button>
         </div>
-        <table class="ht"><thead><tr><th>Group</th><th>Activity</th><th>Date</th><th>Submitted</th><th>CFO #</th><th>AEVM #</th><th>Status</th><th>Assigned</th><th>Drive</th><th></th></tr></thead><tbody id="faithTbody"></tbody></table>
-        <div class="faith-empty" id="faithEmpty">No activities yet. Click "Activity" to begin.</div>
+      </div>
+      <div class="vb" style="padding:0;overflow:hidden;display:flex;flex-direction:column">
+        <!-- Tab bar -->
+        <div class="cftab" style="flex-shrink:0;padding:0 18px">
+          <div class="cfbt active" id="ftab-activities" onclick="setFaithTab('activities',this)"><i class="ti ti-calendar-event" style="font-size:11px;display:inline-block;margin-right:4px"></i>Activities</div>
+          <div class="cfbt" id="ftab-officers" onclick="setFaithTab('officers',this)"><i class="ti ti-users" style="font-size:11px;display:inline-block;margin-right:4px"></i>Officers</div>
+          <div class="cfbt" id="ftab-topics" onclick="setFaithTab('topics',this)"><i class="ti ti-book" style="font-size:11px;display:inline-block;margin-right:4px"></i>Topics</div>
+        </div>
+
+        <div style="flex:1;overflow-y:auto;padding:14px 18px">
+
+          <!-- ACTIVITIES TAB -->
+          <div id="faith-activities">
+            <div class="mr" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
+              <div class="hc"><div class="cl">Total</div><div class="cv" id="faithTotal">0</div></div>
+              <div class="hc"><div class="cl">Approved</div><div class="cv" id="faithApproved" style="color:var(--green)">0</div></div>
+              <div class="hc"><div class="cl">Submitted</div><div class="cv" id="faithSubmitted" style="color:var(--teal)">0</div></div>
+              <div class="hc"><div class="cl">Pending</div><div class="cv" id="faithPending" style="color:var(--amber)">0</div></div>
+            </div>
+            <table class="ht"><thead><tr><th>Group</th><th>Activity</th><th>Date</th><th>Submitted</th><th>CFO #</th><th>AEVM #</th><th>Status</th><th>Assigned</th><th>Drive</th><th></th></tr></thead><tbody id="faithTbody"></tbody></table>
+            <div class="faith-empty" id="faithEmpty">No activities yet. Click "Activity" to begin.</div>
+          </div>
+
+          <!-- OFFICERS TAB -->
+          <div id="faith-officers" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--purple)">Officer Registry</div>
+                <div style="font-size:10px;color:var(--text3);margin-top:2px">Kapisanan Buklod — CAA District Metro Manila South</div>
+              </div>
+              <button class="btn btn-o" style="font-size:11px" onclick="openOfficerModal()"><i class="ti ti-plus"></i> Add Officer</button>
+            </div>
+            <div style="overflow-x:auto">
+              <table class="ht" style="min-width:900px">
+                <thead><tr><th>Name</th><th>Duty / Role</th><th>Contact</th><th>Facebook</th><th>Address</th><th>Purok</th><th>Committee</th><th>Date of Oath</th><th></th></tr></thead>
+                <tbody id="officerTbody"><tr><td colspan="9" style="text-align:center;color:var(--text3);font-size:12px;padding:20px">No officers yet. Click "+ Add Officer" to begin.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TOPICS TAB -->
+          <div id="faith-topics" style="display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <div>
+                <div style="font-size:13px;font-weight:700;color:var(--purple)">Leadership & Self-Enhancement Topics</div>
+                <div style="font-size:10px;color:var(--text3);margin-top:2px">Upload documents, notes, and formulated topics for PNK sessions</div>
+              </div>
+              <div style="display:flex;gap:7px">
+                <label style="display:flex;align-items:center;gap:5px;padding:5px 11px;background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.3);border-radius:4px;color:var(--purple);font-size:11px;font-weight:700;cursor:pointer">
+                  <i class="ti ti-upload" style="font-size:12px;line-height:1;display:block"></i> Upload Doc
+                  <input type="file" accept=".pdf,.doc,.docx,.txt,.md" multiple onchange="uploadFaithTopic(event)" style="display:none">
+                </label>
+                <button class="btn btn-o" style="font-size:11px" onclick="openTopicModal()"><i class="ti ti-plus"></i> New Topic</button>
+              </div>
+            </div>
+            <!-- Topics grid -->
+            <div id="faithTopicsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px">
+              <div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:12px;padding:30px">No topics yet. Upload a document or click "+ New Topic".</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFICER MODAL -->
+    <div class="mov" id="officerModal">
+      <div class="mbody" style="max-width:640px">
+        <div class="mh"><div class="mt" id="officerModalTitle">Add Officer</div><button class="mc" onclick="closeModal('officerModal')">×</button></div>
+        <div class="mf" style="flex-direction:column;gap:10px;align-items:stretch;padding:14px 16px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div><label class="ml">Full Name *</label><input class="mi" id="of-name" placeholder="e.g. Juan dela Cruz"></div>
+            <div><label class="ml">Duty / Role *</label><input class="mi" id="of-duty" placeholder="e.g. Secretary"></div>
+            <div><label class="ml">Contact</label><input class="mi" id="of-contact" placeholder="+63 912 345 6789" type="tel"></div>
+            <div><label class="ml">Facebook</label><input class="mi" id="of-facebook" placeholder="facebook.com/..."></div>
+            <div><label class="ml">Purok</label><input class="mi" id="of-purok" placeholder="e.g. Purok 3"></div>
+            <div><label class="ml">Committee</label><input class="mi" id="of-committee" placeholder="e.g. Sanggunian"></div>
+            <div><label class="ml">Date of Oath</label><input class="mi" id="of-oath" type="date"></div>
+          </div>
+          <div><label class="ml">Address</label><input class="mi" id="of-address" placeholder="Complete address"></div>
+        </div>
+        <div class="mf" style="justify-content:flex-end;gap:8px">
+          <button class="btn btn-g" onclick="closeModal('officerModal')">Cancel</button>
+          <button class="btn" style="background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.4);font-weight:700" onclick="saveOfficer()"><i class="ti ti-user-check"></i> Save Officer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOPIC MODAL -->
+    <div class="mov" id="topicModal">
+      <div class="mbody" style="max-width:520px">
+        <div class="mh"><div class="mt" id="topicModalTitle">New Topic</div><button class="mc" onclick="closeModal('topicModal')">×</button></div>
+        <div class="mf" style="flex-direction:column;gap:10px;align-items:stretch;padding:14px 16px">
+          <div><label class="ml">Topic Title *</label><input class="mi" id="tp-title" placeholder="e.g. Servant Leadership"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div><label class="ml">Category</label>
+              <select class="mi" id="tp-cat">
+                <option>Leadership</option>
+                <option>Self-Enhancement</option>
+                <option>Spiritual Growth</option>
+                <option>Organizational</option>
+                <option>PNK Session</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div><label class="ml">Date</label><input class="mi" id="tp-date" type="date" value="${new Date().toISOString().split('T')[0]}"></div>
+          </div>
+          <div><label class="ml">Notes / Summary</label><textarea class="mi" id="tp-notes" rows="3" placeholder="Key points, scripture references, session notes..."></textarea></div>
+          <div><label class="ml">Drive Link (optional)</label><input class="mi" id="tp-drive" placeholder="https://drive.google.com/..."></div>
+        </div>
+        <div class="mf" style="justify-content:flex-end;gap:8px">
+          <button class="btn btn-g" onclick="closeModal('topicModal')">Cancel</button>
+          <button class="btn" style="background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.4);font-weight:700" onclick="saveFaithTopic()"><i class="ti ti-book"></i> Save Topic</button>
+        </div>
       </div>
     </div>
 
@@ -2963,7 +3084,6 @@ select option{background:var(--navy3)}
         <div class="cftab" style="flex-shrink:0;padding:0 18px">
           <div class="cfbt active" onclick="setCFTab('overview',this)">Overview</div>
           <div class="cfbt" onclick="setCFTab('transactions',this)">Transactions</div>
-          <div class="cfbt" onclick="setCFTab('chart',this)">Chart</div>
           <div class="cfbt" onclick="setCFTab('budget',this)">Budget</div>
           <div class="cfbt" onclick="setCFTab('accounts',this)">Accounts</div>
           <div class="cfbt" onclick="setCFTab('property',this)">Property</div>
@@ -2982,7 +3102,7 @@ select option{background:var(--navy3)}
             <!-- Account balances strip -->
             <div id="cf-account-strip" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:14px"></div>
             <!-- Recent panels -->
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
               <div class="bd-block">
                 <div class="bd-h"><i class="ti ti-trending-up" style="color:var(--green)"></i> Recent Debits <span style="font-size:9px;color:var(--text3);margin-left:4px">(Income)</span></div>
                 <div id="cf-recent-debits"><div style="font-size:11px;color:var(--text3)">No entries yet.</div></div>
@@ -2991,6 +3111,15 @@ select option{background:var(--navy3)}
                 <div class="bd-h"><i class="ti ti-trending-down" style="color:var(--red)"></i> Recent Credits <span style="font-size:9px;color:var(--text3);margin-left:4px">(Expenses)</span></div>
                 <div id="cf-recent-credits"><div style="font-size:11px;color:var(--text3)">No entries yet.</div></div>
               </div>
+            </div>
+            <!-- Charts inline at bottom of overview -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="hc" style="min-height:220px"><div class="cl" style="margin-bottom:8px">Monthly Cash Flow</div><div style="height:180px;position:relative"><canvas id="cashflowChart"></canvas></div></div>
+              <div class="hc" style="min-height:220px"><div class="cl" style="margin-bottom:8px">Expenses by Category</div><div style="height:180px;position:relative"><canvas id="catChart"></canvas></div></div>
+            </div>
+            <div class="hc" style="margin-bottom:12px">
+              <div class="cl" style="margin-bottom:8px">Income vs Expense — 6 Month Trend</div>
+              <div style="height:180px;position:relative"><canvas id="trendChart"></canvas></div>
             </div>
           </div>
 
@@ -3008,18 +3137,6 @@ select option{background:var(--navy3)}
               <tbody id="cashTbody"></tbody>
             </table>
             <div style="margin-top:8px;font-size:11px;color:var(--text3);text-align:center" id="cashEmpty" style="display:none">No transactions yet.</div>
-          </div>
-
-          <!-- CHART TAB -->
-          <div id="cf-chart" style="display:none">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
-              <div class="hc" style="min-height:240px"><div class="cl" style="margin-bottom:8px">Monthly Cash Flow</div><div style="height:200px;position:relative"><canvas id="cashflowChart"></canvas></div></div>
-              <div class="hc" style="min-height:240px"><div class="cl" style="margin-bottom:8px">Expenses by Category</div><div style="height:200px;position:relative"><canvas id="catChart"></canvas></div></div>
-            </div>
-            <div class="hc">
-              <div class="cl" style="margin-bottom:8px">Income vs Expense — 6 Month Trend</div>
-              <div style="height:200px;position:relative"><canvas id="trendChart"></canvas></div>
-            </div>
           </div>
 
           <!-- BUDGET TAB -->
@@ -6093,48 +6210,67 @@ function renderVenture(){
   const clients=DB.venture.filter(v=>v.type==='Client');const partners=DB.venture.filter(v=>v.type==='Partner/VA');
   document.getElementById('vtClientCount').textContent=clients.length;
   document.getElementById('vtPartnerCount').textContent=partners.length;
-  const activeClients=clients.filter(v=>v.stage==='Active').length;
   const revEl=document.getElementById('vtRevenue');
   if(revEl){const tjcRevenue=DB.cashflow.filter(t=>t.type==='Credit'&&t.desc&&/tjc|job collectives/i.test(t.desc)).reduce((s,t)=>s+(t.amount||0),0);revEl.textContent=tjcRevenue>0?'$'+tjcRevenue.toLocaleString():'$0';}
+
   const cStages=['Lead','Discovery','Proposal','Negotiation','Active'];
   const pStages=['Lead','Discovery','Proposal','Active'];
-  const renderVKanban=(containerId,items,stages,isOrange)=>{
+  const pColor=s=>s==='Active'?'var(--green)':s==='Negotiation'?'var(--amber)':s==='Proposal'?'var(--teal)':s==='Discovery'?'#1A73E8':'var(--text3)';
+
+  // Render vertical stacked pipeline (1-column, each stage = a section)
+  const renderVPipeline=(containerId,items,stages,isOrange)=>{
     const el=document.getElementById(containerId);if(!el)return;
-    el.innerHTML=stages.map(s=>`<div class="kc" data-stage="${s}" ondragover="event.preventDefault();this.querySelector('.kc-body').style.background='var(--teal4)'" ondragleave="this.querySelector('.kc-body').style.background=''" ondrop="dropVentureCard(event,'${s}',${isOrange?'true':'false'});this.querySelector('.kc-body').style.background=''">
-      <div class="kch ${isOrange?'':'todo'}" style="border-top-color:${isOrange?'var(--orange)':'var(--teal)'}"><span class="kch-title" style="color:${isOrange?'var(--orange)':'var(--teal)'}">${s.toUpperCase()}</span><span class="pill ${isOrange?'po':'pt'}" style="font-size:9px">${items.filter(v=>v.stage===s).length}</span></div>
-      <div class="kc-body" style="transition:background .15s">${items.filter(v=>v.stage===s).map(v=>`<div class="kcard ${isOrange?'oc':''}" draggable="true" ondragstart="dragVentureCard(event,${v.id})" onclick="openVentureModal(${v.id})">
-        <div class="kct">${v.name}</div>
-        <div class="kcm"><span class="pill ${v.type==='Client'?'pt':'po'}" style="font-size:9px">${v.type}</span>${v.notes?`<span style="font-size:9px;color:var(--text3)">${v.notes}</span>`:''}</div>
-        <div style="font-size:9px;color:var(--text3);margin-top:4px;display:flex;align-items:center;gap:3px"><i class="ti ti-grip-vertical" style="font-size:10px;line-height:1;display:block"></i>drag to move</div>
-      </div>`).join('')||'<div style="font-size:10px;color:var(--text3);padding:7px">Drop here</div>'}</div>
-      <div class="kc-add" onclick="openVentureModal()"><i class="ti ti-plus" style="font-size:11px;line-height:1;display:block"></i> Add</div>
-    </div>`).join('');
-  };
-  renderVKanban('vtcKanban',clients,cStages,false);
-  renderVKanban('vtpKanban',partners,pStages,true);
-  // Venture tasks panel
-  const vtTaskEl=document.getElementById('vtTaskList');
-  if(vtTaskEl){
-    const vt=(DB.tasks||[]).filter(t=>t.world==='VENTURE'&&t.status!=='Done').sort((a,b)=>a.priority==='High'?-1:b.priority==='High'?1:0);
-    const done=(DB.tasks||[]).filter(t=>t.world==='VENTURE'&&t.status==='Done').slice(0,3);
-    const pColor=p=>p==='High'?'var(--red)':p==='Medium'?'var(--amber)':'var(--text3)';
-    vtTaskEl.innerHTML=(vt.length||done.length)?[
-      ...vt.map(t=>`<div style="display:flex;align-items:flex-start;gap:7px;padding:7px 8px;background:#0a1220;border:1px solid var(--border);border-left:3px solid ${pColor(t.priority)};border-radius:3px;cursor:pointer" onclick="editTask(${t.id})">
-        <div style="flex:1;min-width:0">
-          <div style="font-size:11px;font-weight:700;color:var(--text1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</div>
-          <div style="font-size:9px;color:var(--text3);margin-top:2px;display:flex;gap:5px">
-            <span style="color:${pColor(t.priority)}">${t.priority}</span>${t.due?`<span>· ${t.due}</span>`:''}${t.status?`<span>· ${t.status}</span>`:''}
-          </div>
+    el.innerHTML=stages.map(s=>{
+      const stageItems=items.filter(v=>v.stage===s);
+      return `<div style="border:1px solid var(--border);border-radius:4px;overflow:hidden;flex-shrink:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:#050a12;border-bottom:1px solid var(--border);border-left:3px solid ${pColor(s)}">
+          <span style="font-size:10px;font-weight:700;color:${pColor(s)};letter-spacing:.06em">${s.toUpperCase()}</span>
+          <span class="pill ${isOrange?'po':'pt'}" style="font-size:9px">${stageItems.length}</span>
         </div>
-        <button onclick="event.stopPropagation();const t=DB.tasks.find(x=>x.id===${t.id});if(t){t.status='Done';SB.update('tasks',t.id,t,'tasks');renderVenture();renderBrief();}" style="background:transparent;border:1px solid var(--border2);border-radius:3px;color:var(--text3);font-size:9px;padding:2px 6px;cursor:pointer;flex-shrink:0;white-space:nowrap">Done</button>
-      </div>`),
-      done.length?`<div style="font-size:9px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;margin-top:8px;padding:4px 0;border-top:1px solid var(--border)">Completed</div>`:'',
-      ...done.map(t=>`<div style="display:flex;align-items:center;gap:7px;padding:5px 8px;opacity:.5">
-        <i class="ti ti-circle-check" style="font-size:12px;color:var(--green);line-height:1;display:block;flex-shrink:0"></i>
-        <div style="font-size:11px;color:var(--text3);text-decoration:line-through;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</div>
-      </div>`)
-    ].join(''):`<div style="font-size:11px;color:var(--text3);padding:8px;text-align:center">No VENTURE tasks yet.<br><span style="font-size:10px">Click + Add to create one.</span></div>`;
-  }
+        <div style="padding:4px 6px;display:flex;flex-direction:column;gap:4px;min-height:28px">
+          ${stageItems.map(v=>`<div style="display:flex;align-items:center;gap:6px;padding:4px 6px;background:#0a1220;border-radius:3px;cursor:pointer;font-size:11px;color:var(--text1)" onclick="openVentureModal(${v.id})">
+            <div style="width:6px;height:6px;border-radius:50%;background:${pColor(v.stage)};flex-shrink:0"></div>
+            <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v.name}</span>
+            ${v.notes?`<span style="font-size:9px;color:var(--text3);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70px">${v.notes}</span>`:''}
+          </div>`).join('')||`<div style="font-size:9px;color:var(--text3);padding:3px 6px">Empty</div>`}
+        </div>
+      </div>`;
+    }).join('');
+  };
+  renderVPipeline('vtcKanban',clients,cStages,false);
+  renderVPipeline('vtpKanban',partners,pStages,true);
+
+  // Venture tasks — render as cards
+  _renderVTasks('all');
+}
+
+let _vtCurrentFilter='all';
+function vtFilterTasks(filter,btn){
+  _vtCurrentFilter=filter;
+  document.querySelectorAll('.vtf').forEach(b=>{
+    b.style.background='transparent';b.style.color='var(--text3)';b.style.borderColor='var(--border2)';b.classList.remove('active');
+  });
+  if(btn){btn.style.background='var(--orange3)';btn.style.color='var(--orange)';btn.style.borderColor='var(--orange2)';btn.classList.add('active');}
+  _renderVTasks(filter);
+}
+function _renderVTasks(filter){
+  const vtTaskEl=document.getElementById('vtTaskList');if(!vtTaskEl)return;
+  const all=(DB.tasks||[]).filter(t=>t.world==='VENTURE');
+  const shown=filter==='all'?all:all.filter(t=>t.status===filter);
+  const pColor=p=>p==='High'?'var(--red)':p==='Medium'?'var(--amber)':'var(--text3)';
+  const sColor=s=>s==='Done'?'var(--green)':s==='In Progress'?'var(--teal)':s==='No Progress'?'var(--red)':'var(--text3)';
+  vtTaskEl.innerHTML=shown.length?shown.map(t=>`
+    <div style="background:#0a1220;border:1px solid var(--border);border-top:2px solid ${pColor(t.priority)};border-radius:4px;padding:8px 10px;cursor:pointer;transition:all .15s" onclick="editTask(${t.id})" onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderTopColor='${pColor(t.priority)}'">
+      <div style="font-size:11px;font-weight:700;color:var(--text1);line-height:1.3;margin-bottom:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.title}</div>
+      <div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap">
+        <span style="font-size:9px;font-weight:700;color:${pColor(t.priority)}">${t.priority}</span>
+        <span style="font-size:9px;color:var(--text3)">·</span>
+        <span style="font-size:9px;color:${sColor(t.status)}">${t.status||'Todo'}</span>
+        ${t.due?`<span style="font-size:9px;color:var(--text3)">· ${t.due}</span>`:''}
+      </div>
+      ${t.client?`<div style="font-size:9px;color:var(--text3);margin-top:3px">${t.client}</div>`:''}
+    </div>`).join('')
+  :`<div style="font-size:11px;color:var(--text3);padding:12px;text-align:center;grid-column:1/-1">${filter==='all'?'No VENTURE tasks yet. Click + Add.':'No '+filter+' tasks.'}</div>`;
 }
 function setVentureTab(tab,el){
   document.getElementById('vt-clients-view').style.display=tab==='clients'?'':'none';
@@ -6242,18 +6378,141 @@ function saveFaithActivity(){const a={id:editingFaithId||Date.now(),activity:doc
 function deleteFaith(id){const a=DB.faith.find(x=>x.id===id);DB.faith=DB.faith.filter(x=>x.id!==id);SB.remove('faith',id,'faith');addHistory('delete','Deleted faith: '+a.activity,{...a,_dbKey:'faith'});renderFaith();showToast('Deleted');}
 function renderFaith(){const tb=document.getElementById('faithTbody'),em=document.getElementById('faithEmpty');if(!DB.faith.length){tb.innerHTML='';em.style.display='';return;}em.style.display='none';tb.innerHTML=DB.faith.map(f=>`<tr onclick="openFaithModal(${f.id})"><td style="font-weight:500">${f.group||'—'}</td><td>${f.activity}</td><td style="font-size:11px;color:var(--text3)">${f.date||'—'}</td><td style="font-size:11px;color:var(--text3)">${f.submitted||'—'}</td><td style="font-size:11px">${f.cfo||'—'}</td><td style="font-size:11px">${f.aevm||'—'}</td><td><span class="pill ${f.status==='Done'||f.status==='Approved'?'pg':f.status==='Submitted'?'pt':f.status==='Rejected'?'pr':'po'}">${f.status}</span></td><td style="font-size:11px">${f.assigned||'—'}</td><td>${f.drive?`<a href="${f.drive}" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);font-size:11px;display:inline-flex;align-items:center;gap:3px"><i class="ti ti-brand-google-drive" style="font-size:11px;line-height:1;display:block"></i>Open</a>`:'—'}</td><td><button class="btn btn-d" style="padding:2px 6px" onclick="event.stopPropagation();deleteFaith(${f.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td></tr>`).join('');document.getElementById('faithTotal').textContent=DB.faith.length;document.getElementById('faithApproved').textContent=DB.faith.filter(f=>f.status==='Approved'||f.status==='Done').length;document.getElementById('faithSubmitted').textContent=DB.faith.filter(f=>f.status==='Submitted').length;document.getElementById('faithPending').textContent=DB.faith.filter(f=>f.status==='Pending').length;}
 
+// ── Faith tab navigation ──────────────────────────────────────────────────
+function setFaithTab(tab,btn){
+  ['activities','officers','topics'].forEach(t=>{
+    const el=document.getElementById('faith-'+t);if(el)el.style.display=t===tab?'':'none';
+  });
+  document.querySelectorAll('.cfbt[id^="ftab-"]').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  // Update header add button label
+  const addBtn=document.getElementById('faithAddBtn');
+  if(addBtn){
+    if(tab==='officers'){addBtn.innerHTML='<i class="ti ti-plus"></i> Officer';addBtn.onclick=openOfficerModal;}
+    else if(tab==='topics'){addBtn.innerHTML='<i class="ti ti-plus"></i> Topic';addBtn.onclick=openTopicModal;}
+    else{addBtn.innerHTML='<i class="ti ti-plus"></i> Activity';addBtn.onclick=openFaithModal;}
+  }
+  if(tab==='officers') renderOfficers();
+  if(tab==='topics') renderFaithTopics();
+}
+function exportFaithData(){const rows=DB.faith.map(f=>[f.group,f.activity,f.date,f.submitted,f.cfo,f.aevm,f.status,f.assigned].join(','));const csv='Group,Activity,Date,Submitted,CFO,AEVM,Status,Assigned\n'+rows.join('\n');const b=new Blob([csv],{type:'text/csv'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='faith-activities.csv';a.click();URL.revokeObjectURL(u);}
+
+// ── Officers ──────────────────────────────────────────────────────────────
+if(!DB.officers)DB.officers=[];
+let editingOfficerId=null;
+function openOfficerModal(id){
+  editingOfficerId=id||null;
+  const o=id?DB.officers.find(x=>x.id===id):{};
+  document.getElementById('officerModalTitle').textContent=id?'Edit Officer':'Add Officer';
+  ['name','duty','contact','facebook','purok','committee','address'].forEach(f=>{const el=document.getElementById('of-'+f);if(el)el.value=o?o[f]||'':'';});
+  const oathEl=document.getElementById('of-oath');if(oathEl)oathEl.value=o?o.oath||'':'';
+  openModal('officerModal');
+}
+function saveOfficer(){
+  const name=document.getElementById('of-name').value.trim();
+  if(!name){showToast('Name required');return;}
+  const o={
+    id:editingOfficerId||Date.now(),
+    name,
+    duty:document.getElementById('of-duty').value.trim(),
+    contact:document.getElementById('of-contact').value.trim(),
+    facebook:document.getElementById('of-facebook').value.trim(),
+    address:document.getElementById('of-address').value.trim(),
+    purok:document.getElementById('of-purok').value.trim(),
+    committee:document.getElementById('of-committee').value.trim(),
+    oath:document.getElementById('of-oath').value,
+    date:new Date().toISOString().split('T')[0]
+  };
+  if(editingOfficerId){const i=DB.officers.findIndex(x=>x.id===editingOfficerId);if(i>=0)DB.officers[i]=o;}
+  else DB.officers.unshift(o);
+  save('officers');closeModal('officerModal');renderOfficers();showToast('✓ Officer saved');
+}
+function deleteOfficer(id){if(!confirm('Delete this officer?'))return;DB.officers=DB.officers.filter(x=>x.id!==id);save('officers');renderOfficers();showToast('Deleted');}
+function renderOfficers(){
+  const tb=document.getElementById('officerTbody');if(!tb)return;
+  if(!DB.officers.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--text3);font-size:12px;padding:20px">No officers yet. Click "+ Add Officer" to begin.</td></tr>';return;}
+  tb.innerHTML=DB.officers.map(o=>`<tr onclick="openOfficerModal(${o.id})" style="cursor:pointer">
+    <td style="font-weight:600;color:var(--text1)">${o.name}</td>
+    <td><span class="pill pt" style="font-size:10px">${o.duty||'—'}</span></td>
+    <td style="font-size:11px">${o.contact||'—'}</td>
+    <td style="font-size:11px">${o.facebook?`<a href="${o.facebook.startsWith('http')?o.facebook:'https://'+o.facebook}" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal)">View</a>`:'—'}</td>
+    <td style="font-size:11px;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${o.address||'—'}</td>
+    <td style="font-size:11px">${o.purok||'—'}</td>
+    <td style="font-size:11px">${o.committee||'—'}</td>
+    <td style="font-size:11px">${o.oath||'—'}</td>
+    <td><button class="btn btn-d" style="padding:2px 6px" onclick="event.stopPropagation();deleteOfficer(${o.id})"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button></td>
+  </tr>`).join('');
+}
+
+// ── Topics ────────────────────────────────────────────────────────────────
+if(!DB.faithTopics)DB.faithTopics=[];
+let editingTopicId=null;
+function openTopicModal(id){
+  editingTopicId=id||null;
+  const t=id?DB.faithTopics.find(x=>x.id===id):{};
+  document.getElementById('topicModalTitle').textContent=id?'Edit Topic':'New Topic';
+  ['title','notes','drive'].forEach(f=>{const el=document.getElementById('tp-'+f);if(el)el.value=t?t[f]||'':'';});
+  const catEl=document.getElementById('tp-cat');if(catEl)catEl.value=t?t.category||'Leadership':'Leadership';
+  const dateEl=document.getElementById('tp-date');if(dateEl)dateEl.value=t?t.date||new Date().toISOString().split('T')[0]:new Date().toISOString().split('T')[0];
+  openModal('topicModal');
+}
+function saveFaithTopic(){
+  const title=document.getElementById('tp-title').value.trim();
+  if(!title){showToast('Topic title required');return;}
+  const t={
+    id:editingTopicId||Date.now(),
+    title,
+    category:document.getElementById('tp-cat').value,
+    date:document.getElementById('tp-date').value,
+    notes:document.getElementById('tp-notes').value.trim(),
+    drive:document.getElementById('tp-drive').value.trim(),
+    type:'manual'
+  };
+  if(editingTopicId){const i=DB.faithTopics.findIndex(x=>x.id===editingTopicId);if(i>=0)DB.faithTopics[i]=t;}
+  else DB.faithTopics.unshift(t);
+  save('faithTopics');closeModal('topicModal');renderFaithTopics();showToast('✓ Topic saved');
+}
+function uploadFaithTopic(event){
+  const files=event.target.files;if(!files||!files.length)return;
+  Array.from(files).forEach(file=>{
+    const t={id:Date.now()+Math.random(),title:file.name.replace(/\.[^.]+$/,''),category:'PNK Session',date:new Date().toISOString().split('T')[0],notes:'Uploaded document: '+file.name,drive:'',type:'upload',fileName:file.name,fileSize:Math.round(file.size/1024)+'KB'};
+    DB.faithTopics.unshift(t);
+  });
+  save('faithTopics');renderFaithTopics();event.target.value='';showToast('✓ '+files.length+' file(s) uploaded');
+}
+function deleteTopic(id){if(!confirm('Delete this topic?'))return;DB.faithTopics=DB.faithTopics.filter(x=>x.id!==id);save('faithTopics');renderFaithTopics();showToast('Deleted');}
+function renderFaithTopics(){
+  const grid=document.getElementById('faithTopicsGrid');if(!grid)return;
+  if(!DB.faithTopics.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text3);font-size:12px;padding:30px">No topics yet. Upload a document or click "+ New Topic".</div>';return;}
+  const catColor=c=>c==='Leadership'?'var(--orange)':c==='Self-Enhancement'?'var(--teal)':c==='Spiritual Growth'?'var(--purple)':c==='Organizational'?'#1A73E8':c==='PNK Session'?'var(--pink)':'var(--text3)';
+  grid.innerHTML=DB.faithTopics.map(t=>`
+    <div style="background:#050a12;border:1px solid var(--border);border-radius:5px;padding:12px 14px;cursor:pointer;transition:all .15s;border-top:2px solid ${catColor(t.category)}" onclick="openTopicModal(${t.id})" onmouseover="this.style.borderColor='var(--purple)'" onmouseout="this.style.borderColor='var(--border)';this.style.borderTopColor='${catColor(t.category)}'">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px;gap:6px">
+        <div style="font-size:12px;font-weight:700;color:var(--text1);line-height:1.3;flex:1">${t.title}</div>
+        <button onclick="event.stopPropagation();deleteTopic(${t.id})" style="background:transparent;border:none;color:var(--text3);cursor:pointer;padding:1px;flex-shrink:0"><i class="ti ti-trash" style="font-size:11px;line-height:1;display:block"></i></button>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+        <span style="font-size:9px;font-weight:700;color:${catColor(t.category)};border:1px solid ${catColor(t.category)};border-radius:2px;padding:1px 5px">${t.category}</span>
+        ${t.type==='upload'?`<span style="font-size:9px;color:var(--text3);border:1px solid var(--border2);border-radius:2px;padding:1px 5px">📄 ${t.fileName||'Document'}</span>`:''}
+        <span style="font-size:9px;color:var(--text3)">${t.date}</span>
+      </div>
+      ${t.notes?`<div style="font-size:10px;color:var(--text3);line-height:1.4;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">${t.notes}</div>`:''}
+      ${t.drive?`<a href="${t.drive}" target="_blank" onclick="event.stopPropagation()" style="display:inline-flex;align-items:center;gap:4px;margin-top:7px;font-size:10px;color:var(--teal);text-decoration:none"><i class="ti ti-brand-google-drive" style="font-size:11px;line-height:1;display:block"></i>Open Drive</a>`:''}
+    </div>`).join('');
+}
+
 // LIFE
 let cfActiveTab='overview',cfCharts={};
 function setCFTab(t,btn){
   cfActiveTab=t;
-  ['overview','transactions','chart','budget','accounts','property','loans'].forEach(tab=>{
+  ['overview','transactions','budget','accounts','property','loans'].forEach(tab=>{
     const el=document.getElementById('cf-'+tab);
     if(el) el.style.display=tab===t?'':'none';
   });
   document.querySelectorAll('.cfbt').forEach(b=>b.classList.remove('active'));
   if(btn) btn.classList.add('active');
   if(t==='transactions') renderCashTable();
-  else if(t==='chart')   renderCashCharts();
+  else if(t==='overview') renderCashCharts();
   else if(t==='budget')  renderBudgetTab();
   else if(t==='accounts')renderAccountsTab();
   else if(t==='loans')   renderLoansTab();
@@ -6422,7 +6681,7 @@ function renderLife(){
 
   // ── Refresh active sub-tab ─────────────────────────────────────────────
   if(cfActiveTab==='transactions') renderCashTable();
-  else if(cfActiveTab==='chart') renderCashCharts();
+  else if(cfActiveTab==='overview') renderCashCharts();
   else if(cfActiveTab==='budget') renderBudgetTab();
   else if(cfActiveTab==='accounts') renderAccountsTab();
   else if(cfActiveTab==='loans') renderLoansTab();
